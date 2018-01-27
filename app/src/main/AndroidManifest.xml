@@ -16,6 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".FoodReviewActivity">
+
+        </activity>
         <activity android:name=".LectureReviewSearchActivity">
         </activity>
         <activity android:name=".LectureReviewListActivity">
