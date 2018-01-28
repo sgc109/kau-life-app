@@ -41,9 +41,9 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.food_corner_list, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mFoodCornerSpinner.setAdapter(adapter);
 
         mRatingBar = (RatingBar)findViewById(R.id.food_review_write_rating_bar);
-        mFoodCornerSpinner.setAdapter(adapter);
         mCommentEditText = (EditText)findViewById(R.id.food_review_write_comment_edit_text);
         mCancelButton = (Button)findViewById(R.id.food_review_write_cancel_button);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
