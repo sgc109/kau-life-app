@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="food_corner_list">
+        <item>@string/food_corner_spinner_item1</item>
+        <item>@string/food_corner_spinner_item2</item>
+        <item>@string/food_corner_spinner_item3</item>
+        <item>@string/food_corner_spinner_item4</item>
+    </string-array>
+</resources>
