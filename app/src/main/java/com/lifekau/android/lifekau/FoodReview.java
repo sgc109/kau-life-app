@@ -10,14 +10,14 @@ import java.util.UUID;
 public class FoodReview {
     public UUID mId;
     public float mRating;
-    public int mCorner;
+    public int mCornerType;
     public String mComment;
     public Date mTime;
     public FoodReview(){}
-    public FoodReview(float rating, int corner, String comment){
+    public FoodReview(float rating, int cornerType, String comment){
         mId = UUID.randomUUID();
         mRating = rating;
-        mCorner = corner;
+        mCornerType = cornerType;
         mComment = comment;
         mTime = new Date();
     }
