@@ -2,6 +2,7 @@
     <string name="app_name">LifeKAU</string>
     <string name="cancel_button_string">취소</string>
     <string name="submit_button_string">완료</string>
+    <string name="food_corner_spinner_item0">모든 코너</string>
     <string name="food_corner_spinner_item1">A 코너</string>
     <string name="food_corner_spinner_item2">B 코너</string>
     <string name="food_corner_spinner_item3">C 코너</string>
