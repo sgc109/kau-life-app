@@ -8,19 +8,19 @@ import java.util.UUID;
  */
 
 public class FoodReview {
-    public float mRating;
-    public float mRatingRev;
     public int mCornerType;
     public String mComment;
+    public float mRating;
+    public float mRatingRev;
     public Date mDate;
     public long mDateRev;
     public FoodReview(){
     }
     public FoodReview(float rating, int cornerType, String comment){
-        mRating = rating;
-        mRatingRev = -rating;
         mCornerType = cornerType;
         mComment = comment;
+        mRating = rating;
+        mRatingRev = -rating;
         mDate = new Date();
         mDateRev = -mDate.getTime();
     }
