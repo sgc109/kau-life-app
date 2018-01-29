@@ -9,6 +9,11 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
  * Created by sgc109 on 2018-01-28.
  */
@@ -33,7 +38,9 @@ public class FoodReviewHolder extends RecyclerView.ViewHolder {
         Resources res = mContext.getResources();
         String[] cornerTypeStrings = res.getStringArray(R.array.food_corner_list);
         mFoodCornerTypeTextView.setText(cornerTypeStrings[review.mCornerType]);
-        mTimeTextView.setText(review.mTime.toString());
+
+        SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", Locale.KOREA);
+        mTimeTextView.setText(formatter.format(review.mDate));
         mCommentTextView.setText(review.mComment);
     }
 }

@@ -60,7 +60,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertReviewToDB(mRatingBar.getRating(), mFoodCornerSpinner.getSelectedItemPosition(), mCommentEditText.getText().toString());
+                insertReviewToDB(mRatingBar.getRating(), mFoodCornerSpinner.getSelectedItemPosition(), mCommentEditText.getText().toString()); // 특정 코너
                 finish();
             }
         });
@@ -70,14 +70,17 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
             mFoodCornerSpinner.setSelection(savedInstanceState.getInt(SAVED_FOOD_CORNER_TYPE));
             mCommentEditText.setText(savedInstanceState.getString(SAVED_COMMENT));
         }
-
-
     }
-    public void insertReviewToDB(float rating, int corner, String comment){
+    public void insertReviewToDB(float rating, int cornerId, String comment){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("food_reviews");
-        FoodReview review = new FoodReview(rating, corner, comment);
-        ref.push().setValue(review);
+        DatabaseReference ref = database.getReference("Food_reviews");
+        FoodReview review = new FoodReview(rating, cornerId, comment);
+        ref.child("Corner " + (cornerId + 1))
+                .push()
+                .setValue(review);
+        ref.child("All")
+                .push()
+                .setValue(review);
     }
 
     @Override

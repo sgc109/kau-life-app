@@ -8,17 +8,20 @@ import java.util.UUID;
  */
 
 public class FoodReview {
-    public UUID mId;
     public float mRating;
+    public float mRatingRev;
     public int mCornerType;
     public String mComment;
-    public Date mTime;
-    public FoodReview(){}
+    public Date mDate;
+    public long mDateRev;
+    public FoodReview(){
+    }
     public FoodReview(float rating, int cornerType, String comment){
-        mId = UUID.randomUUID();
         mRating = rating;
+        mRatingRev = -rating;
         mCornerType = cornerType;
         mComment = comment;
-        mTime = new Date();
+        mDate = new Date();
+        mDateRev = -mDate.getTime();
     }
 }
