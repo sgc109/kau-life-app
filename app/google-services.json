@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "342733793111",
+    "firebase_url": "https://lifekau.firebaseio.com",
+    "project_id": "lifekau",
+    "storage_bucket": "lifekau.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342733793111:android:e93ebeeb63188858",
+        "android_client_info": {
+          "package_name": "com.lifekau.android.lifekau"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342733793111-l7h8onf0gveu2c4ftsvn2f9ikhe70orn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lifekau.android.lifekau",
+            "certificate_hash": "6b3214fa238002fbd3c61d0ae609bf6a2b6ed9fb"
+          }
+        },
+        {
+          "client_id": "342733793111-b4at5cfrc6g2gkekjnga2ilbaqp8nk4r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa7yGETcsNyaJTyg94qUsI9fIlrmrMsu8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342733793111-b4at5cfrc6g2gkekjnga2ilbaqp8nk4r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
