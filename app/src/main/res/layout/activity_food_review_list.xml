@@ -3,44 +3,54 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:id="@+id/food_review_list_linear_layout"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         >
+
         <Spinner
             android:id="@+id/food_review_list_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/order_by_time_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/food_review_order_by_time_string"/>
+
         <Button
             android:id="@+id/order_by_rating_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/food_review_order_by_rating_string"/>
 
     </LinearLayout>
+
     <TextView
         android:id="@+id/food_review_list_empty_list_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/food_review_recycler_view"
-    android:layout_below="@id/food_review_list_linear_layout"
-    android:paddingBottom="48dp"
-    android:clipToPadding="false"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/food_review_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/food_review_list_linear_layout"
+        android:clipToPadding="false"
+        android:paddingBottom="48dp"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/food_review_list_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClickFab"/>
+        android:onClick="onClickFab"
+        android:src="@drawable/ic_new_review"/>
 </RelativeLayout>

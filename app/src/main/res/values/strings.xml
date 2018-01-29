@@ -10,4 +10,6 @@
     <string name="food_corner_spinner_item5">스낵</string>
     <string name="food_corner_spinner_item6">프리미엄</string>
     <string name="food_corner_spinner_item7">조식</string>
+    <string name="food_review_order_by_time_string">시간순</string>
+    <string name="food_review_order_by_rating_string">평점순</string>
 </resources>
