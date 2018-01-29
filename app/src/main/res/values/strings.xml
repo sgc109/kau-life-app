@@ -7,4 +7,7 @@
     <string name="food_corner_spinner_item2">B 코너</string>
     <string name="food_corner_spinner_item3">C 코너</string>
     <string name="food_corner_spinner_item4">D 코너</string>
+    <string name="food_corner_spinner_item5">스낵</string>
+    <string name="food_corner_spinner_item6">프리미엄</string>
+    <string name="food_corner_spinner_item7">조식</string>
 </resources>
