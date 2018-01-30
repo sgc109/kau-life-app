@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
 
 /**
  * Created by sgc109 on 2018-01-27.
@@ -50,6 +53,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
     private Button mOrderByRatingButton;
     private RecyclerView mRecyclerView;
     private TextView mEmptyListMessage;
+    private ProgressBar mProgressBar;
     private int mFilteredCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
@@ -76,6 +80,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
             mOrderedByTimeAsc = -1;
         }
 
+        mProgressBar = (ProgressBar)findViewById(R.id.indeterminateBar);
         mEmptyListMessage = (TextView) findViewById(R.id.food_review_list_empty_list_text_view);
         mOrderByRatingButton = (Button)findViewById(R.id.order_by_rating_button);
         mOrderByRatingButton.setOnClickListener(this);
@@ -91,10 +96,11 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
         mRecyclerView = (RecyclerView) findViewById(R.id.food_review_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        updateUI();
     }
 
     public void updateUI() {
+        mProgressBar.setVisibility(View.VISIBLE);
+
         DatabaseReference ref = getRefFilteredByCornerType();
         Query query = getQueryOrderedByTime(ref, -1);
         if(mOrderedByRatingAsc != 0) query = getQueryOrderedByRating(ref, mOrderedByRatingAsc);
@@ -120,6 +126,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
             @Override
             public void onDataChanged() {
                 mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                mProgressBar.setVisibility(View.GONE);
             }
         };
 
