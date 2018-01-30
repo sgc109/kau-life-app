@@ -12,7 +12,7 @@ public class FoodReview {
     public String mComment;
     public float mRating;
     public float mRatingRev;
-    public Date mDate;
+    public long mDate;
     public long mDateRev;
     public FoodReview(){
     }
@@ -21,7 +21,7 @@ public class FoodReview {
         mComment = comment;
         mRating = rating;
         mRatingRev = -rating;
-        mDate = new Date();
-        mDateRev = -mDate.getTime();
+        mDate = new Date().getTime();
+        mDateRev = -mDate;
     }
 }
