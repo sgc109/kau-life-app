@@ -108,11 +108,16 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        Toast.makeText(this, "length : " + charSequence.length(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        String text = charSequence.toString();
+        int limitTextCnt = getResources().getInteger(R.integer.food_review_write_text_limit);
+        if(text.length() == limitTextCnt) {
+            String toastMsg = String.format(getString(R.string.food_review_text_limit_message), limitTextCnt);
+            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
