@@ -1,5 +1,6 @@
 package com.lifekau.android.lifekau;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -43,7 +45,7 @@ import butterknife.BindView;
  * Created by sgc109 on 2018-01-27.
  */
 
-public class FoodReviewListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class FoodReviewListActivity extends Activity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     private final static String EXTRA_RESTAURANT_TYPE = "extra.restaurant_type";
     private final String SAVED_ORDERED_BY_RATING_ASC = "saved_order_by_rating_asc";
     private final String SAVED_ORDERED_BY_TIME_ASC = "saved_order_by_time_asc";
@@ -56,7 +58,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
     private Button mOrderByRatingButton;
     private RecyclerView mRecyclerView;
     private TextView mEmptyListMessage;
-    private ProgressBar mProgressBar;
+    private LinearLayout mProgressBar;
     private int mFilteredCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
@@ -83,7 +85,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
             mOrderedByTimeAsc = -1;
         }
 
-        mProgressBar = (ProgressBar)findViewById(R.id.indeterminateBar);
+        mProgressBar = (LinearLayout) findViewById(R.id.indeterminateBar);
         mEmptyListMessage = (TextView) findViewById(R.id.food_review_list_empty_list_text_view);
         mOrderByRatingButton = (Button)findViewById(R.id.order_by_rating_button);
         mOrderByRatingButton.setOnClickListener(this);
@@ -229,15 +231,26 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
                 updateUI();
                 break;
             default:
-
         }
     }
+    public static void buttonEffect(View button){
+        button.setOnTouchListener(new OnTouchListener() {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_food_review_list, menu);
-        return true;
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        v.getBackground().setColorFilter(0xe0f47521,PorterDuff.Mode.SRC_ATOP);
+                        v.invalidate();
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        v.getBackground().clearColorFilter();
+                        v.invalidate();
+                        break;
+                    }
+                }
+                return false;
+            }
+        });
     }
 }
