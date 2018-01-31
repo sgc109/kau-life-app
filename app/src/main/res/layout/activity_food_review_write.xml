@@ -9,6 +9,7 @@
         android:layout_height="wrap_content">
         <RatingBar
             android:id="@+id/food_review_write_rating_bar"
+            android:progressTint="@color/yellow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Spinner
