@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:background="@color/colorPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <ImageButton
+        android:tint="@color/black"
+        android:src="@drawable/ic_back_arrow"
+        android:background="@color/colorPrimary"
+        android:id="@+id/menu_bar_food_review_list_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+
+</LinearLayout>
