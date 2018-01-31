@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="4dp">
+    android:layout_margin="4dp">
 
     <RatingBar
         android:id="@+id/list_item_food_review_rating_bar"
@@ -13,6 +13,7 @@
         android:isIndicator="true"
         android:numStars="5"
         android:padding="4dp"
+        android:progressTint="@color/colorPrimaryDark"
         android:stepSize="0.1"/>
 
     <TextView

@@ -11,6 +11,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import butterknife.BindView;
 
@@ -228,5 +231,13 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
             default:
 
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_food_review_list, menu);
+        return true;
     }
 }
