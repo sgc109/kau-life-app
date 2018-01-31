@@ -3,11 +3,13 @@ package com.lifekau.android.lifekau;
 import android.app.Activity;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,7 +53,7 @@ import butterknife.BindView;
  * Created by sgc109 on 2018-01-27.
  */
 
-public class FoodReviewListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class FoodReviewListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private final static String EXTRA_RESTAURANT_TYPE = "extra.restaurant_type";
     private final String SAVED_ORDERED_BY_RATING_ASC = "saved_order_by_rating_asc";
     private final String SAVED_ORDERED_BY_TIME_ASC = "saved_order_by_time_asc";
@@ -66,6 +68,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
     private TextView mEmptyListMessage;
     private LinearLayout mProgressBar;
     private ActionBar mActionBar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private int mFilteredCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
@@ -83,9 +86,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
         setContentView(R.layout.activity_food_review_list);
 
         mActionBar = ((AppCompatActivity)this).getSupportActionBar();
-//        mActionBar.setTitle(Html.fromHtml("<font color='#ffffff'>" + getString(R.string.food_review_title) + "</font>"));
         mActionBar.setTitle(R.string.food_review_title);
-//        mActionBar.sz
 
 
         if (savedInstanceState != null) {
@@ -98,6 +99,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
             mOrderedByTimeAsc = -1;
         }
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.food_review_list_swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         mProgressBar = (LinearLayout) findViewById(R.id.indeterminateBar);
         mEmptyListMessage = (TextView) findViewById(R.id.food_review_list_empty_list_text_view);
         mOrderByRatingButton = (Button)findViewById(R.id.order_by_rating_button);
@@ -145,6 +148,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
             public void onDataChanged() {
                 mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
                 mProgressBar.setVisibility(View.GONE);
+                mRecyclerAdapter.notifyDataSetChanged();
             }
         };
 
@@ -245,5 +249,16 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
                 break;
             default:
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        mRecyclerAdapter.notifyDataSetChanged();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, 500);
     }
 }
