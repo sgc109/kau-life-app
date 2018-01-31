@@ -6,6 +6,8 @@ import android.media.Rating;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,11 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class FoodReviewWriteActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class FoodReviewWriteActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TextWatcher{
     private final String SAVED_RATING = "saved_rating";
     private final String SAVED_FOOD_CORNER_TYPE = "saved_food_corner_type";
     private final String SAVED_COMMENT = "saved_comment";
@@ -45,6 +48,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
 
         mRatingBar = (RatingBar)findViewById(R.id.food_review_write_rating_bar);
         mCommentEditText = (EditText)findViewById(R.id.food_review_write_comment_edit_text);
+        mCommentEditText.addTextChangedListener(this);
         mCancelButton = (Button)findViewById(R.id.food_review_write_cancel_button);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,5 +103,20 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
         outState.putFloat(SAVED_RATING, mRatingBar.getRating());
         outState.putInt(SAVED_FOOD_CORNER_TYPE, mFoodCornerSpinner.getSelectedItemPosition());
         outState.putString(SAVED_COMMENT, mCommentEditText.getText().toString());
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        Toast.makeText(this, "length : " + charSequence.length(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
     }
 }

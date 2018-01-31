@@ -41,12 +41,16 @@ public class FoodReviewHolder extends RecyclerView.ViewHolder {
         Resources res = mContext.getResources();
         String[] cornerTypeStrings = res.getStringArray(R.array.food_corner_list);
         mFoodCornerTypeTextView.setText(cornerTypeStrings[review.mCornerType]);
+        mTimeTextView.setText(getTimeText(review.mDate));
+        mCommentTextView.setText(review.mComment);
+    }
 
-        long diff = new Date().getTime() - review.mDate;
+    private String getTimeText(long pastTime){
+        long diff = new Date().getTime() - pastTime;
         diff /= 1000;
         long hour = diff / 3600;
         long minute = diff / 60;
-        String timeText = "";
+        String timeText;
         if(minute == 0) {
             timeText = "방금 전";
         } else if(hour == 0){
@@ -56,10 +60,8 @@ public class FoodReviewHolder extends RecyclerView.ViewHolder {
         } else {
             DateFormat dateFormat = new SimpleDateFormat("h:mm a");
             dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-            timeText = dateFormat.format(review.mDate);
+            timeText = dateFormat.format(pastTime);
         }
-
-        mTimeTextView.setText(timeText);
-        mCommentTextView.setText(review.mComment);
+        return timeText;
     }
 }
