@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -41,9 +42,24 @@ public class FoodReviewHolder extends RecyclerView.ViewHolder {
         String[] cornerTypeStrings = res.getStringArray(R.array.food_corner_list);
         mFoodCornerTypeTextView.setText(cornerTypeStrings[review.mCornerType]);
 
-        DateFormat dateFormat = new SimpleDateFormat("h:mm a");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        mTimeTextView.setText(dateFormat.format(review.mDate));
+        long diff = new Date().getTime() - review.mDate;
+        diff /= 1000;
+        long hour = diff / 3600;
+        long minute = diff / 60;
+        String timeText = "";
+        if(minute == 0) {
+            timeText = "방금 전";
+        } else if(hour == 0){
+            timeText = "" + minute + "분 전";
+        } else if(hour <= 3){
+            timeText = "" + hour + "시간 전";
+        } else {
+            DateFormat dateFormat = new SimpleDateFormat("h:mm a");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            timeText = dateFormat.format(review.mDate);
+        }
+
+        mTimeTextView.setText(timeText);
         mCommentTextView.setText(review.mComment);
     }
 }
