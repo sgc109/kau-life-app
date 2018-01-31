@@ -3,41 +3,68 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RatingBar
-            android:id="@+id/food_review_write_rating_bar"
-            android:progressTint="@color/yellow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <Spinner
-            android:id="@+id/food_review_write_spinner"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        </Spinner>
+            <RatingBar
+                android:textAlignment="center"
+                android:id="@+id/food_review_write_rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:progressTint="@color/yellow"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Spinner
+                android:id="@+id/food_review_write_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="4dp"/>
+        </FrameLayout>
+
     </LinearLayout>
+
     <EditText
+        android:maxLength="10"
         android:id="@+id/food_review_write_comment_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"/>
+
     <LinearLayout
-        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:gravity="center"
+        android:padding="16dp">
+
         <Button
             android:id="@+id/food_review_write_cancel_button"
-            android:text="@string/cancel_button_string"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/cancel_button_string"/>
+
         <Button
             android:id="@+id/food_review_write_submit_button"
-            android:text="@string/submit_button_string"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/submit_button_string"/>
     </LinearLayout>
 </LinearLayout>
+
