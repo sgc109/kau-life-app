@@ -110,5 +110,6 @@
         android:backgroundTint="@color/colorPrimary"
         android:onClick="onClickFab"
         android:src="@drawable/ic_new_review"
-        android:tint="@color/black"/>
+        android:tint="@color/white"
+        />
 </RelativeLayout>
