@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau;
 
 import android.app.Activity;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -14,16 +15,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -45,7 +49,7 @@ import butterknife.BindView;
  * Created by sgc109 on 2018-01-27.
  */
 
-public class FoodReviewListActivity extends Activity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class FoodReviewListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     private final static String EXTRA_RESTAURANT_TYPE = "extra.restaurant_type";
     private final String SAVED_ORDERED_BY_RATING_ASC = "saved_order_by_rating_asc";
     private final String SAVED_ORDERED_BY_TIME_ASC = "saved_order_by_time_asc";
@@ -74,6 +78,8 @@ public class FoodReviewListActivity extends Activity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_list);
+
+        ((AppCompatActivity)this).getSupportActionBar().setTitle(R.string.food_review_title);
 
         if (savedInstanceState != null) {
             mFilteredCornerType = savedInstanceState.getInt(SAVED_FILTERED_CORNER_TYPE);
@@ -232,25 +238,5 @@ public class FoodReviewListActivity extends Activity implements AdapterView.OnIt
                 break;
             default:
         }
-    }
-    public static void buttonEffect(View button){
-        button.setOnTouchListener(new OnTouchListener() {
-
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-                        v.getBackground().setColorFilter(0xe0f47521,PorterDuff.Mode.SRC_ATOP);
-                        v.invalidate();
-                        break;
-                    }
-                    case MotionEvent.ACTION_UP: {
-                        v.getBackground().clearColorFilter();
-                        v.invalidate();
-                        break;
-                    }
-                }
-                return false;
-            }
-        });
     }
 }

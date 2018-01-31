@@ -7,9 +7,12 @@
     <ImageButton
         android:tint="@color/black"
         android:src="@drawable/ic_back_arrow"
-        android:background="@color/colorPrimary"
+        android:background="?android:attr/selectableItemBackground"
         android:id="@+id/menu_bar_food_review_list_button"
         android:layout_width="48dp"
         android:layout_height="48dp"/>
 
 </LinearLayout>
+
+
+<!--안쓰이는데 일단 백업(타이틀 수정 때문에 커스텀 툴바 만들려다가 안만들어도 된다는걸알게돼서)-->
