@@ -13,43 +13,45 @@
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp">
 
             <RatingBar
-                android:textAlignment="center"
                 android:id="@+id/food_review_write_rating_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:progressTint="@color/yellow"/>
+                android:progressTint="@color/yellow"
+                android:textAlignment="center"/>
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp">
 
             <Spinner
                 android:id="@+id/food_review_write_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="4dp"/>
+                android:layout_gravity="center"/>
         </FrameLayout>
 
     </LinearLayout>
 
     <EditText
-        android:maxLength="10"
         android:id="@+id/food_review_write_comment_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"/>
+        android:layout_margin="8dp"
+        android:maxLength="@integer/food_review_write_text_limit"
+        android:inputType="text"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:padding="16dp">
 
         <Button
