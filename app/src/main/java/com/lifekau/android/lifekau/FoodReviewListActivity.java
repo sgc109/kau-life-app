@@ -8,9 +8,11 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,6 +65,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
     private RecyclerView mRecyclerView;
     private TextView mEmptyListMessage;
     private LinearLayout mProgressBar;
+    private ActionBar mActionBar;
     private int mFilteredCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
@@ -79,7 +82,11 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_list);
 
-        ((AppCompatActivity)this).getSupportActionBar().setTitle(R.string.food_review_title);
+        mActionBar = ((AppCompatActivity)this).getSupportActionBar();
+//        mActionBar.setTitle(Html.fromHtml("<font color='#ffffff'>" + getString(R.string.food_review_title) + "</font>"));
+        mActionBar.setTitle(R.string.food_review_title);
+//        mActionBar.sz
+
 
         if (savedInstanceState != null) {
             mFilteredCornerType = savedInstanceState.getInt(SAVED_FILTERED_CORNER_TYPE);
