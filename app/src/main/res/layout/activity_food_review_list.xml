@@ -10,14 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <FrameLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <include
-                android:id=""
-                layout="@layout/menu_bar_activity_food_review_list"/>
-        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/food_review_list_button_bar_linear_layout"
