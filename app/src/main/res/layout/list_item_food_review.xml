@@ -12,11 +12,13 @@
         android:layout_height="wrap_content"
         android:isIndicator="true"
         android:numStars="5"
-        android:padding="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:progressTint="@color/colorPrimaryDark"
         android:stepSize="0.1"/>
 
     <TextView
+        android:hint="코너 A"
         android:id="@+id/list_item_food_corner_type_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
