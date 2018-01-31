@@ -12,9 +12,10 @@
         android:layout_height="wrap_content"
         android:isIndicator="true"
         android:numStars="5"
+        android:rating="5"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:progressTint="@color/colorPrimaryDark"
+        android:progressTint="@color/yellow"
         android:stepSize="0.1"/>
 
     <TextView
