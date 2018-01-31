@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -121,7 +123,11 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
     }
 
     @Override
-    public void afterTextChanged(Editable editable) {
-
+    public void afterTextChanged(Editable str) {
+        for(int i = str.length(); i > 0; i--) {
+            if(str.subSequence(i - 1, i).toString().equals("\n")) {
+                str.replace(i - 1, i, "");
+            }
+        }
     }
 }

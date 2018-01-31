@@ -44,7 +44,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:maxLength="@integer/food_review_write_text_limit"
-        android:inputType="text"
         />
 
     <LinearLayout
