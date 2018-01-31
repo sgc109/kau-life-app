@@ -1,54 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/food_review_list_linear_layout"
+        android:id="@+id/food_review_list_button_bar_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         android:orientation="horizontal"
         >
 
-        <Spinner
-            android:id="@+id/food_review_list_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center">
 
-        <Button
-            android:id="@+id/order_by_time_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/food_review_order_by_time_string"/>
+            <Spinner
+                android:id="@+id/food_review_list_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp"
+                android:gravity="center"
+                android:textAlignment="center"/>
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/order_by_rating_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/food_review_order_by_rating_string"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:gravity="center">
 
+            <Button
+                android:id="@+id/order_by_time_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/food_review_order_by_time_string"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/order_by_rating_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/food_review_order_by_rating_string"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/food_review_list_empty_list_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/food_review_list_button_bar_linear_layout"
+        android:gravity="center_horizontal">
 
-    <ProgressBar
-        android:id="@+id/indeterminateBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/food_review_recycler_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/food_review_list_linear_layout"
-        android:clipToPadding="false"
-        android:paddingBottom="48dp"/>
+        <TextView
+            android:id="@+id/food_review_list_empty_list_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/food_review_recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingBottom="48dp"/>
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/food_review_list_fab"
@@ -58,5 +91,6 @@
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:onClick="onClickFab"
-        android:src="@drawable/ic_new_review"/>
+        android:src="@drawable/ic_new_review"
+        android:tint="@color/black"/>
 </RelativeLayout>
