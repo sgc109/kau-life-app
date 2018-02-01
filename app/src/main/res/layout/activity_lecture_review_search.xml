@@ -6,5 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.lifekau.android.lifekau.LectureReviewSearchActivity">
-
+<AutoCompleteTextView
+    android:layout_margin="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
 </android.support.constraint.ConstraintLayout>
