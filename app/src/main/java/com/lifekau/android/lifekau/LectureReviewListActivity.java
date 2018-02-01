@@ -6,11 +6,20 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class LectureReviewListActivity extends AppCompatActivity {
@@ -18,6 +27,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
     private String mLectureName;
     private ActionBar mActionBar;
     private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mRecyclerAdapter;
     private TextView mLectureNameTextView;
     List<LectureReview> mLectureReviews;
 
@@ -42,23 +52,43 @@ public class LectureReviewListActivity extends AppCompatActivity {
         mLectureNameTextView = (TextView)findViewById(R.id.lecture_review_list_lecture_text_view);
         mLectureNameTextView.setText(mLectureName);
 
-        mRecyclerView = (RecyclerView)findViewById(R.id.lecture_review_recycler_view);
-        mRecyclerView.setAdapter(new RecyclerView.Adapter() {
+        mRecyclerAdapter = new RecyclerView.Adapter<LectureReviewHolder>() {
             @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return null;
+            public LectureReviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_lecture_review, parent, false);
+                return new LectureReviewHolder(view);
             }
 
             @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+            public void onBindViewHolder(LectureReviewHolder holder, int position) {
+                holder.bindReview(mLectureReviews.get(position));
             }
 
             @Override
             public int getItemCount() {
-                return 0;
+                return mLectureReviews.size();
+            }
+        };
+        mRecyclerView = (RecyclerView)findViewById(R.id.lecture_review_recycler_view);
+        mRecyclerView.setAdapter(mRecyclerAdapter);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/Lecture_reviews").child(mLectureName);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<LectureReview> newLectureReviews = new ArrayList<>();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    newLectureReviews.add(snapshot.getValue(LectureReview.class));
+                }
+                mLectureReviews = newLectureReviews;
+                mRecyclerAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
-
     }
 }

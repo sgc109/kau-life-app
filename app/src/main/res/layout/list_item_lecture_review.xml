@@ -3,7 +3,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<RatingBar
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+
+    <RatingBar
+        android:id="@+id/list_item_lecture_review_rating_bar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:rating="5"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:progressTint="@color/yellow"
+        android:stepSize="0.1"/>
+
+
+    <TextView
+        android:text="1분 전"
+        android:id="@+id/list_item_lecture_time_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:padding="4dp"/>
+
+    <TextView
+        android:id="@+id/list_item_lecture_comment_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_item_food_review_rating_bar"
+        android:padding="4dp"/>
 </android.support.constraint.ConstraintLayout>

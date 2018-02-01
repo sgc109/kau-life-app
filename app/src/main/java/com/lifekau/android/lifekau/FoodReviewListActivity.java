@@ -211,7 +211,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
         // 특정 코너로 필터링
         mFilteredCornerType = position;
         updateUI();
-    }
+}
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {

@@ -8,7 +8,7 @@ import android.widget.RatingBar;
  * Created by sgc109 on 2018-02-01.
  */
 
-public class LectureReviewHolder extends RecyclerView.ViewHolder {
+public class LectureReviewHolder extends ReviewHolder {
     public LectureReviewHolder(View itemView) {
         super(itemView);
     }
