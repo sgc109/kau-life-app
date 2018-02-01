@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/reading_room_detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="20dp"
+        android:textAlignment="center"
+        android:text="제1열람실A 좌석 정보"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/reading_room_detail_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/reading_room_detail_title"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+    </android.support.constraint.ConstraintLayout>
+</RelativeLayout>

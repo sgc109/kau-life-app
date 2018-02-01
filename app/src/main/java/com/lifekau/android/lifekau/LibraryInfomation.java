@@ -1,5 +1,7 @@
 package com.lifekau.android.lifekau;
 
+import android.graphics.Point;
+
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +9,7 @@ import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 //TODO: 코드 리팩토링이 필요하다.
 
@@ -14,21 +17,25 @@ public class LibraryInfomation {
 
     private static String[] ENCODE_TYPE = {"EUC-KR", "KSC5601", "X-WINDOWS-949", "ISO-8859-1", "UTF-8"};
     private static int TOTAL_READING_ROOM_NUM = 5;
+    private static int TOTAL_READING_ROOM_SEAT_NUM = 300;
     private static int TOTAL_STDUYING_ROOM_NUM = 6;
+    private static int TOTAL_STDUYING_ROOM_STATUS_NUM = 50;
     private int[] mReadingRoomAvailableSeat;
     private int[] mReadingRoomTotalSeat;
     private String[] mReadingRoomName;
-    private String[] mStudyRoomName;
     private boolean[][] mReadingRoomStatus;
+    private Point[][] mReadingRoomPoint;
+    private String[] mStudyRoomName;
     private boolean[][] mStudyRoomStatus;
 
     LibraryInfomation() {
         mReadingRoomAvailableSeat = new int[TOTAL_READING_ROOM_NUM + 1];
         mReadingRoomTotalSeat = new int[TOTAL_READING_ROOM_NUM + 1];
         mReadingRoomName = new String[TOTAL_READING_ROOM_NUM + 1];
-        mReadingRoomStatus = new boolean[TOTAL_READING_ROOM_NUM + 1][300];
+        mReadingRoomStatus = new boolean[TOTAL_READING_ROOM_NUM + 1][TOTAL_READING_ROOM_SEAT_NUM];
+        mReadingRoomPoint = new Point[TOTAL_READING_ROOM_NUM + 1][TOTAL_READING_ROOM_SEAT_NUM];
         mStudyRoomName = new String[TOTAL_STDUYING_ROOM_NUM + 1];
-        mStudyRoomStatus = new boolean[TOTAL_STDUYING_ROOM_NUM + 1][50];
+        mStudyRoomStatus = new boolean[TOTAL_STDUYING_ROOM_NUM + 1][TOTAL_STDUYING_ROOM_STATUS_NUM];
     }
 
     public Integer getReadingRoomStatus() {
@@ -82,16 +89,32 @@ public class LibraryInfomation {
                     .cookies(cookies)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharset(res.charset())));
-            List<String> avail = doc.select("div").select("td").eachAttr("bgcolor");
-            List<String> seatNum = doc.select("div").select("td").select("font").eachText();
+            Elements avail = doc.select("div").select("td");
+            Elements seatNum = doc.select("div").select("td").select("font");
+            Elements style = doc.select("div");
             for(int i = 0; i < avail.size(); i++){
-                mReadingRoomStatus[index][Integer.parseInt(seatNum.get(i))] = avail.get(i).equals("red");
+                int num = Integer.parseInt(seatNum.get(i).text());
+                mReadingRoomStatus[index][num] = avail.get(i).text().equals("red");
+                String[] strings = style.get(i + 2).attr("style").split("\\s+");
+                String string = strings[1].split(":")[1].split("px")[0];
+                mReadingRoomPoint[index][num] = new Point();
+                mReadingRoomPoint[index][num].x = (int)(Integer.parseInt(string) * 1.1);
+                string = strings[2].split(":")[1].split("px")[0];
+                mReadingRoomPoint[index][num].y = (int)(Integer.parseInt(string) * 2);
             }
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
         return 0;
+    }
+
+    public Point getReadingRoomSeatPoint(Integer roomNum, Integer seatNum){
+        if(roomNum > TOTAL_READING_ROOM_NUM) return null;
+        if(roomNum <= 0) return null;
+        if(seatNum > TOTAL_READING_ROOM_SEAT_NUM) return null;
+        if(seatNum <= 0) return null;
+        return mReadingRoomPoint[roomNum][seatNum];
     }
 
     public String getReadingRoomName(Integer index) {
@@ -162,7 +185,7 @@ public class LibraryInfomation {
                     .method(Connection.Method.POST)
                     .execute();
             String[] strings = new String(res.bodyAsBytes(), getMatchingCharset(res.charset())).split("\u0011");
-            for(int i = 3; i < strings.length; i++){
+            for(int i = 3; i < strings.length; i++) {
                 String[] infomation = strings[i].split("\\^");
                 mStudyRoomStatus[index][Integer.parseInt(infomation[0])] = infomation[2].equalsIgnoreCase("+");
             }
