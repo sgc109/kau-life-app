@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class LectureReviewSearchActivity extends AppCompatActivity {
 
     private AutoCompleteTextView mAutoCompleteSearchBar;
@@ -22,9 +26,9 @@ public class LectureReviewSearchActivity extends AppCompatActivity {
 
         mAutoCompleteSearchBar = (AutoCompleteTextView)findViewById(R.id.lecture_review_search_bar);
 
-        String[] strs = {"나다라", "나다", "나", "다"};
+        List<String> list = new ArrayList<>(Arrays.asList("가 나", "가나", "가나다"));
         int layoutItemId = android.R.layout.simple_dropdown_item_1line;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, layoutItemId, strs);
+        LectureSearchAdapter adapter = new LectureSearchAdapter(this, layoutItemId, list);
         mAutoCompleteSearchBar.setAdapter(adapter);
     }
 }
