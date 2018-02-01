@@ -112,7 +112,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:backgroundTint="@color/colorPrimary"
-        android:onClick="onClickFab"
+        android:onClick="onClickWriteFoodReviewFab"
         android:src="@drawable/ic_new_review"
         android:tint="@color/white"
         />

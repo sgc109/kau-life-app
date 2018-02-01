@@ -1,8 +1,5 @@
 package com.lifekau.android.lifekau;
 
-import android.app.Activity;
-import android.graphics.PorterDuff;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -14,40 +11,21 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
-import java.lang.ref.Reference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Inflater;
-
-import butterknife.BindView;
 
 /**
  * Created by sgc109 on 2018-01-27.
@@ -195,11 +173,11 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
         mRecyclerAdapter.stopListening();
     }
 
-    public void onClickFab(View view) {
-        writeReview();
+    public void onClickWriteFoodReviewFab(View view) {
+        writeFoodReview();
     }
 
-    public void writeReview() {
+    public void writeFoodReview() {
         Intent intent = FoodReviewWriteActivity.newIntent(this);
         ActivityOptionsCompat options =
                 ActivityOptionsCompat.makeCustomAnimation(this, R.anim.right_to_left_slide_in, R.anim.right_to_left_slide_out);

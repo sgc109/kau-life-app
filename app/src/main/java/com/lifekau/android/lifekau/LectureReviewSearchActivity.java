@@ -44,6 +44,7 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
 
         if (mLectureList == null) mLectureList = new ArrayList<>();
 
+        updateLectureList();
     }
 
     @Override
@@ -86,6 +87,5 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
     protected void onStart() {
         super.onStart();
         mAutoCompleteSearchBar.setText("");
-        updateLectureList();
     }
 }

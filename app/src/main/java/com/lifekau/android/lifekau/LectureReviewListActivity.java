@@ -87,8 +87,20 @@ public class LectureReviewListActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                
             }
         });
+    }
+    public void onClickWriteLectureReviewFab(View view){
+        writeLectureReview();
+    }
+    private void writeLectureReview(){
+        Intent intent = LectureReviewWriteActivity.newIntent(this, mLectureName);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 }
