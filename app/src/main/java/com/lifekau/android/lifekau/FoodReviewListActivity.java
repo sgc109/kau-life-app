@@ -141,7 +141,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements Adapter
 
             @Override
             protected void onBindViewHolder(@NonNull FoodReviewHolder holder, int position, @NonNull FoodReview foodReview) {
-                holder.bindFoodReview(foodReview);
+                holder.bindReview(foodReview);
             }
 
             @Override

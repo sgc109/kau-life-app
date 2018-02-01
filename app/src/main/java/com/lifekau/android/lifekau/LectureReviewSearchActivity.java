@@ -2,6 +2,7 @@ package com.lifekau.android.lifekau;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import java.util.List;
 public class LectureReviewSearchActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private AutoCompleteTextView mAutoCompleteSearchBar;
+    private ActionBar mActionBar;
     private List<String> mLectureList;
 
     public static Intent newIntent(Context context) {
@@ -36,9 +38,11 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_review_search);
 
+        mActionBar = ((AppCompatActivity) this).getSupportActionBar();
+        mActionBar.setTitle(R.string.lecture_review_title);
         mAutoCompleteSearchBar = (AutoCompleteTextView) findViewById(R.id.lecture_review_search_bar);
 
-        if(mLectureList == null) mLectureList = new ArrayList<>();
+        if (mLectureList == null) mLectureList = new ArrayList<>();
 
     }
 
@@ -49,13 +53,13 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         startActivity(intent);
     }
 
-    void updateLectureList(){
+    void updateLectureList() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Lectures");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> newLectureList = new ArrayList<>();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String lecture = snapshot.getValue(String.class);
                     newLectureList.add(lecture);
                 }
@@ -70,7 +74,7 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         });
     }
 
-    public void updateAutoComplete(){
+    public void updateAutoComplete() {
         int layoutItemId = android.R.layout.simple_dropdown_item_1line;
         LectureSearchAdapter adapter = new LectureSearchAdapter(this, layoutItemId, mLectureList);
         mAutoCompleteSearchBar.setAdapter(adapter);
