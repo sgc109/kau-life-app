@@ -11,6 +11,8 @@ import android.widget.RatingBar;
 
 public class LectureReviewWriteActivity extends AppCompatActivity {
     public static final String EXTRA_LECTURE_NAME = "extra_lecture_name";
+    private final String SAVED_LECTURE_NAME = "saved_lecture_name";
+
     private String mLectureName;
     private RatingBar mRatingBar;
     private EditText mCommentEditText;
@@ -27,6 +29,16 @@ public class LectureReviewWriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_review_write);
 
+        if(savedInstanceState != null){
+            mLectureName = savedInstanceState.getString(SAVED_LECTURE_NAME);
+        }
+
         mLectureName = getIntent().getStringExtra(EXTRA_LECTURE_NAME);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVED_LECTURE_NAME, mLectureName);
     }
 }

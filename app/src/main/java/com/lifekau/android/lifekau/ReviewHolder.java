@@ -31,7 +31,6 @@ public class ReviewHolder extends RecyclerView.ViewHolder{
 
     public void bindReview(Review review) {
         mRatingBar.setRating(review.mRating);
-        Resources res = mContext.getResources();
         mTimeTextView.setText(getTimeText(review.mDate));
         mCommentTextView.setText(review.mComment);
     }
