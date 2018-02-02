@@ -2,10 +2,13 @@ package com.lifekau.android.lifekau;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,13 +61,16 @@ public class LectureReviewListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mLectureName = intent.getStringExtra(EXTRA_LECTURE_NAME);
 
+        if(mLectureReviews == null){
+            mLectureReviews = new ArrayList<>();
+        }
         mActionBar = ((AppCompatActivity) this).getSupportActionBar();
         mActionBar.setTitle(R.string.lecture_review_title);
 
         mCntReviewsTextView = (TextView)findViewById(R.id.lecture_review_number_of_reviews_text_view);
         mAvgRatingTextView = (TextView)findViewById(R.id.lecture_review_average_rating_text_view);
         mRatingBar = (RatingBar)findViewById(R.id.lecture_review_list_rating_bar);
-        mRatingBar.getProgressDrawable().setColorFilter();
+
         mLectureNameTextView = (TextView) findViewById(R.id.lecture_review_list_lecture_text_view);
         mLectureNameTextView.setText(mLectureName);
 
@@ -88,6 +94,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
         };
         mRecyclerView = (RecyclerView) findViewById(R.id.lecture_review_recycler_view);
         mRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/Lecture_reviews").child(mLectureName);
         ref.addValueEventListener(new ValueEventListener() {

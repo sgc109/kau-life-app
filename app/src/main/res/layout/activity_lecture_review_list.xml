@@ -34,7 +34,7 @@
                 android:layout_gravity="center"
                 android:isIndicator="true"
                 android:progressTint="@color/yellow"
-                android:rating="3"/>
+                android:rating="0"/>
 
             <TextView
                 android:id="@+id/lecture_review_average_rating_text_view"

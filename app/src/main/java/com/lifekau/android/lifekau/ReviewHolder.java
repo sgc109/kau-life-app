@@ -16,17 +16,13 @@ import java.util.TimeZone;
  * Created by sgc109 on 2018-02-01.
  */
 
-public class ReviewHolder extends RecyclerView.ViewHolder{
-    private RatingBar mRatingBar;
-    private TextView mTimeTextView;
-    private TextView mCommentTextView;
+public abstract class ReviewHolder extends RecyclerView.ViewHolder{
+    protected RatingBar mRatingBar;
+    protected TextView mTimeTextView;
+    protected TextView mCommentTextView;
     protected Context mContext;
     public ReviewHolder(View itemView) {
         super(itemView);
-        mRatingBar = (RatingBar) itemView.findViewById(R.id.list_item_food_review_rating_bar);
-        mTimeTextView = (TextView) itemView.findViewById(R.id.list_item_food_time_text_view);
-        mCommentTextView = (TextView) itemView.findViewById(R.id.list_item_food_comment_text_view);
-        mContext = itemView.getContext();
     }
 
     public void bindReview(Review review) {

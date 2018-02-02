@@ -79,12 +79,12 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
     }
     public void insertReviewToDB(float rating, int cornerId, String comment){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("Food_reviews");
+        DatabaseReference ref = database.getReference(getString(R.string.firebase_database_food_reviews));
         FoodReview review = new FoodReview(rating, cornerId, comment);
-        ref.child("Corner " + (cornerId + 1))
+        ref.child(String.format(getString(R.string.firebase_database_food_review_corner_id), cornerId + 1))
                 .push()
                 .setValue(review);
-        ref.child("All")
+        ref.child(getString(R.string.firebase_database_food_review_corner_all))
                 .push()
                 .setValue(review);
     }
