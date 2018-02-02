@@ -3,64 +3,71 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/selectRoomLinearLayout">
-        <Button
-            android:id="@+id/showReadingRoomBtn"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:text="열람실"
-            />
-        <Button
-            android:id="@+id/showStudyRoomBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:text="스터디 룸" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/selectRoomLinearLayout"
-        android:orientation="vertical">
-        <Button
-            android:id="@+id/readingRoom1_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="제1열람실A" />
-        <Button
-            android:id="@+id/readingRoom2_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="제1열람실B" />
-        <Button
-            android:id="@+id/readingRoom3_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="제2열람실" />
-        <Button
-            android:id="@+id/readingRoom4_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="제3열람실" />
-        <Button
-            android:id="@+id/readingRoom5_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="제5열람실" />
-    </LinearLayout>
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/select_room_linear_layout">
+            <Button
+                android:id="@+id/show_reading_room_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:text="열람실"
+                />
+            <Button
+                android:id="@+id/show_study_room_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:text="스터디 룸" />
+        </LinearLayout>
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/library_infomation_swipe_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/select_room_linear_layout"
+                    android:orientation="vertical">
+                    <Button
+                        android:id="@+id/reading_room_01_button"
+                        android:layout_marginTop="70dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="제1열람실A" />
+                    <Button
+                        android:id="@+id/reading_room_02_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="제1열람실B" />
+                    <Button
+                        android:id="@+id/reading_room_03_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="제2열람실" />
+                    <Button
+                        android:id="@+id/reading_room_04_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="제3열람실" />
+                    <Button
+                        android:id="@+id/reading_room_05_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="제5열람실" />
+                </LinearLayout>
+            </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

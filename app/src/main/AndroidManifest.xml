@@ -17,6 +17,8 @@
         </activity>
         <activity android:name=".LibraryInfomationActivity">
         </activity>
+        <activity android:name=".ReadingRoomDetailActivity">
+        </activity>
     </application>
 
 </manifest>
