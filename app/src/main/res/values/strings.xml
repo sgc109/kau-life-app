@@ -20,4 +20,6 @@
     <string name="firebase_database_food_reviews">Food_reviews</string>
     <string name="firebase_database_food_review_corner_all">All</string>
     <string name="firebase_database_food_review_corner_id">Corner %1$d</string>
+    <string name="review_write_success_message">리뷰가 성공적으로 게시되었습니다!</string>
+    <string name="new_review_message">새로운 리뷰가 올라왔습니다!</string>
 </resources>
