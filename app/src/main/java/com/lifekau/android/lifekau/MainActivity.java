@@ -1,12 +1,20 @@
 package com.lifekau.android.lifekau;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reading_room_detail);
         layout = (ConstraintLayout)findViewById(R.id.reading_room_detail_layout);
         ReadingRoomDetailAsyncTask readingRoomDetailAsyncTask = new ReadingRoomDetailAsyncTask();
-        readingRoomDetailAsyncTask.execute(2);
+        readingRoomDetailAsyncTask.execute(1);
 //        Intent intent = new Intent(MainActivity.this, LibraryInfomationActivity.class);
 //        startActivity(intent);
 //        finish();
@@ -60,15 +68,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void registerTextViewOnLayout(Integer roomNum, Integer seatStartNum, Integer seatEndNum){
+        Bitmap emptySeatBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_empty_seat);
+        Bitmap usedSeatBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_used_seat);
         for(int i = seatStartNum; i <= seatEndNum; i++){
             Point point = libInfo.getReadingRoomSeatPoint(roomNum, i);
-            TextView textView = new TextView(getApplicationContext());
-            textView.setText(String.valueOf(i));
-            textView.setWidth(60);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
-            textView.setX(point.x);
-            textView.setY(point.y);
-            layout.addView(textView);
+            ImageView imageView = new ImageView(getApplicationContext());
+            imageView.setX(point.x);
+            imageView.setY(point.y);
+            Bitmap bitmap = libInfo.getReadingRoomDetailStatus(roomNum, i) ? emptySeatBitmap.createScaledBitmap(emptySeatBitmap, 60, 60, true) : usedSeatBitmap.createScaledBitmap(usedSeatBitmap, 60, 60, true);
+            Paint paint = new Paint();
+            paint.setStyle(Paint.Style.FILL_AND_STROKE);
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(18);
+            paint.setTextAlign(Paint.Align.CENTER);
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawText(String.valueOf(i),bitmap.getWidth()/2 , bitmap.getHeight()/2, paint);
+            imageView.setImageBitmap(bitmap);
+            layout.addView(imageView);
         }
     }
 }

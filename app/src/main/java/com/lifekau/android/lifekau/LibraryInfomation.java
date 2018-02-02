@@ -23,7 +23,7 @@ public class LibraryInfomation {
     private int[] mReadingRoomAvailableSeat;
     private int[] mReadingRoomTotalSeat;
     private String[] mReadingRoomName;
-    private boolean[][] mReadingRoomStatus;
+    private boolean[][] mReadingRoomDetailStatus;
     private Point[][] mReadingRoomPoint;
     private String[] mStudyRoomName;
     private boolean[][] mStudyRoomStatus;
@@ -32,7 +32,7 @@ public class LibraryInfomation {
         mReadingRoomAvailableSeat = new int[TOTAL_READING_ROOM_NUM + 1];
         mReadingRoomTotalSeat = new int[TOTAL_READING_ROOM_NUM + 1];
         mReadingRoomName = new String[TOTAL_READING_ROOM_NUM + 1];
-        mReadingRoomStatus = new boolean[TOTAL_READING_ROOM_NUM + 1][TOTAL_READING_ROOM_SEAT_NUM];
+        mReadingRoomDetailStatus = new boolean[TOTAL_READING_ROOM_NUM + 1][TOTAL_READING_ROOM_SEAT_NUM];
         mReadingRoomPoint = new Point[TOTAL_READING_ROOM_NUM + 1][TOTAL_READING_ROOM_SEAT_NUM];
         mStudyRoomName = new String[TOTAL_STDUYING_ROOM_NUM + 1];
         mStudyRoomStatus = new boolean[TOTAL_STDUYING_ROOM_NUM + 1][TOTAL_STDUYING_ROOM_STATUS_NUM];
@@ -94,7 +94,7 @@ public class LibraryInfomation {
             Elements style = doc.select("div");
             for(int i = 0; i < avail.size(); i++){
                 int num = Integer.parseInt(seatNum.get(i).text());
-                mReadingRoomStatus[index][num] = avail.get(i).text().equals("red");
+                mReadingRoomDetailStatus[index][num] = avail.get(i).attr("bgcolor").equals("gray");
                 String[] strings = style.get(i + 2).attr("style").split("\\s+");
                 String string = strings[1].split(":")[1].split("px")[0];
                 mReadingRoomPoint[index][num] = new Point();
@@ -127,6 +127,14 @@ public class LibraryInfomation {
         if(index > TOTAL_READING_ROOM_NUM) return -1;
         if(index <= 0) return -1;
         return mReadingRoomAvailableSeat[index];
+    }
+
+    public Boolean getReadingRoomDetailStatus(Integer roomNum, Integer seatNum){
+        if(roomNum > TOTAL_READING_ROOM_NUM) return null;
+        if(roomNum <= 0) return null;
+        if(seatNum > TOTAL_READING_ROOM_SEAT_NUM) return null;
+        if(seatNum <= 0) return null;
+        return mReadingRoomDetailStatus[roomNum][seatNum];
     }
 
     public Integer getReadingRoomUsedSeat(Integer index){
