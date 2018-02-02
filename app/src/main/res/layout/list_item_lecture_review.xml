@@ -6,41 +6,33 @@
     android:layout_margin="4dp">
 
     <RatingBar
-        android:id="@+id/list_item_food_review_rating_bar"
+        android:id="@+id/list_item_lecture_review_rating_bar"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:isIndicator="true"
         android:numStars="5"
-        android:rating="5"
-        android:paddingTop="4dp"
         android:paddingBottom="4dp"
+        android:paddingTop="4dp"
         android:progressTint="@color/yellow"
+        android:rating="5"
         android:stepSize="0.1"/>
 
-    <TextView
-        android:hint="코너 A"
-        android:id="@+id/list_item_food_corner_type_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/list_item_food_review_rating_bar"
-        android:layout_toRightOf="@id/list_item_food_review_rating_bar"
-        android:padding="4dp"/>
 
     <TextView
-        android:text="1분 전"
-        android:id="@+id/list_item_food_time_text_view"
+        android:id="@+id/list_item_lecture_time_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:padding="4dp"/>
+        android:padding="4dp"
+        android:text="1분 전"/>
 
     <TextView
-        android:id="@+id/list_item_food_comment_text_view"
+        android:id="@+id/list_item_lecture_comment_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/list_item_food_review_rating_bar"
+        android:layout_below="@id/list_item_lecture_review_rating_bar"
         android:padding="4dp"/>
 </RelativeLayout>

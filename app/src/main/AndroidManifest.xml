@@ -16,18 +16,18 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".LectureReviewSearchActivity">
-        </activity>
-        <activity android:name=".LectureReviewListActivity">
-        </activity>
-        <activity android:name=".LectureReviewWriteActivity">
-        </activity>
         <activity
             android:name=".FoodReviewListActivity"
             android:parentActivityName=".MainActivity"
             >
         </activity>
         <activity android:name=".FoodReviewWriteActivity">
+        </activity>
+        <activity android:name=".LectureReviewSearchActivity">
+        </activity>
+        <activity android:name=".LectureReviewListActivity">
+        </activity>
+        <activity android:name=".LectureReviewWriteActivity">
         </activity>
     </application>
 

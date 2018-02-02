@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,7 +10,8 @@
     <AutoCompleteTextView
         android:id="@+id/lecture_review_search_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_margin="4dp"
+        android:hint="@string/lecture_review_search_bar_hint"
         android:singleLine="true"/>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">LifeKAU</string>
     <string name="food_review_title">학식 리뷰</string>
+    <string name="lecture_review_title">강의 리뷰</string>
     <string name="cancel_button_string">취소</string>
     <string name="submit_button_string">완료</string>
     <string name="food_corner_spinner_item0">모든 코너</string>
@@ -14,4 +15,11 @@
     <string name="food_review_order_by_time_string">시간순</string>
     <string name="food_review_order_by_rating_string">평점순</string>
     <string name="food_review_text_limit_message">최대 %1$d자 까지 입력할 수 있습니다</string>
+    <string name="lecture_review_search_bar_hint">"강의명(교수명)" 으로 검색하세요"</string>
+    <string name="lecture_review_number_of_review_string"> 개의 평가</string>
+    <string name="firebase_database_food_reviews">Food_reviews</string>
+    <string name="firebase_database_food_review_corner_all">All</string>
+    <string name="firebase_database_food_review_corner_id">Corner %1$d</string>
+    <string name="review_write_success_message">리뷰가 성공적으로 게시되었습니다!</string>
+    <string name="new_review_message">새로운 리뷰가 올라왔습니다!</string>
 </resources>
