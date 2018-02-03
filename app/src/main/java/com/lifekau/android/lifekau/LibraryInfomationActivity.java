@@ -17,9 +17,9 @@ import dmax.dialog.SpotsDialog;
 public class LibraryInfomationActivity extends AppCompatActivity {
 
     static LibraryInfomation libInfo = new LibraryInfomation();
-    Button []btn = new Button[6];
-    SpotsDialog progressDialog;
-    SwipeRefreshLayout swipeLayout;
+    Button []mButtonArray = new Button[6];
+    SpotsDialog mProgressDialog;
+    SwipeRefreshLayout mSwipeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +27,8 @@ public class LibraryInfomationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_library_infomation);
         for(int i = 1; i <= 5; i++){
             final int readingRoomNum = i;
-            btn[i] = (Button)findViewById(getResources().getIdentifier("reading_room_0" + String.valueOf(i) + "_button", "id", "com.lifekau.android.lifekau"));
-            btn[i].setOnClickListener(new View.OnClickListener(){
+            mButtonArray[i] = (Button)findViewById(getResources().getIdentifier("reading_room_0" + String.valueOf(i) + "_button", "id", "com.lifekau.android.lifekau"));
+            mButtonArray[i].setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
                     Intent intent = new Intent(LibraryInfomationActivity.this, ReadingRoomDetailActivity.class);
@@ -37,16 +37,16 @@ public class LibraryInfomationActivity extends AppCompatActivity {
                 }
             });
         }
-        progressDialog = new SpotsDialog(this, R.style.Custom);
+        mProgressDialog = new SpotsDialog(this, R.style.Custom);
         ReadingRoomStatusAsyncTask readingRoomStatusAsyncTask = new ReadingRoomStatusAsyncTask();
         readingRoomStatusAsyncTask.execute();
-        swipeLayout = (SwipeRefreshLayout)findViewById(R.id.library_infomation_swipe_layout);
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.library_infomation_swipe_layout);
+        mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 ReadingRoomStatusAsyncTask readingRoomStatusAsyncTask = new ReadingRoomStatusAsyncTask();
                 readingRoomStatusAsyncTask.execute();
-                swipeLayout.setRefreshing(false);
+                mSwipeLayout.setRefreshing(false);
             }
         });
     }
@@ -54,17 +54,17 @@ public class LibraryInfomationActivity extends AppCompatActivity {
     @Override
     protected void onStop(){
         super.onStop();
-        if(progressDialog != null){
-            progressDialog.dismiss();
-            progressDialog = null;
+        if(mProgressDialog != null){
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
         }
     }
 
     @Override
     protected  void onResume(){
         super.onResume();
-        if(progressDialog == null){
-            progressDialog = new SpotsDialog(this, R.style.Custom);
+        if(mProgressDialog == null){
+            mProgressDialog = new SpotsDialog(this, R.style.Custom);
         }
     }
 
@@ -78,21 +78,21 @@ public class LibraryInfomationActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... value){
             super.onProgressUpdate(value);
-            progressDialog.show();
+            mProgressDialog.show();
         }
         @Override
         protected void onPostExecute(Integer result){
             super.onPostExecute(result);
             if(result != -1) {
                 for(int i = 1; i <= 5; i++) {
-                    btn[i].setText(libInfo.getReadingRoomSummary(i));
+                    mButtonArray[i].setText(libInfo.getReadingRoomSummary(i));
                 }
             }
             else{
                 //예외 처리
                 showErrorMessage();
             }
-            progressDialog.hide();
+            mProgressDialog.hide();
         }
     }
 
@@ -106,7 +106,7 @@ public class LibraryInfomationActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... params){
             super.onProgressUpdate(params);
-            progressDialog.show();
+            mProgressDialog.show();
         }
         @Override
         protected void onPostExecute(Integer result){
@@ -117,7 +117,7 @@ public class LibraryInfomationActivity extends AppCompatActivity {
                 //예외 처리
                 showErrorMessage();
             }
-            progressDialog.hide();
+            mProgressDialog.hide();
         }
     }
 
@@ -130,7 +130,7 @@ public class LibraryInfomationActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... params){
             super.onProgressUpdate(params);
-            progressDialog.show();
+            mProgressDialog.show();
         }
         @Override
         protected void onPostExecute(Integer result){
@@ -141,7 +141,7 @@ public class LibraryInfomationActivity extends AppCompatActivity {
                 //예외 처리
                 showErrorMessage();
             }
-            progressDialog.hide();
+            mProgressDialog.hide();
         }
     }
 

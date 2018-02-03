@@ -21,28 +21,28 @@ import dmax.dialog.SpotsDialog;
 public class ReadingRoomDetailActivity extends AppCompatActivity {
 
     static LibraryInfomation libInfo = new LibraryInfomation();
-    TextView readingRoomTitleTextView;
-    ConstraintLayout layout;
-    SpotsDialog progressDialog;
-    SwipeRefreshLayout swipeLayout;
+    TextView mReadingRoomTitleTextView;
+    ConstraintLayout mReadingRoomDetailSeatLayout;
+    SpotsDialog mProgressDialog;
+    SwipeRefreshLayout mSwipeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading_room_detail);
-        readingRoomTitleTextView = (TextView)findViewById(R.id.reading_room_detail_title);
-        layout = (ConstraintLayout)findViewById(R.id.reading_room_detail_seat_layout);
-        progressDialog = new SpotsDialog(this, R.style.Custom);
+        mReadingRoomTitleTextView = (TextView)findViewById(R.id.reading_room_detail_title);
+        mReadingRoomDetailSeatLayout = (ConstraintLayout)findViewById(R.id.reading_room_detail_seat_layout);
+        mProgressDialog = new SpotsDialog(this, R.style.Custom);
         ReadingRoomDetailAsyncTask readingRoomDetailAsyncTask = new ReadingRoomDetailAsyncTask();
         final Intent intent = getIntent();
         readingRoomDetailAsyncTask.execute(intent.getIntExtra("readingRoomNum", 1));
-        swipeLayout = (SwipeRefreshLayout)findViewById(R.id.reading_room_detail_swipe_layout);
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeLayout = (SwipeRefreshLayout)findViewById(R.id.reading_room_detail_swipe_layout);
+        mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 ReadingRoomDetailAsyncTask readingRoomDetailAsyncTask = new ReadingRoomDetailAsyncTask();
                 readingRoomDetailAsyncTask.execute(intent.getIntExtra("readingRoomNum", 1));
-                swipeLayout.setRefreshing(false);
+                mSwipeLayout.setRefreshing(false);
             }
         });
     }
@@ -50,17 +50,17 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
     @Override
     protected void onStop(){
         super.onStop();
-        if(progressDialog != null){
-            progressDialog.dismiss();
-            progressDialog = null;
+        if(mProgressDialog != null){
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
         }
     }
 
     @Override
     protected  void onResume(){
         super.onResume();
-        if(progressDialog == null){
-            progressDialog = new SpotsDialog(this, R.style.Custom);
+        if(mProgressDialog == null){
+            mProgressDialog = new SpotsDialog(this, R.style.Custom);
         }
     }
 
@@ -75,7 +75,7 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... params) {
             super.onProgressUpdate(params);
-            progressDialog.show();
+            mProgressDialog.show();
         }
 
         @Override
@@ -83,32 +83,32 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
             super.onPostExecute(result);
             if (result != -1) {
                 if(result == 1){
-                    readingRoomTitleTextView.setText(libInfo.getReadingRoomName(1));
+                    mReadingRoomTitleTextView.setText(libInfo.getReadingRoomName(1));
                     registerTextViewOnLayout(1, 1, 138);
                     registerTextViewOnLayout(1, 229, 240);
                 }
                 if(result == 2){
-                    readingRoomTitleTextView.setText(libInfo.getReadingRoomName(2));
+                    mReadingRoomTitleTextView.setText(libInfo.getReadingRoomName(2));
                     registerTextViewOnLayout(2, 139, 228);
                     registerTextViewOnLayout(2, 241, 252);
                 }
                 if(result == 3){
-                    readingRoomTitleTextView.setText(libInfo.getReadingRoomName(3));
+                    mReadingRoomTitleTextView.setText(libInfo.getReadingRoomName(3));
                     registerTextViewOnLayout(3, 1, 204);
                 }
                 if(result == 4){
-                    readingRoomTitleTextView.setText(libInfo.getReadingRoomName(4));
+                    mReadingRoomTitleTextView.setText(libInfo.getReadingRoomName(4));
                     registerTextViewOnLayout(4, 1, 204);
                 }
                 if(result == 5){
-                    readingRoomTitleTextView.setText(libInfo.getReadingRoomName(5));
+                    mReadingRoomTitleTextView.setText(libInfo.getReadingRoomName(5));
                     registerTextViewOnLayout(5, 1, 108);
                 }
             } else {
                 //예외 처리
                 showErrorMessage();
             }
-            progressDialog.hide();
+            mProgressDialog.hide();
         }
 
     }
@@ -132,7 +132,7 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
             Canvas canvas = new Canvas(bitmap);
             canvas.drawText(String.valueOf(i),bitmap.getWidth() / 2 , bitmap.getHeight() / 2, paint);
             imageView.setImageBitmap(bitmap);
-            layout.addView(imageView);
+            mReadingRoomDetailSeatLayout.addView(imageView);
         }
     }
 
