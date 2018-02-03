@@ -70,6 +70,8 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mListCntReviews.clear();
+                mListSumReviewRatings.clear();
                 for (DataSnapshot cornerSnapshot : dataSnapshot.getChildren()) {
                     Float sumRating = 0.0f;
                     int cntReviews = 0;
@@ -77,12 +79,10 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
                         cntReviews++;
                         sumRating += reviewSnapshot.getValue(FoodReview.class).mRating;
                     }
-                    mListCntReviews.clear();
                     mListCntReviews.add(cntReviews);
-                    mListSumReviewRatings.clear();
                     mListSumReviewRatings.add(sumRating);
                 }
-                mRecyclerAdapter.notifyDataSetChanged();
+                mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
             }
 
             @Override
@@ -126,7 +126,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if(mRecyclerAdapter != null) {
-            mRecyclerAdapter.notifyDataSetChanged();
+            mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
         }
     }
 }

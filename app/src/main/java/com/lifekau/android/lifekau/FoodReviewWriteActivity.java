@@ -66,7 +66,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertReviewToDB(mRatingBar.getRating(), mFoodCornerType, mCommentEditText.getText().toString()); // 특정 코너
+                insertReviewToDB(mRatingBar.getRating(), mCommentEditText.getText().toString()); // 특정 코너
                 Intent intent = new Intent();
                 // intent.putExtra
                 setResult(RESULT_OK, intent);
@@ -74,14 +74,11 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
             }
         });
     }
-    public void insertReviewToDB(float rating, int cornerId, String comment){
+    public void insertReviewToDB(float rating, String comment){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(getString(R.string.firebase_database_food_reviews));
-        FoodReview review = new FoodReview(rating, cornerId, comment);
-        ref.child(String.format(getString(R.string.firebase_database_food_review_corner_id), cornerId))
-                .push()
-                .setValue(review);
-        ref.child(getString(R.string.firebase_database_food_review_corner_all))
+        FoodReview review = new FoodReview(rating, comment);
+        ref.child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType))
                 .push()
                 .setValue(review);
     }
