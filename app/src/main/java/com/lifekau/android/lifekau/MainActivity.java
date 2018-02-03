@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main_activity_button1:
-                Intent intent1 = FoodReviewListActivity.newIntent(this, FoodReviewListActivity.RESTAURENT_TYPE_STUDENT);
+                Intent intent1 = FoodReviewCornerListActivity.newIntent(this);
                 startActivity(intent1);
                 break;
             case R.id.main_activity_button2:

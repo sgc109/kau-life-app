@@ -22,19 +22,18 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class FoodReviewWriteActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TextWatcher{
-    private final String SAVED_RATING = "saved_rating";
-    private final String SAVED_FOOD_CORNER_TYPE = "saved_food_corner_type";
-    private final String SAVED_COMMENT = "saved_comment";
+public class FoodReviewWriteActivity extends AppCompatActivity implements TextWatcher{
+    private static final String EXTRA_FOOD_CORNER_TYPE = "extra_corner_type";
 
     private Button mSubmitButton;
     private Button mCancelButton;
     private EditText mCommentEditText;
-    private Spinner mFoodCornerSpinner;
     private RatingBar mRatingBar;
+    private int mFoodCornerType;
 
-    public static Intent newIntent(Context packageContext){
+    public static Intent newIntent(Context packageContext, int foodCornerType){
         Intent intent = new Intent(packageContext, FoodReviewWriteActivity.class);
+        intent.putExtra(EXTRA_FOOD_CORNER_TYPE, foodCornerType);
         return intent;
     }
     @Override
@@ -42,11 +41,11 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_write);
 
-        mFoodCornerSpinner = (Spinner)findViewById(R.id.food_review_write_spinner);
+        mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.food_corner_list, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mFoodCornerSpinner.setAdapter(adapter);
 
         mRatingBar = (RatingBar)findViewById(R.id.food_review_write_rating_bar);
         mCommentEditText = (EditText)findViewById(R.id.food_review_write_comment_edit_text);
@@ -56,6 +55,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
             @Override
             public void onClick(View v) {
                 if(mCommentEditText.getText().toString().equals("")){
+                    setResult(RESULT_CANCELED, new Intent());
                     finish();
                 } else {
                     // 작성 중인 거 다 날릴 건지 체크
@@ -66,45 +66,24 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements Adapte
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertReviewToDB(mRatingBar.getRating(), mFoodCornerSpinner.getSelectedItemPosition(), mCommentEditText.getText().toString()); // 특정 코너
+                insertReviewToDB(mRatingBar.getRating(), mFoodCornerType, mCommentEditText.getText().toString()); // 특정 코너
+                Intent intent = new Intent();
+                // intent.putExtra
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
-
-        if(savedInstanceState != null){
-            mRatingBar.setRating(savedInstanceState.getFloat(SAVED_RATING));
-            mFoodCornerSpinner.setSelection(savedInstanceState.getInt(SAVED_FOOD_CORNER_TYPE));
-            mCommentEditText.setText(savedInstanceState.getString(SAVED_COMMENT));
-        }
     }
     public void insertReviewToDB(float rating, int cornerId, String comment){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(getString(R.string.firebase_database_food_reviews));
         FoodReview review = new FoodReview(rating, cornerId, comment);
-        ref.child(String.format(getString(R.string.firebase_database_food_review_corner_id), cornerId + 1))
+        ref.child(String.format(getString(R.string.firebase_database_food_review_corner_id), cornerId))
                 .push()
                 .setValue(review);
         ref.child(getString(R.string.firebase_database_food_review_corner_all))
                 .push()
                 .setValue(review);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putFloat(SAVED_RATING, mRatingBar.getRating());
-        outState.putInt(SAVED_FOOD_CORNER_TYPE, mFoodCornerSpinner.getSelectedItemPosition());
-        outState.putString(SAVED_COMMENT, mCommentEditText.getText().toString());
     }
 
     @Override

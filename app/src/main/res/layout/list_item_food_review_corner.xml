@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/list_item_food_corner_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="4dp"
+        android:text="코너A"
+        android:textSize="18pt"/>
+
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RatingBar
+            android:id="@+id/list_item_food_corner_rating_bar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:max="5"
+            android:progressTint="@color/yellow"
+            android:rating="5.0"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp"/>
+
+        <TextView
+            android:id="@+id/list_item_food_corner_cnt_reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/list_item_food_corner_rating_bar"
+            android:layout_margin="4dp"
+            android:layout_toEndOf="@+id/list_item_food_corner_avg_rating"
+            android:layout_toRightOf="@+id/list_item_food_corner_avg_rating"
+            android:text="3.0 / 5.0"
+            android:textSize="10pt"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/list_item_food_corner_avg_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="13 개의 평가"
+        android:textSize="10pt"/>
+
+
+</LinearLayout>

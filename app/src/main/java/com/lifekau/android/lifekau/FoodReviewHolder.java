@@ -25,7 +25,6 @@ public class FoodReviewHolder extends ReviewHolder {
     private TextView mFoodCornerTypeTextView;
     public FoodReviewHolder(View itemView) {
         super(itemView);
-        mFoodCornerTypeTextView = (TextView) itemView.findViewById(R.id.list_item_food_corner_type_text_view);
         mRatingBar = (RatingBar) itemView.findViewById(R.id.list_item_food_review_rating_bar);
         mTimeTextView = (TextView) itemView.findViewById(R.id.list_item_food_time_text_view);
         mCommentTextView = (TextView) itemView.findViewById(R.id.list_item_food_comment_text_view);
@@ -34,8 +33,5 @@ public class FoodReviewHolder extends ReviewHolder {
 
     public void bindReview(FoodReview review) {
         super.bindReview(review);
-        Resources res = mContext.getResources();
-        String[] cornerTypeStrings = res.getStringArray(R.array.food_corner_list);
-        mFoodCornerTypeTextView.setText(cornerTypeStrings[review.mCornerType]);
     }
 }

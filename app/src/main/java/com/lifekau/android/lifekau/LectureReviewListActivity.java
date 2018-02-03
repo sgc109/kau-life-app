@@ -96,7 +96,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mRecyclerAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/Lecture_reviews").child(mLectureName);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/" + getString(R.string.firebase_database_lecture_reviews)).child(mLectureName);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,7 +110,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
                 }
                 int cntReviews = newLectureReviews.size();
                 float averageRating = cntReviews > 0 ? sumRating / cntReviews : (float)0.0;
-                mCntReviewsTextView.setText("" + cntReviews + getString(R.string.lecture_review_number_of_review_string));
+                mCntReviewsTextView.setText("" + cntReviews + getString(R.string.review_number_of_review_string));
                 mAvgRatingTextView.setText("" + String.format("%.1f", averageRating) + " / 5.0");
                 mRatingBar.setRating(averageRating);
 
