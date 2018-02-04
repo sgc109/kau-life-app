@@ -38,8 +38,8 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_review_search);
 
-        mActionBar = ((AppCompatActivity) this).getSupportActionBar();
-        mActionBar.setTitle(R.string.lecture_review_title);
+//        mActionBar = ((AppCompatActivity) this).getSupportActionBar();
+//        mActionBar.setTitle(R.string.lecture_review_title);
         mAutoCompleteSearchBar = (AutoCompleteTextView) findViewById(R.id.lecture_review_search_bar);
 
         if (mLectureList == null) mLectureList = new ArrayList<>();

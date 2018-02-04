@@ -9,12 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,25 +34,27 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
     private List<Integer> mListCntReviews;
     private List<Float> mListSumReviewRatings;
     private ActionBar mActionBar;
-    public static Intent newIntent(Context context){
+
+    public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, FoodReviewCornerListActivity.class);
         return intent;
     }
+
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_corner_list);
 
-        if(mListCntReviews == null) {
+        if (mListCntReviews == null) {
             mListCntReviews = new ArrayList<>();
         }
-        if(mListSumReviewRatings == null){
+        if (mListSumReviewRatings == null) {
             mListSumReviewRatings = new ArrayList<>();
         }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
 
-        mActionBar = getSupportActionBar();
-        mActionBar.setShowHideAnimationEnabled(true);
         mRecyclerAdapter = new RecyclerView.Adapter<FoodCornerViewHolder>() {
             @Override
             public FoodCornerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -68,24 +72,9 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
                 return getResources().getStringArray(R.array.food_corner_list).length;
             }
         };
-        mRecyclerView = (RecyclerView)findViewById(R.id.food_review_corner_list_recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.food_review_corner_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
-            mRecyclerView.addOnScrollListener(new HidingScrollListener() {
-                @Override
-                public void onHide(){
-                    if(mActionBar != null && mActionBar.isShowing()) {
-                        mActionBar.hide();
-                    }
-                }
-
-                @Override
-                public void onShow() {
-                    if(mActionBar != null && !mActionBar.isShowing()){
-                        mActionBar.show();
-                    }
-                }
-            });
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/" + getString(R.string.firebase_database_food_reviews));
         ref.addValueEventListener(new ValueEventListener() {
@@ -96,7 +85,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
                 for (DataSnapshot cornerSnapshot : dataSnapshot.getChildren()) {
                     Float sumRating = 0.0f;
                     int cntReviews = 0;
-                    for(DataSnapshot reviewSnapshot : cornerSnapshot.getChildren()){
+                    for (DataSnapshot reviewSnapshot : cornerSnapshot.getChildren()) {
                         cntReviews++;
                         sumRating += reviewSnapshot.getValue(FoodReview.class).mRating;
                     }
@@ -112,22 +101,25 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
             }
         });
     }
-    public class FoodCornerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+    public class FoodCornerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private RatingBar mRatingBar;
         private TextView mCornerNameTextView;
         private TextView mAvgRatingTextView;
         private TextView mCntReviewTextView;
         private Context mContext;
+
         public FoodCornerViewHolder(View itemView) {
             super(itemView);
-            mRatingBar = (RatingBar)itemView.findViewById(R.id.list_item_food_corner_rating_bar);
-            mCornerNameTextView = (TextView)itemView.findViewById(R.id.list_item_food_corner_name_text_view);
-            mAvgRatingTextView = (TextView)itemView.findViewById(R.id.list_item_food_corner_avg_rating);
-            mCntReviewTextView = (TextView)itemView.findViewById(R.id.list_item_food_corner_cnt_reviews);
+            mRatingBar = (RatingBar) itemView.findViewById(R.id.list_item_food_corner_rating_bar);
+            mCornerNameTextView = (TextView) itemView.findViewById(R.id.list_item_food_corner_name_text_view);
+            mAvgRatingTextView = (TextView) itemView.findViewById(R.id.list_item_food_corner_avg_rating);
+            mCntReviewTextView = (TextView) itemView.findViewById(R.id.list_item_food_corner_cnt_reviews);
             mContext = itemView.getContext();
             itemView.setOnClickListener(this);
         }
-        public void bind(int position){ // 구현하기
+
+        public void bind(int position) { // 구현하기
             int cntReviews = mListCntReviews.size() > position ? mListCntReviews.get(position) : 0;
             float avgRating = cntReviews > 0 ? mListSumReviewRatings.get(position) / cntReviews : 0;
             mRatingBar.setRating(avgRating);
@@ -146,7 +138,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(mRecyclerAdapter != null) {
+        if (mRecyclerAdapter != null) {
             mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
         }
     }

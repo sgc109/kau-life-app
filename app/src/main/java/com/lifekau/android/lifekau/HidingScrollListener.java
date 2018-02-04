@@ -3,7 +3,7 @@ package com.lifekau.android.lifekau;
 import android.support.v7.widget.RecyclerView;
 
 public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
-    private static final int HIDE_THRESHOLD = 500;
+    private static final int HIDE_THRESHOLD = 800;
     private int scrolledDistance = 0;
     private boolean controlsVisible = true;
 
@@ -22,7 +22,7 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
         }
 
         if((controlsVisible && dy>0) || (!controlsVisible && dy<0)) {
-            scrolledDistance += dy / 2;
+            scrolledDistance += dy * 4;
         }
     }
 

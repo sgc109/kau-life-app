@@ -74,8 +74,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
         
-        mActionBar = ((AppCompatActivity)this).getSupportActionBar();
-        mActionBar.setTitle(R.string.food_review_title);
+//        mActionBar = ((AppCompatActivity)this).getSupportActionBar();
+//        mActionBar.setTitle(R.string.food_review_title);
 
 
 
