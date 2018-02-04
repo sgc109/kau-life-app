@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="@string/menu_1"
+        android:icon="@drawable/ic_chat" />
+
+    <item
+        android:title="@string/menu_2"
+        android:icon="@drawable/ic_half_star" />
+
+    <item
+        android:title="@string/menu_3"
+        android:icon="@drawable/ic_phone_i" />
+
+    <item
+        android:title="@string/menu_4"
+        android:icon="@drawable/ic_seat" />
+
+    <item
+        android:title="@string/menu_5"
+        android:icon="@drawable/ic_dashboard" />
+
+</menu>

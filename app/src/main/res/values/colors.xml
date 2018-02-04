@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#bbdefb</color>
     <color name="colorPrimaryDark">#8aacc8</color>
     <color name="colorAccent">#bbdefb</color>
@@ -7,4 +8,21 @@
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
     <color name="yellow">#fdd835</color>
+
+    <color name="color_tab_1">#5C6D7B</color>
+    <color name="color_tab_2">#5C6D7B</color>
+    <color name="color_tab_3">#5C6D7B</color>
+    <color name="color_tab_4">#5C6D7B</color>
+    <color name="color_tab_5">#5C6D7B</color>
+
+    <color name="color_notification_back">#ffcd33</color>
+    <color name="color_notification_text">#3E4757</color>
+
+    <array name="tab_colors">
+        <item name="tab_1">#5C6D7B</item>
+        <item name="tab_2">#5C6D7B</item>
+        <item name="tab_3">#5C6D7B</item>
+        <item name="tab_4">#5C6D7B</item>
+        <item name="tab_5">#5C6D7B</item>
+    </array>
 </resources>

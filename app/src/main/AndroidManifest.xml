@@ -30,6 +30,8 @@
         </activity>
         <activity android:name=".FoodReviewCornerListActivity">
         </activity>
+        <activity android:name=".HomeActivity">
+        </activity>
     </application>
 
 </manifest>
