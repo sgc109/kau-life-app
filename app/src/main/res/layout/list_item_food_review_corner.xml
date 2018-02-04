@@ -5,8 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:layout_marginTop="12dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:background="#eeeeee"
     android:orientation="vertical">
-
 
     <TextView
         android:id="@+id/list_item_food_corner_name_text_view"

@@ -65,17 +65,19 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_list);
 
+        if (savedInstanceState != null) {
+//            mFoodCornerType = savedInstanceState.getInt(SAVED_FOOD_CORNER_TYPE);
+            mOrderedByTimeAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_TIME_ASC);
+            mOrderedByRatingAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_RATING_ASC);
+        }
+
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
+
         
         mActionBar = ((AppCompatActivity)this).getSupportActionBar();
         mActionBar.setTitle(R.string.food_review_title);
 
 
-        if (savedInstanceState != null) {
-            mFoodCornerType = savedInstanceState.getInt(SAVED_FOOD_CORNER_TYPE);
-            mOrderedByTimeAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_TIME_ASC);
-            mOrderedByRatingAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_RATING_ASC);
-        }
 
         if(mOrderedByRatingAsc == 0 && mOrderedByTimeAsc == 0) {
             mOrderedByTimeAsc = -1;

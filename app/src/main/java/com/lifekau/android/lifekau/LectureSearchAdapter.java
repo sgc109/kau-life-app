@@ -92,28 +92,6 @@ public class LectureSearchAdapter extends ArrayAdapter<String> {
         layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        View view = convertView;
-//
-////        view.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////
-////            }
-////        });
-////        if (view == null) {
-////            view = layoutInflater.inflate(R.layout.customerNameLabel, null);
-////        }
-////
-////        String customer = getItem(position);
-////
-////        TextView name = (TextView) view.findViewById(R.id.customerNameLabel);
-////        name.setText(customer.getName());
-//
-//        return view;
-//    }
-
     @Override
     public Filter getFilter() {
         return mFilter;
