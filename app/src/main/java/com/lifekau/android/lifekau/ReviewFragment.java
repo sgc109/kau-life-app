@@ -29,7 +29,7 @@ public class ReviewFragment extends PagerFragment implements View.OnClickListene
         mGoToFoodReviewButton.setOnClickListener(this);
         mGoToLectureReviewButton = view.findViewById(R.id.go_to_lecture_review_button);
         mGoToLectureReviewButton.setOnClickListener(this);
-
+        setHasOptionsMenu(true);
         return view;
     }
 

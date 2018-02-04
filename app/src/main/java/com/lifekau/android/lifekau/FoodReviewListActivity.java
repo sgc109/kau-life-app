@@ -74,8 +74,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
-        Toolbar toolbar = findViewById(R.id.food_review_list_toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.food_review_list_toolbar);
+//        setSupportActionBar(toolbar);
 
         if(mOrderedByRatingAsc == 0 && mOrderedByTimeAsc == 0) {
             mOrderedByTimeAsc = -1;

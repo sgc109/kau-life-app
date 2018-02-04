@@ -14,6 +14,8 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
@@ -180,6 +182,28 @@ public class HomeActivity extends AppCompatActivity {
     public void updateBottomNavigationItems() {
 //        bottomNavigation.setNotification("1", 2);
 //        bottomNavigation.setNotification("1", 4);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_items_alarm, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_alarm:
+                return true;
+            case R.id.menu_setting:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     public void setTitleState(AHBottomNavigation.TitleState titleState) {

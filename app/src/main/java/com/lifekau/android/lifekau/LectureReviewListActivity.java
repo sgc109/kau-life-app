@@ -65,8 +65,6 @@ public class LectureReviewListActivity extends AppCompatActivity {
         if(mLectureReviews == null){
             mLectureReviews = new ArrayList<>();
         }
-        mActionBar = ((AppCompatActivity) this).getSupportActionBar();
-        mActionBar.setTitle(R.string.lecture_review_title);
 
         mCntReviewsTextView = (TextView)findViewById(R.id.lecture_review_number_of_reviews_text_view);
         mAvgRatingTextView = (TextView)findViewById(R.id.lecture_review_average_rating_text_view);

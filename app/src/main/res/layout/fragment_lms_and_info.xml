@@ -5,11 +5,9 @@
              android:id="@+id/fragment_lms_and_info_container"
              tools:context="com.lifekau.android.lifekau.LmsAndInfoFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:background="@color/black"
+        android:background="#555555"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
