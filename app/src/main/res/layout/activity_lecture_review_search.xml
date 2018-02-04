@@ -13,5 +13,6 @@
         android:layout_height="60dp"
         android:layout_margin="4dp"
         android:hint="@string/lecture_review_search_bar_hint"
+        android:maxLength="@integer/lecture_search_text_limit"
         android:singleLine="true"/>
 </LinearLayout>
