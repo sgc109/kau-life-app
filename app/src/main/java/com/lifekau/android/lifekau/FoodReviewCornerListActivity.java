@@ -3,6 +3,7 @@ package com.lifekau.android.lifekau;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Rating;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
     private RecyclerView.Adapter mRecyclerAdapter;
     private List<Integer> mListCntReviews;
     private List<Float> mListSumReviewRatings;
+    private ActionBar mActionBar;
     public static Intent newIntent(Context context){
         Intent intent = new Intent(context, FoodReviewCornerListActivity.class);
         return intent;
@@ -44,6 +46,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
             mListSumReviewRatings = new ArrayList<>();
         }
 
+        mActionBar = getSupportActionBar();
 
         mRecyclerAdapter = new RecyclerView.Adapter<FoodCornerViewHolder>() {
             @Override
@@ -65,6 +68,21 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView)findViewById(R.id.food_review_corner_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerView.addOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide(){
+                if(mActionBar != null && mActionBar.isShowing()) {
+                    mActionBar.hide();
+                }
+            }
+
+            @Override
+            public void onShow() {
+                if(mActionBar != null && !mActionBar.isShowing()){
+                    mActionBar.show();
+                }
+            }
+        });
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/" + getString(R.string.firebase_database_food_reviews));
         ref.addValueEventListener(new ValueEventListener() {
