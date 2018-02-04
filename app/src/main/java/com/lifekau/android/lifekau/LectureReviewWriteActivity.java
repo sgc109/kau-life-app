@@ -2,7 +2,6 @@ package com.lifekau.android.lifekau;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Rating;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;

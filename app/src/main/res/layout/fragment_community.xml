@@ -6,9 +6,12 @@
              tools:context="com.lifekau.android.lifekau.CommunityFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/community_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:clipToPadding="false"
+        android:paddingBottom="48dp"
+        tools:listitem="@android:layout/simple_list_item_checked"/>
 
 </FrameLayout>

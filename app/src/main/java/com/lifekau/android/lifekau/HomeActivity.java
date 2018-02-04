@@ -175,8 +175,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void updateBottomNavigationItems() {
-        bottomNavigation.setNotification("1", 2);
-        bottomNavigation.setNotification("1", 4);
+//        bottomNavigation.setNotification("1", 2);
+//        bottomNavigation.setNotification("1", 4);
     }
 
     public void setTitleState(AHBottomNavigation.TitleState titleState) {

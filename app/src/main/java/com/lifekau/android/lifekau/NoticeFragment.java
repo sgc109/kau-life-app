@@ -17,6 +17,8 @@ public class NoticeFragment extends PagerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         return inflater.inflate(R.layout.fragment_notice, container, false);
     }
 

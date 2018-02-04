@@ -33,8 +33,8 @@ abstract class PagerFragment extends Fragment {
             Animation fadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
             mFragmentContainer.startAnimation(fadeOut);
         }
-    }public void willBeDisplayed() {
-        // Do what you want here, for example animate the content
+    }
+    public void willBeDisplayed() {
         if (mFragmentContainer != null) {
             Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
             mFragmentContainer.startAnimation(fadeIn);
