@@ -21,27 +21,26 @@ public class ReviewFragment extends PagerFragment implements View.OnClickListene
     }
 
     @Override
-    public void findFragmentContainer(ViewGroup viewGroup) {
-        mFragmentContainer = viewGroup.findViewById(R.id.fragment_review_container);
-    }
-
-    @Override
-    public void refresh() {
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
         View view = inflater.inflate(R.layout.fragment_review, container, false);
+        findFragmentContainer(view);
         mGoToFoodReviewButton = view.findViewById(R.id.go_to_food_review_button);
         mGoToFoodReviewButton.setOnClickListener(this);
         mGoToLectureReviewButton = view.findViewById(R.id.go_to_lecture_review_button);
         mGoToLectureReviewButton.setOnClickListener(this);
 
         return view;
+    }
+
+    @Override
+    public void findFragmentContainer(View view) {
+        mFragmentContainer = view.findViewById(R.id.fragment_review_container);
+    }
+
+    @Override
+    public void refresh() {
+
     }
 
     @Override

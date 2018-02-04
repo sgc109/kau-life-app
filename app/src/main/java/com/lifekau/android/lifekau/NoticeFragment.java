@@ -17,14 +17,15 @@ public class NoticeFragment extends PagerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_notice, container, false);
+        findFragmentContainer(view);
 
-        return inflater.inflate(R.layout.fragment_notice, container, false);
+        return view;
     }
 
     @Override
-    public void findFragmentContainer(ViewGroup viewGroup) {
-        mFragmentContainer = viewGroup.findViewById(R.id.fragment_notice_container);
+    public void findFragmentContainer(View view) {
+        mFragmentContainer = view.findViewById(R.id.fragment_notice_container);
     }
 
     @Override

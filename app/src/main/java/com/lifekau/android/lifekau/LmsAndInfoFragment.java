@@ -18,13 +18,14 @@ public class LmsAndInfoFragment extends PagerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.fragment_lms_and_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_lms_and_info, container, false);
+        findFragmentContainer(view);
+        return view;
     }
 
     @Override
-    public void findFragmentContainer(ViewGroup container) {
-        mFragmentContainer = (FrameLayout)container.findViewById(R.id.fragment_lms_and_info_container);
+    public void findFragmentContainer(View view) {
+        mFragmentContainer = view.findViewById(R.id.fragment_lms_and_info_container);
     }
 
     @Override

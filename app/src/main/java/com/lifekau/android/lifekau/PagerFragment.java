@@ -17,14 +17,13 @@ abstract class PagerFragment extends Fragment {
     public PagerFragment() {
     }
 
-    public abstract void findFragmentContainer(ViewGroup viewGroup);
+    public abstract void findFragmentContainer(View view);
     public abstract void refresh();
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        findFragmentContainer(container);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

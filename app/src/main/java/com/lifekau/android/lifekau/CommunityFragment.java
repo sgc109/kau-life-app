@@ -11,27 +11,25 @@ import android.view.animation.AnimationUtils;
 
 public class CommunityFragment extends PagerFragment {
 
-    public static CommunityFragment newInstance(){
+    public static CommunityFragment newInstance() {
         CommunityFragment fragment = new CommunityFragment();
         return fragment;
     }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_community, container, false);
+        return view;
+    }
 
     @Override
-    public void findFragmentContainer(ViewGroup viewGroup) {
-        mFragmentContainer = viewGroup.findViewById(R.id.fragment_community_container);
+    public void findFragmentContainer(View view) {
+        mFragmentContainer = view.findViewById(R.id.fragment_community_container);
     }
 
     @Override
     public void refresh() {
 
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
-        return inflater.inflate(R.layout.fragment_community, container, false);
-    }
-
 }
