@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,8 +39,8 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_review_search);
 
-//        mActionBar = ((AppCompatActivity) this).getSupportActionBar();
-//        mActionBar.setTitle(R.string.lecture_review_title);
+        Toolbar toolbar = findViewById(R.id.lecture_review_search_toolbar);
+        setSupportActionBar(toolbar);
         mAutoCompleteSearchBar = (AutoCompleteTextView) findViewById(R.id.lecture_review_search_bar);
 
         if (mLectureList == null) mLectureList = new ArrayList<>();

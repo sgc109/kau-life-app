@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,11 +74,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
-        
-//        mActionBar = ((AppCompatActivity)this).getSupportActionBar();
-//        mActionBar.setTitle(R.string.food_review_title);
-
-
+        Toolbar toolbar = findViewById(R.id.food_review_list_toolbar);
+        setSupportActionBar(toolbar);
 
         if(mOrderedByRatingAsc == 0 && mOrderedByTimeAsc == 0) {
             mOrderedByTimeAsc = -1;
