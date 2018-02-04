@@ -32,6 +32,7 @@ import java.util.List;
 public class LectureReviewListActivity extends AppCompatActivity {
     private static final String EXTRA_LECTURE_NAME = "extra_lecture_name";
     private final String SAVED_LECTURE_NAME = "saved_lecture_name";
+    private final int REQUEST_WRITE_REVIEW = 0;
 
     private String mLectureName;
     private ActionBar mActionBar;
@@ -131,7 +132,19 @@ public class LectureReviewListActivity extends AppCompatActivity {
 
     private void writeLectureReview() {
         Intent intent = LectureReviewWriteActivity.newIntent(this, mLectureName);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_WRITE_REVIEW);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            switch (requestCode){
+                case REQUEST_WRITE_REVIEW:
+                    Toast.makeText(this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
     }
 
     @Override
