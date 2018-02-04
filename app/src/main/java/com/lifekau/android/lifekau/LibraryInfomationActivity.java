@@ -168,6 +168,9 @@ public class LibraryInfomationActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result){
             super.onPostExecute(result);
             if(result != -1) {
+                for(int i = 1; i <= 5; i++) {
+                    mStudyRoomButtonArray[i].setText(mLibraryInfomation.getStudyRoomSummary(i));
+                }
             }
             else{
                 //예외 처리

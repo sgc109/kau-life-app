@@ -7,11 +7,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -115,24 +117,29 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
 
     }
 
-    public void registerTextViewOnLayout(Integer roomNum, Integer seatStartNum, Integer seatEndNum){
+    public void registerTextViewOnLayout(Integer roomNum, Integer startSeatNum, Integer endSeatNum){
         Bitmap emptySeatBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_empty_seat);
         Bitmap usedSeatBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_used_seat);
-        for(int i = seatStartNum; i <= seatEndNum; i++){
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        for(int i = startSeatNum; i <= endSeatNum; i++){
             Point point = mLibraryInfomation.getReadingRoomSeatPoint(roomNum, i);
-            ImageView imageView = new ImageView(getApplicationContext());
-            imageView.setX(point.x - 10);
-            imageView.setY(point.y);
+            ImageView imageView = new ImageView(this);
+            imageView.setX((int)(size.x * point.x / 1000.0 + 0.5));
+            imageView.setY((int)(size.y * point.y / 600.0 + 0.5));
             Bitmap bitmap = mLibraryInfomation.getReadingRoomDetailStatus(roomNum, i) ?
                     emptySeatBitmap.createScaledBitmap(emptySeatBitmap, 60, 60, true) :
                     usedSeatBitmap.createScaledBitmap(usedSeatBitmap, 60, 60, true);
+            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/SpoqaHanSansRegular.ttf");
             Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL_AND_STROKE);
+            paint.setTypeface(typeface);
             paint.setColor(Color.BLACK);
             paint.setTextSize(18);
             paint.setTextAlign(Paint.Align.CENTER);
+            paint.setAntiAlias(true);
             Canvas canvas = new Canvas(bitmap);
-            canvas.drawText(String.valueOf(i),bitmap.getWidth() / 2 , bitmap.getHeight() / 2, paint);
+            canvas.drawText(String.valueOf(i),bitmap.getWidth() / 2 , bitmap.getHeight() / 2 + 5, paint);
             imageView.setImageBitmap(bitmap);
             mReadingRoomDetailSeatLayout.addView(imageView);
         }

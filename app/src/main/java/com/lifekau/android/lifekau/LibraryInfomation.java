@@ -2,6 +2,7 @@ package com.lifekau.android.lifekau;
 
 import android.graphics.Point;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -100,9 +101,9 @@ public class LibraryInfomation {
                 String[] strings = style.get(i + 2).attr("style").split("\\s+");
                 String string = strings[1].split(":")[1].split("px")[0];
                 mReadingRoomPoint[index][num] = new Point();
-                mReadingRoomPoint[index][num].x = (int)(Integer.parseInt(string) * 1.1);
+                mReadingRoomPoint[index][num].x = Integer.parseInt(string);
                 string = strings[2].split(":")[1].split("px")[0];
-                mReadingRoomPoint[index][num].y = (int)(Integer.parseInt(string) * 2);
+                mReadingRoomPoint[index][num].y = Integer.parseInt(string);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,8 +152,8 @@ public class LibraryInfomation {
                     .timeout(3000)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharset(res.charset())));
-            List<String> strings = doc.select("#roomSTD-A").eachText();
-            for(int i = 0, size = strings.size(); i < size; i++) mStudyRoomName[i + 1] = strings.get(i);
+            Elements studyRoomName = doc.getElementsByAttributeValue("class", "clsRoomBox");
+            for(int i = 0, size = studyRoomName.size(); i < size; i++) mStudyRoomName[i + 1] = studyRoomName.get(i).text();
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
@@ -199,6 +200,12 @@ public class LibraryInfomation {
 
     public Boolean getStudyRoomDetailStatus(Integer roomNum, Integer index){
         return mStudyRoomDetailStatus[roomNum][index];
+    }
+
+    public String getStudyRoomSummary(Integer roomNum){
+        Calendar currTime = Calendar.getInstance();
+        int currHour = currTime.get(Calendar.HOUR_OF_DAY);
+        return getStudyRoomName(roomNum) + "(" + (mStudyRoomDetailStatus[roomNum][currHour] ? "사용 가능" : "이용 불가") + ")";
     }
 
     private String getMatchingCharset(String charset){
