@@ -86,9 +86,9 @@ public class LectureSearchAdapter extends ArrayAdapter<String> {
                 for (int j = 1; j <= m; j++) {
                     if (S.charAt(i - 1) == s.charAt(j - 1)) {
                         dp[i][j] = dp[i - 1][j - 1] + 1;
-                    } else if (KoreanChar.isCompatChoseong(s.charAt(i - 1))
-                            && KoreanChar.isSyllable(S.charAt(j - 1))
-                            && s.charAt(i - 1) == KoreanChar.getCompatChoseong(S.charAt(j - 1))) {
+                    } else if (KoreanChar.isCompatChoseong(s.charAt(j - 1))
+                            && KoreanChar.isSyllable(S.charAt(i - 1))
+                            && s.charAt(j - 1) == KoreanChar.getCompatChoseong(S.charAt(i - 1))) {
                         dp[i][j] = dp[i - 1][j - 1] + 1;
                     } else {
                         dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
