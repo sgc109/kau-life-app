@@ -12,6 +12,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,15 +27,22 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sgc109 on 2018-01-27.
  */
 
 public class FoodReviewListActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+    private static final String SAVED_IS_WRITING = "saved_is_writing";
     private final static String EXTRA_FOOD_CORNER_TYPE = "extra_food_corner_type";
     private final String SAVED_ORDERED_BY_RATING_ASC = "saved_order_by_rating_asc";
     private final String SAVED_ORDERED_BY_TIME_ASC = "saved_order_by_time_asc";
@@ -52,7 +61,9 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private int mFoodCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
-    private FirebaseRecyclerAdapter mRecyclerAdapter;
+//    private Boolean mIsWriting;
+    private RecyclerView.Adapter mRecyclerAdapter;
+    private List<FoodReview> mFoodReviews;
 
     public static Intent newIntent(Context packageContext, int foodCornerType) {
         Intent intent = new Intent(packageContext, FoodReviewListActivity.class);
@@ -65,29 +76,37 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_list);
 
-        mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
-        
-        mActionBar = ((AppCompatActivity)this).getSupportActionBar();
-        mActionBar.setTitle(R.string.food_review_title);
-
-
         if (savedInstanceState != null) {
-            mFoodCornerType = savedInstanceState.getInt(SAVED_FOOD_CORNER_TYPE);
+//            mFoodCornerType = savedInstanceState.getInt(SAVED_FOOD_CORNER_TYPE);
             mOrderedByTimeAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_TIME_ASC);
             mOrderedByRatingAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_RATING_ASC);
+
+//            mIsWriting = savedInstanceState.getBoolean(SAVED_IS_WRITING);
         }
 
-        if(mOrderedByRatingAsc == 0 && mOrderedByTimeAsc == 0) {
+//        mIsWriting = true;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+        if (mFoodReviews == null) mFoodReviews = new ArrayList<>();
+
+        mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
+
+//        Toolbar toolbar = findViewById(R.id.food_review_list_toolbar);
+//        setSupportActionBar(toolbar);
+
+        if (mOrderedByRatingAsc == 0 && mOrderedByTimeAsc == 0) {
             mOrderedByTimeAsc = -1;
         }
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.food_review_list_swipe_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.food_review_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mProgressBar = (LinearLayout) findViewById(R.id.indeterminateBar);
         mEmptyListMessage = (TextView) findViewById(R.id.food_review_list_empty_list_text_view);
-        mOrderByRatingButton = (Button)findViewById(R.id.order_by_rating_button);
+        mOrderByRatingButton = (Button) findViewById(R.id.order_by_rating_button);
         mOrderByRatingButton.setOnClickListener(this);
-        mOrderByTimeButton = (Button)findViewById(R.id.order_by_time_button);
+        mOrderByTimeButton = (Button) findViewById(R.id.order_by_time_button);
         mOrderByTimeButton.setOnClickListener(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.food_review_recycler_view);
@@ -104,14 +123,30 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
                 .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType));
 
         Query query = getQueryOrderedByTime(ref, -1);
-        if(mOrderedByRatingAsc != 0) query = getQueryOrderedByRating(ref, mOrderedByRatingAsc);
-        else if(mOrderedByTimeAsc != 0) query = getQueryOrderedByTime(ref, mOrderedByTimeAsc);
+        if (mOrderedByRatingAsc != 0) query = getQueryOrderedByRating(ref, mOrderedByRatingAsc);
+        else if (mOrderedByTimeAsc != 0) query = getQueryOrderedByTime(ref, mOrderedByTimeAsc);
 
-        FirebaseRecyclerOptions<FoodReview> options =
-                new FirebaseRecyclerOptions.Builder<FoodReview>()
-                        .setQuery(query, FoodReview.class)
-                        .build();
-        mRecyclerAdapter = new FirebaseRecyclerAdapter<FoodReview, FoodReviewHolder>(options) {
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mFoodReviews.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    mFoodReviews.add(snapshot.getValue(FoodReview.class));
+                }
+                mEmptyListMessage.setVisibility(mFoodReviews.size() == 0 ? View.VISIBLE : View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerAdapter.notifyDataSetChanged();
+//                if(!mIsWriting){
+//                    Toast.makeText(FoodReviewListActivity.this, getString(R.string.new_review_message), Toast.LENGTH_SHORT).show();
+//                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mRecyclerAdapter = new RecyclerView.Adapter<FoodReviewHolder>() {
             @Override
             public FoodReviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
@@ -120,20 +155,17 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull FoodReviewHolder holder, int position, @NonNull FoodReview foodReview) {
-                holder.bindReview(foodReview);
+            public void onBindViewHolder(FoodReviewHolder holder, int position) {
+                holder.bindReview(mFoodReviews.get(position));
             }
 
             @Override
-            public void onDataChanged() {
-                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
-                mProgressBar.setVisibility(View.GONE);
-                mRecyclerAdapter.notifyDataSetChanged();
+            public int getItemCount() {
+                return mFoodReviews.size();
             }
         };
 
         mRecyclerView.setAdapter(mRecyclerAdapter);
-        mRecyclerAdapter.startListening();
     }
 
     private Query getQueryOrderedByTime(DatabaseReference ref, int rev) {
@@ -157,18 +189,18 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         updateUI();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mRecyclerAdapter.stopListening();
     }
 
     public void onClickWriteFoodReviewFab(View view) {
+//        mIsWriting = true;
         writeFoodReview();
     }
 
@@ -183,9 +215,10 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_FOOD_REVIEW){
-            if(resultCode == RESULT_OK){
+        if (requestCode == REQUEST_FOOD_REVIEW) {
+            if (resultCode == RESULT_OK) {
                 Toast.makeText(this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
+//                mIsWriting = false;
                 updateUI();
             }
         }
@@ -197,24 +230,25 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         outState.putInt(SAVED_FOOD_CORNER_TYPE, mFoodCornerType);
         outState.putInt(SAVED_ORDERED_BY_RATING_ASC, mOrderedByRatingAsc);
         outState.putInt(SAVED_ORDERED_BY_TIME_ASC, mOrderedByTimeAsc);
+//        outState.putBoolean(SAVED_IS_WRITING, mIsWriting);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.order_by_rating_button:
-                if(mOrderedByRatingAsc != 0) {
+                if (mOrderedByRatingAsc != 0) {
                     mOrderedByRatingAsc = -mOrderedByRatingAsc;
-                } else{
+                } else {
                     mOrderedByRatingAsc = -1;
                 }
                 mOrderedByTimeAsc = 0;
                 updateUI();
                 break;
             case R.id.order_by_time_button:
-                if(mOrderedByTimeAsc != 0){
+                if (mOrderedByTimeAsc != 0) {
                     mOrderedByTimeAsc = -mOrderedByTimeAsc;
-                } else{
+                } else {
                     mOrderedByTimeAsc = -1;
                 }
                 mOrderedByRatingAsc = 0;

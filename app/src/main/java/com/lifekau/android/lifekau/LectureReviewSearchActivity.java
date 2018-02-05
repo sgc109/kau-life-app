@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +26,7 @@ import java.util.List;
 public class LectureReviewSearchActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private AutoCompleteTextView mAutoCompleteSearchBar;
-    private ActionBar mActionBar;
+//    private ActionBar mActionBar;
     private List<String> mLectureList;
 
     public static Intent newIntent(Context context) {
@@ -38,8 +39,10 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_review_search);
 
-        mActionBar = ((AppCompatActivity) this).getSupportActionBar();
-        mActionBar.setTitle(R.string.lecture_review_title);
+        if(getSupportActionBar() != null ) {
+//            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().hide();
+        }
         mAutoCompleteSearchBar = (AutoCompleteTextView) findViewById(R.id.lecture_review_search_bar);
 
         if (mLectureList == null) mLectureList = new ArrayList<>();
