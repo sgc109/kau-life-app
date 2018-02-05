@@ -7,6 +7,7 @@
              tools:context="com.lifekau.android.lifekau.ReviewFragment">
 
     <LinearLayout
+        android:layout_marginTop="@dimen/toolbar_height"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">

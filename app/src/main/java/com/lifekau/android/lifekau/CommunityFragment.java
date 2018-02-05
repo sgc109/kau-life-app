@@ -10,6 +10,7 @@ import android.text.Layout;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -67,6 +68,12 @@ public class CommunityFragment extends PagerFragment {
 
         setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_items_alarm, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder{
