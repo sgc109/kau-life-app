@@ -52,7 +52,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         if (mListSumReviewRatings == null) {
             mListSumReviewRatings = new ArrayList<>();
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
 
         mRecyclerAdapter = new RecyclerView.Adapter<FoodCornerViewHolder>() {
