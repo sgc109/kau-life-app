@@ -63,7 +63,6 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("fuck", "firebase access!!!");
                 List<String> newLectureList = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String lecture = snapshot.getValue(String.class);
