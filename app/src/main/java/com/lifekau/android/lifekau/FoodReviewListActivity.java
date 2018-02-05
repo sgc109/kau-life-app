@@ -75,7 +75,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         if(getSupportActionBar() != null ) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
 //        Toolbar toolbar = findViewById(R.id.food_review_list_toolbar);
