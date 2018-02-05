@@ -72,6 +72,10 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
             mOrderedByRatingAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_RATING_ASC);
         }
 
+        if(getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
 //        Toolbar toolbar = findViewById(R.id.food_review_list_toolbar);

@@ -36,6 +36,11 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_write);
 
+
+        if(getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
         mRatingBar = (RatingBar)findViewById(R.id.food_review_write_rating_bar);

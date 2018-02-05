@@ -59,6 +59,11 @@ public class LectureReviewListActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             mLectureName = savedInstanceState.getString(SAVED_LECTURE_NAME);
         }
+
+        if(getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         Intent intent = getIntent();
         mLectureName = intent.getStringExtra(EXTRA_LECTURE_NAME);
 

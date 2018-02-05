@@ -103,12 +103,15 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.menu_alarm:
-                Log.d("fuck","alarm!");
+                intent = AlarmsActivity.newIntent(this);
+                startActivity(intent);
                 return true;
             case R.id.menu_setting:
-                Log.d("fuck","setting!");
+                intent = SettingsActivity.newIntent(this);
+                startActivity(intent);
                 return true;
 
             default:

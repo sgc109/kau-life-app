@@ -40,6 +40,10 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
             mLectureName = savedInstanceState.getString(SAVED_LECTURE_NAME);
         }
 
+        if(getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         if(getIntent() != null){
             mLectureName = getIntent().getStringExtra(EXTRA_LECTURE_NAME);
         }

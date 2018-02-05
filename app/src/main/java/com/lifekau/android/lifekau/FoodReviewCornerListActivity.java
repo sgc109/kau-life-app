@@ -33,7 +33,6 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
     private RecyclerView.Adapter mRecyclerAdapter;
     private List<Integer> mListCntReviews;
     private List<Float> mListSumReviewRatings;
-    private ActionBar mActionBar;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, FoodReviewCornerListActivity.class);
@@ -46,14 +45,16 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_corner_list);
 
+        if(getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        
         if (mListCntReviews == null) {
             mListCntReviews = new ArrayList<>();
         }
         if (mListSumReviewRatings == null) {
             mListSumReviewRatings = new ArrayList<>();
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
-        setSupportActionBar(toolbar);
 
         mRecyclerAdapter = new RecyclerView.Adapter<FoodCornerViewHolder>() {
             @Override

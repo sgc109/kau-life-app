@@ -26,7 +26,7 @@ import java.util.List;
 public class LectureReviewSearchActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private AutoCompleteTextView mAutoCompleteSearchBar;
-    private ActionBar mActionBar;
+//    private ActionBar mActionBar;
     private List<String> mLectureList;
 
     public static Intent newIntent(Context context) {
@@ -39,8 +39,11 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_review_search);
 
-        Toolbar toolbar = findViewById(R.id.lecture_review_search_toolbar);
-        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+//        Toolbar toolbar = findViewById(R.id.lecture_review_search_toolbar);
+//        setSupportActionBar(toolbar);
         mAutoCompleteSearchBar = (AutoCompleteTextView) findViewById(R.id.lecture_review_search_bar);
 
         if (mLectureList == null) mLectureList = new ArrayList<>();
@@ -60,6 +63,7 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("fuck", "firebase access!!!");
                 List<String> newLectureList = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String lecture = snapshot.getValue(String.class);
