@@ -54,7 +54,9 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
-
+        if(getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         initUI();
     }
 
