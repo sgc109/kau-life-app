@@ -12,7 +12,6 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_post_fab"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"

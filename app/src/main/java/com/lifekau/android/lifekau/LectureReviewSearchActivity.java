@@ -40,10 +40,9 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         setContentView(R.layout.activity_lecture_review_search);
 
         if(getSupportActionBar() != null ) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().hide();
         }
-//        Toolbar toolbar = findViewById(R.id.lecture_review_search_toolbar);
-//        setSupportActionBar(toolbar);
         mAutoCompleteSearchBar = (AutoCompleteTextView) findViewById(R.id.lecture_review_search_bar);
 
         if (mLectureList == null) mLectureList = new ArrayList<>();

@@ -61,7 +61,8 @@ public class LectureReviewListActivity extends AppCompatActivity {
         }
 
         if(getSupportActionBar() != null ) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().hide();
         }
 
         Intent intent = getIntent();

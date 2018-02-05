@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -33,6 +34,8 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
     private RecyclerView.Adapter mRecyclerAdapter;
     private List<Integer> mListCntReviews;
     private List<Float> mListSumReviewRatings;
+    private ProgressBar mProgressBar;
+    private boolean mIsWriting;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, FoodReviewCornerListActivity.class);
@@ -45,8 +48,10 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_corner_list);
 
+
         if(getSupportActionBar() != null ) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().hide();
         }
         
         if (mListCntReviews == null) {
@@ -77,6 +82,10 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
 
+        mProgressBar = findViewById(R.id.food_review_corner_list_progress_bar);
+        mProgressBar.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/" + getString(R.string.firebase_database_food_reviews));
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -94,6 +103,8 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
                     mListSumReviewRatings.add(sumRating);
                 }
                 mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
             }
 
             @Override
