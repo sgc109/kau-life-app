@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau;
 
 import android.graphics.Point;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.List;
@@ -186,7 +187,7 @@ public class LibraryInfomation {
             String[] strings = new String(res.bodyAsBytes(), getMatchingCharset(res.charset())).split("\u0011");
             for (int i = 3; i < strings.length; i++) {
                 String[] infomation = strings[i].split("\\^");
-                mStudyRoomDetailStatus[index][Integer.parseInt(infomation[0]) - 5] = infomation[2].equalsIgnoreCase("+");
+                mStudyRoomDetailStatus[index][Integer.parseInt(infomation[0])] = infomation[2].equalsIgnoreCase("+");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,6 +207,7 @@ public class LibraryInfomation {
     public String getStudyRoomSummary(Integer roomNum) {
         Calendar currTime = Calendar.getInstance();
         int currHour = currTime.get(Calendar.HOUR_OF_DAY);
+        currHour = currHour < 0 ? 0 : currHour;
         return getStudyRoomName(roomNum) + "(" + (mStudyRoomDetailStatus[roomNum][currHour] ? "이용 가능" : "이용 불가") + ")";
     }
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ public class StudyRoomDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         int studyRoomNum = intent.getIntExtra("studyRoomNum", 1);
         StudyRoomDetailAsyncTask studyRoomDetailAsyncTask = new StudyRoomDetailAsyncTask();
         studyRoomDetailAsyncTask.execute(studyRoomNum);
@@ -96,10 +97,10 @@ public class StudyRoomDetailActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             if (result != -1) {
-                for (int i = 1; i <= 18; i++) {
-                    String textViewId = "study_room_detail_time_text_view_" + String.format("%02d", i);
+                for (int i = 6; i <= 23; i++) {
+                    String textViewId = "study_room_detail_time_text_view_" + String.format("%02d", i - 5);
                     TextView textView = (TextView) findViewById(getResources().getIdentifier(textViewId, "id", "com.lifekau.android.lifekau"));
-                    String showText = String.format("%02d:%02d ", i + 5, 0) + (mLibraryInfomation.getStudyRoomDetailStatus(result, i) ? "이용 가능" : "이용 불가");
+                    String showText = String.format("%02d:%02d ", i, 0) + (mLibraryInfomation.getStudyRoomDetailStatus(result, i) ? "이용 가능" : "이용 불가");
                     textView.setText(showText);
                 }
             } else {
