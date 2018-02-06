@@ -90,7 +90,7 @@ public class PortalInfomation {
         return cookies;
     }
 
-    public void getScolarshipInfomation(){
+    public void getScholarshipInfomation(){
         try {
             Connection.Response res = Jsoup.connect("https://portal.kau.ac.kr/sugang/PersScholarTakeList.jsp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
@@ -108,7 +108,7 @@ public class PortalInfomation {
             for(int i = 1; i < elementsSize; i++){
                 Elements infomation = elements.get(i).select("td");
                 Scholarship insert = new Scholarship();
-                insert.smester = infomation.get(0).text();
+                insert.semester = infomation.get(0).text();
                 insert.categorization = infomation.get(1).text();
                 insert.type = infomation.get(2).text();
                 insert.amount = Integer.valueOf(String.join("",infomation.get(3).text().split(",")));

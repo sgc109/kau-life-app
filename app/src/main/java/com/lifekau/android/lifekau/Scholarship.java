@@ -1,5 +1,5 @@
 public class Scholarship {
-    String smester;
+    String semester;
     String categorization;
     String type;
     int amount;
