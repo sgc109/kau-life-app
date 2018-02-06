@@ -1,7 +1,12 @@
 public class AccumulatedGrade {
-    int registeredCredits;
-    int acquiredCredits;
-    double totalGrades;
-    double GPA;
+    int year;
+    int semesterCode;
+    String subjectCode;
+    String subjectTitle;
+    String type;
+    String professorName;
+    int credits;
+    String grade;
+    String retake;
     String remarks;
 }
