@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.lifekau.android.lifekau">
+    package="com.lifekau.android.lifekau">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
@@ -11,15 +12,20 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LibraryInfomationActivity">
+        <activity
+            android:name=".LibraryInfomationActivity">
         </activity>
-        <activity android:name=".ReadingRoomDetailActivity">
+        <activity
+            android:name=".ReadingRoomDetailActivity"
+            android:theme="@style/DialogTheme">
         </activity>
-        <activity android:name=".StudyRoomDetailActivity">
+        <activity
+            android:name=".StudyRoomDetailActivity"
+            android:theme="@style/DialogTheme">
         </activity>
     </application>
 

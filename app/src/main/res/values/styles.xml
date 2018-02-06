@@ -13,4 +13,8 @@
         <item name="DialogSpotColor">@android:color/holo_orange_dark</item>
         <item name="DialogSpotCount">4</item>
     </style>
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
 </resources>

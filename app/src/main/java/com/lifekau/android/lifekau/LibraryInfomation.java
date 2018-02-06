@@ -59,7 +59,7 @@ public class LibraryInfomation {
                     .timeout(3000)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharset(res.charset())));
-            for(int i = 1; i <= TOTAL_READING_ROOM_NUM; i++) {
+            for (int i = 1; i <= TOTAL_READING_ROOM_NUM; i++) {
                 String[] strings = doc.select("tr").get(i + 2).text().split("\\s+");
                 mReadingRoomName[i] = strings[1];
                 mReadingRoomTotalSeat[i] = Integer.parseInt(strings[2]);
@@ -72,7 +72,7 @@ public class LibraryInfomation {
         return 0;
     }
 
-    public Integer getReadingRoomDetailStatus(Integer index){
+    public Integer getReadingRoomDetailStatus(Integer index) {
         try {
             Response res = Jsoup.connect("http://lib.kau.ac.kr/HAULMS/haulms/RoomRsv.csp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
@@ -95,7 +95,7 @@ public class LibraryInfomation {
             Elements avail = doc.select("div").select("td");
             Elements seatNum = doc.select("div").select("td").select("font");
             Elements style = doc.select("div");
-            for(int i = 0; i < avail.size(); i++){
+            for (int i = 0; i < avail.size(); i++) {
                 int num = Integer.parseInt(seatNum.get(i).text());
                 mReadingRoomDetailStatus[index][num] = avail.get(i).attr("bgcolor").equals("gray");
                 String[] strings = style.get(i + 2).attr("style").split("\\s+");
@@ -112,7 +112,7 @@ public class LibraryInfomation {
         return 0;
     }
 
-    public Point getReadingRoomSeatPoint(Integer roomNum, Integer seatNum){
+    public Point getReadingRoomSeatPoint(Integer roomNum, Integer seatNum) {
         return mReadingRoomPoint[roomNum][seatNum];
     }
 
@@ -120,29 +120,29 @@ public class LibraryInfomation {
         return mReadingRoomName[index];
     }
 
-    public Integer getReadingRoomAvailableSeat(Integer index){
-        if(index > TOTAL_READING_ROOM_NUM) return -1;
-        if(index <= 0) return -1;
+    public Integer getReadingRoomAvailableSeat(Integer index) {
+        if (index > TOTAL_READING_ROOM_NUM) return -1;
+        if (index <= 0) return -1;
         return mReadingRoomAvailableSeat[index];
     }
 
-    public Boolean getReadingRoomDetailStatus(Integer roomNum, Integer seatNum){
+    public Boolean getReadingRoomDetailStatus(Integer roomNum, Integer seatNum) {
         return mReadingRoomDetailStatus[roomNum][seatNum];
     }
 
-    public Integer getReadingRoomUsedSeat(Integer index){
+    public Integer getReadingRoomUsedSeat(Integer index) {
         return mReadingRoomTotalSeat[index] - mReadingRoomAvailableSeat[index];
     }
 
-    public Integer getReadingRoomTotalSeat(Integer index){
+    public Integer getReadingRoomTotalSeat(Integer index) {
         return mReadingRoomTotalSeat[index];
     }
 
-    public String getReadingRoomSummary(Integer index){
+    public String getReadingRoomSummary(Integer index) {
         return getReadingRoomName(index) + "(" + String.valueOf(getReadingRoomAvailableSeat(index)) + " / " + String.valueOf(getReadingRoomTotalSeat(index)) + ")";
     }
 
-    public Integer getStudyRoomStatus(){
+    public Integer getStudyRoomStatus() {
         try {
             Response res = Jsoup.connect("http://lib.kau.ac.kr/haulms/haulms/SRResv.csp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
@@ -153,7 +153,8 @@ public class LibraryInfomation {
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharset(res.charset())));
             Elements studyRoomName = doc.getElementsByAttributeValue("class", "clsRoomBox");
-            for(int i = 0, size = studyRoomName.size(); i < size; i++) mStudyRoomName[i + 1] = studyRoomName.get(i).text();
+            for (int i = 0, size = studyRoomName.size(); i < size; i++)
+                mStudyRoomName[i + 1] = studyRoomName.get(i).text();
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
@@ -161,7 +162,7 @@ public class LibraryInfomation {
         return 0;
     }
 
-    public Integer getStudyRoomDetailStatus(Integer index){
+    public Integer getStudyRoomDetailStatus(Integer index) {
         final String[] STUDY_ROOM_CODE = {"", "STD-A", "STD-B1", "STD-B2", "STD-C1", "STD-C2", "STD-C3"};
         try {
             Response res = Jsoup.connect("http://lib.kau.ac.kr/haulms/haulms/SRResv.csp")
@@ -183,7 +184,7 @@ public class LibraryInfomation {
                     .timeout(3000)
                     .execute();
             String[] strings = new String(res.bodyAsBytes(), getMatchingCharset(res.charset())).split("\u0011");
-            for(int i = 3; i < strings.length; i++) {
+            for (int i = 3; i < strings.length; i++) {
                 String[] infomation = strings[i].split("\\^");
                 mStudyRoomDetailStatus[index][Integer.parseInt(infomation[0]) - 5] = infomation[2].equalsIgnoreCase("+");
             }
@@ -194,24 +195,24 @@ public class LibraryInfomation {
         return 0;
     }
 
-    public String getStudyRoomName(Integer roomNum){
+    public String getStudyRoomName(Integer roomNum) {
         return mStudyRoomName[roomNum];
     }
 
-    public Boolean getStudyRoomDetailStatus(Integer roomNum, Integer index){
+    public Boolean getStudyRoomDetailStatus(Integer roomNum, Integer index) {
         return mStudyRoomDetailStatus[roomNum][index];
     }
 
-    public String getStudyRoomSummary(Integer roomNum){
+    public String getStudyRoomSummary(Integer roomNum) {
         Calendar currTime = Calendar.getInstance();
         int currHour = currTime.get(Calendar.HOUR_OF_DAY);
-        return getStudyRoomName(roomNum) + "(" + (mStudyRoomDetailStatus[roomNum][currHour] ? "사용 가능" : "이용 불가") + ")";
+        return getStudyRoomName(roomNum) + "(" + (mStudyRoomDetailStatus[roomNum][currHour] ? "이용 가능" : "이용 불가") + ")";
     }
 
-    private String getMatchingCharset(String charset){
+    private String getMatchingCharset(String charset) {
         final String[] ENCODE_TYPE = {"EUC-KR", "KSC5601", "X-WINDOWS-949", "ISO-8859-1", "UTF-8"};
         String res = ENCODE_TYPE[0];
-        for(String encodeType : ENCODE_TYPE) {
+        for (String encodeType : ENCODE_TYPE) {
             if (encodeType.equalsIgnoreCase(charset)) {
                 res = encodeType;
                 break;
