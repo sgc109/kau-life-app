@@ -37,6 +37,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.firebaseui:firebase-ui-database:3.2.1'
     compile 'devlight.io:navigationtabbar:1.2.5'
+    compile 'org.jsoup:jsoup:1.11.2'
 }
 
 
