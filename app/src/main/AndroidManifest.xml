@@ -38,9 +38,7 @@
         </activity>
         <activity android:name=".activity.LoginActivity">
         </activity>
-        <activity android:name=".AlarmsActivity">
-        </activity>
-        <activity android:name=".SettingsActivity">
+        <activity android:name=".activity.AlarmsActivity">
         </activity>
     </application>
 
