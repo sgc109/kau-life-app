@@ -54,10 +54,10 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
         mSubmitButton = (Button)findViewById(R.id.food_review_write_submit_button);
         mSubmitButton.setOnClickListener(this);
     }
-    public void insertReviewToDB(float rating, String comment){
+    public void insertReviewToDB(int cornerType, float rating, String comment){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(getString(R.string.firebase_database_food_reviews));
-        FoodReview review = new FoodReview(rating, comment);
+        FoodReview review = new FoodReview(cornerType, rating, comment);
         ref.child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType))
                 .push()
                 .setValue(review);
@@ -101,7 +101,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
             case R.id.food_review_write_submit_button:
                 int commentLength = mCommentEditText.getText().toString().length();
                 if(commentLength != 0) {
-                    insertReviewToDB(mRatingBar.getRating(), mCommentEditText.getText().toString()); // 특정 코너
+                    insertReviewToDB(mFoodCornerType, mRatingBar.getRating(), mCommentEditText.getText().toString()); // 특정 코너
                     Intent intent = new Intent();
                     // intent.putExtra
                     setResult(RESULT_OK, intent);

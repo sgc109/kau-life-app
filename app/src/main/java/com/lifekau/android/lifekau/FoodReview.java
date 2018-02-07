@@ -8,8 +8,10 @@ import java.util.UUID;
  */
 
 public class FoodReview extends Review{
+    public int mCornerType;
     public FoodReview(){}
-    public FoodReview(float rating, String comment){
+    public FoodReview(int cornerType, float rating, String comment){
+        mCornerType = cornerType;
         mComment = comment;
         mRating = rating;
         mRatingRev = -rating;

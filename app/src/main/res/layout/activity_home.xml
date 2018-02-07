@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-    android:theme="@style/AppTheme"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@style/AppTheme">
 
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
         android:id="@+id/home_view_pager"
@@ -19,6 +19,7 @@
         android:layout_marginBottom="88dp"
         android:src="@drawable/ic_create"
         android:visibility="visible"
+        app:layout_behavior=".FABHideOnScrollBehavior"
         app:useCompatPadding="true"/>
 
     <android.support.design.widget.AppBarLayout

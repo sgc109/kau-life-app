@@ -3,6 +3,8 @@ package com.lifekau.android.lifekau;
 import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.content.Context;
 import android.content.Intent;
@@ -86,7 +88,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
 //        mIsWriting = true;
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().hide();
         }
 
         if (mFoodReviews == null) mFoodReviews = new ArrayList<>();
@@ -236,15 +239,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.order_by_rating_button:
-                if (mOrderedByRatingAsc != 0) {
-                    mOrderedByRatingAsc = -mOrderedByRatingAsc;
-                } else {
-                    mOrderedByRatingAsc = -1;
-                }
-                mOrderedByTimeAsc = 0;
-                updateUI();
-                break;
             case R.id.order_by_time_button:
                 if (mOrderedByTimeAsc != 0) {
                     mOrderedByTimeAsc = -mOrderedByTimeAsc;
@@ -253,8 +247,19 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
                 }
                 mOrderedByRatingAsc = 0;
                 updateUI();
+//                mRecyclerView.smoothScrollToPosition(0);
                 break;
             default:
+            case R.id.order_by_rating_button:
+                if (mOrderedByRatingAsc != 0) {
+                    mOrderedByRatingAsc = -mOrderedByRatingAsc;
+                } else {
+                    mOrderedByRatingAsc = -1;
+                }
+                mOrderedByTimeAsc = 0;
+                updateUI();
+//                mRecyclerView.smoothScrollToPosition(0);
+                break;
         }
     }
 

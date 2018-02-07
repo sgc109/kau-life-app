@@ -7,10 +7,11 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
-        android:backgroundTint="@android:color/white"
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="192dp">
+        android:layout_height="192dp"
+        android:background="@drawable/kau2"
+        android:backgroundTint="@android:color/white">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -24,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="4dp"
+                android:background="@drawable/kau"
                 android:orientation="vertical">
 
                 <TextView
@@ -31,10 +33,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:padding="4dp"
                     android:text="강의명(교수명)"
-                    android:textSize="10pt"/>
+                    android:textSize="12pt"/>
 
                 <RatingBar
                     android:id="@+id/lecture_review_list_rating_bar"
@@ -89,5 +92,6 @@
         android:clickable="true"
         android:onClick="onClickWriteLectureReviewFab"
         android:src="@drawable/ic_new_review"
-        android:tint="@color/white"/>
+        android:tint="@color/white"
+        app:layout_behavior=".FABHideOnScrollBehavior"/>
 </android.support.design.widget.CoordinatorLayout>

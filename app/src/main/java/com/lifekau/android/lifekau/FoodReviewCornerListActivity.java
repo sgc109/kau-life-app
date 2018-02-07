@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,12 +54,14 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
         }
-        
+        int cntCorners = getResources().getStringArray(R.array.food_corner_list).length;
         if (mListCntReviews == null) {
             mListCntReviews = new ArrayList<>();
+            for(int i = 0; i < cntCorners; i++) mListCntReviews.add(0);
         }
         if (mListSumReviewRatings == null) {
             mListSumReviewRatings = new ArrayList<>();
+            for(int i = 0; i < cntCorners; i++) mListSumReviewRatings.add(0.0f);
         }
 
         mRecyclerAdapter = new RecyclerView.Adapter<FoodCornerViewHolder>() {
@@ -90,17 +93,18 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mListCntReviews.clear();
-                mListSumReviewRatings.clear();
                 for (DataSnapshot cornerSnapshot : dataSnapshot.getChildren()) {
+                    int cornerType = -1;
                     Float sumRating = 0.0f;
                     int cntReviews = 0;
                     for (DataSnapshot reviewSnapshot : cornerSnapshot.getChildren()) {
                         cntReviews++;
-                        sumRating += reviewSnapshot.getValue(FoodReview.class).mRating;
+                        FoodReview review = reviewSnapshot.getValue(FoodReview.class);
+                        if(cornerType == -1) cornerType = review.mCornerType;
+                        sumRating += review.mRating;
                     }
-                    mListCntReviews.add(cntReviews);
-                    mListSumReviewRatings.add(sumRating);
+                    mListCntReviews.set(cornerType, cntReviews);
+                    mListSumReviewRatings.set(cornerType, sumRating);
                 }
                 mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
                 mProgressBar.setVisibility(View.GONE);
@@ -132,7 +136,8 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         }
 
         public void bind(int position) { // 구현하기
-            int cntReviews = mListCntReviews.size() > position ? mListCntReviews.get(position) : 0;
+            Log.d("fuck", "position : " + position + ", bound : " + mListCntReviews.size());
+            int cntReviews = mListCntReviews.get(position);
             float avgRating = cntReviews > 0 ? mListSumReviewRatings.get(position) / cntReviews : 0;
             mRatingBar.setRating(avgRating);
             mCornerNameTextView.setText(getResources().getStringArray(R.array.food_corner_list)[position]);

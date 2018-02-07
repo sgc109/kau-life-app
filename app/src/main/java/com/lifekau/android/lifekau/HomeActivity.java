@@ -3,9 +3,11 @@ package com.lifekau.android.lifekau;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -38,7 +40,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
     private AHBottomNavigationViewPager viewPager;
     private AHBottomNavigation bottomNavigation;
-    private FloatingActionButton floatingActionButton;
+    private FloatingActionButton mFab;
 
     public static Intent newIntent(Context context){
         Intent intent = new Intent(context, HomeActivity.class);
@@ -68,13 +70,13 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
         bottomNavigation = findViewById(R.id.home_bottom_navigation_bar);
         viewPager = findViewById(R.id.home_view_pager);
-        floatingActionButton = findViewById(R.id.new_post_fab);
+        mFab = findViewById(R.id.new_post_fab);
 
         tabColors = getApplicationContext().getResources().getIntArray(R.array.tab_colors);
         navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_menu_5);
         navigationAdapter.setupWithBottomNavigation(bottomNavigation, tabColors);
 
-        bottomNavigation.manageFloatingActionButtonBehavior(floatingActionButton);
+        bottomNavigation.manageFloatingActionButtonBehavior(mFab);
         bottomNavigation.setTranslucentNavigationEnabled(true);
 
         bottomNavigation.setOnTabSelectedListener(this);
@@ -85,7 +87,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
         currentFragment = adapter.getCurrentFragment();
 
-        updateBottomNavigationItems();
+            updateBottomNavigationItems();
     }
 
     public void updateBottomNavigationColor(boolean isColored) {
@@ -97,6 +99,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     }
 
     public void updateBottomNavigationItems() {
+        bottomNavigation.setAccentColor(Color.parseColor("#3f1dcb"));
 //        bottomNavigation.setNotification("1", 2);
 //        bottomNavigation.setNotification("1", 4);
     }
@@ -155,11 +158,11 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         if (position == 0) {
             bottomNavigation.setNotification("", 1);
 
-            floatingActionButton.setVisibility(View.VISIBLE);
-            floatingActionButton.setAlpha(0f);
-            floatingActionButton.setScaleX(0f);
-            floatingActionButton.setScaleY(0f);
-            floatingActionButton.animate()
+            mFab.setVisibility(View.VISIBLE);
+            mFab.setAlpha(0f);
+            mFab.setScaleX(0f);
+            mFab.setScaleY(0f);
+            mFab.animate()
                     .alpha(1)
                     .scaleX(1)
                     .scaleY(1)
@@ -172,7 +175,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                         }
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            floatingActionButton.animate()
+                            mFab.animate()
                                     .setInterpolator(new LinearOutSlowInInterpolator())
                                     .start();
                         }
@@ -188,8 +191,8 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                     .start();
 
         } else {
-            if (floatingActionButton.getVisibility() == View.VISIBLE) {
-                floatingActionButton.animate()
+            if (mFab.getVisibility() == View.VISIBLE) {
+                mFab.animate()
                         .alpha(0)
                         .scaleX(0)
                         .scaleY(0)
@@ -202,11 +205,11 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                             }
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                floatingActionButton.setVisibility(View.GONE);
+                                mFab.setVisibility(View.INVISIBLE);
                             }
                             @Override
                             public void onAnimationCancel(Animator animation) {
-                                floatingActionButton.setVisibility(View.GONE);
+                                mFab.setVisibility(View.INVISIBLE);
                             }
                             @Override
                             public void onAnimationRepeat(Animator animation) {

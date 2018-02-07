@@ -2,9 +2,8 @@ package com.lifekau.android.lifekau;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.os.PersistableBundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,8 +21,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +38,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
     private TextView mAvgRatingTextView;
     private RecyclerView.Adapter mRecyclerAdapter;
     private TextView mLectureNameTextView;
+    private FloatingActionButton mFab;
     List<LectureReview> mLectureReviews;
 
 
@@ -75,7 +72,6 @@ public class LectureReviewListActivity extends AppCompatActivity {
         mCntReviewsTextView = (TextView)findViewById(R.id.lecture_review_number_of_reviews_text_view);
         mAvgRatingTextView = (TextView)findViewById(R.id.lecture_review_average_rating_text_view);
         mRatingBar = (RatingBar)findViewById(R.id.lecture_review_list_rating_bar);
-
         mLectureNameTextView = (TextView) findViewById(R.id.lecture_review_list_lecture_text_view);
         mLectureNameTextView.setText(mLectureName);
 
@@ -100,6 +96,8 @@ public class LectureReviewListActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.lecture_review_recycler_view);
         mRecyclerView.setAdapter(mRecyclerAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/" + getString(R.string.firebase_database_lecture_reviews)).child(mLectureName);
         ref.addValueEventListener(new ValueEventListener() {
