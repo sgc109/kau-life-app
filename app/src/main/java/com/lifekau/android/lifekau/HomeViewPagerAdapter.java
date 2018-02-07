@@ -5,11 +5,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
-import com.lifekau.android.lifekau.CommunityFragment;
-import com.lifekau.android.lifekau.LmsAndInfoFragment;
-import com.lifekau.android.lifekau.NoticeFragment;
-import com.lifekau.android.lifekau.ReviewFragment;
-import com.lifekau.android.lifekau.SeatFragment;
+import com.lifekau.android.lifekau.fragment.CommunityFragment;
+import com.lifekau.android.lifekau.fragment.LmsAndInfoFragment;
+import com.lifekau.android.lifekau.fragment.NoticeFragment;
+import com.lifekau.android.lifekau.fragment.PagerFragment;
+import com.lifekau.android.lifekau.fragment.ReviewFragment;
+import com.lifekau.android.lifekau.fragment.SeatFragment;
 
 import java.util.ArrayList;
 

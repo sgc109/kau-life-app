@@ -3,7 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:id="@+id/fragment_notice_container"
-             tools:context="com.lifekau.android.lifekau.NoticeFragment">
+             tools:context="com.lifekau.android.lifekau.fragment.NoticeFragment">
 
 
     <TextView

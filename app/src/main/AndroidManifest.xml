@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -17,26 +17,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FoodReviewListActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".activity.FoodReviewListActivity"
+            android:parentActivityName=".activity.MainActivity">
         </activity>
-        <activity android:name=".FoodReviewWriteActivity">
+        <activity android:name=".activity.FoodReviewWriteActivity">
         </activity>
-        <activity android:name=".LectureReviewSearchActivity">
+        <activity android:name=".activity.LectureReviewSearchActivity">
         </activity>
-        <activity android:name=".LectureReviewListActivity">
+        <activity android:name=".activity.LectureReviewListActivity">
         </activity>
-        <activity android:name=".LectureReviewWriteActivity">
+        <activity android:name=".activity.LectureReviewWriteActivity">
         </activity>
-        <activity android:name=".FoodReviewCornerListActivity">
+        <activity android:name=".activity.FoodReviewCornerListActivity">
         </activity>
-        <activity android:name=".HomeActivity">
+        <activity android:name=".activity.HomeActivity">
         </activity>
-        <activity android:name=".AlarmsActivity">
+        <activity android:name=".activity.AlarmsListActivity">
         </activity>
-        <activity android:name=".SettingsActivity">
+        <activity android:name=".activity.SettingsActivity">
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activity.LoginActivity">
         </activity>
     </application>
 
