@@ -1,3 +1,5 @@
+package com.lifekau.android.lifekau;
+
 public class CurrGrade {
     String courseNumber;
     String courseTitle;

@@ -1,3 +1,5 @@
+package com.lifekau.android.lifekau;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

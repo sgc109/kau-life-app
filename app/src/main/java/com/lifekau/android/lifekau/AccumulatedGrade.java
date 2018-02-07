@@ -1,3 +1,5 @@
+package com.lifekau.android.lifekau;
+
 public class AccumulatedGrade {
     int year;
     int semesterCode;

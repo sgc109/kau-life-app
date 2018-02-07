@@ -1,3 +1,5 @@
+package com.lifekau.android.lifekau;
+
 public class Scholarship {
     String semester;
     String categorization;

@@ -1,3 +1,5 @@
+package com.lifekau.android.lifekau;
+
 public class AccumulatedGradeSummary {
     String semester;
     int year;
