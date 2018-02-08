@@ -1,10 +1,10 @@
 package com.lifekau.android.lifekau;
 
 public class TotalCurrGrade {
-    int registeredCredits;
-    int acquiredCredits;
-    double totalGrades;
-    double GPA;
-    String semesterRanking;
-    String remarks;
+    public int registeredCredits;
+    public int acquiredCredits;
+    public double totalGrades;
+    public double GPA;
+    public String semesterRanking;
+    public String remarks;
 }

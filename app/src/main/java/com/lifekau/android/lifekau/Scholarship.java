@@ -1,8 +1,8 @@
 package com.lifekau.android.lifekau;
 
 public class Scholarship {
-    String semester;
-    String categorization;
-    String type;
-    int amount;
+    public String semester;
+    public String categorization;
+    public String type;
+    public int amount;
 }

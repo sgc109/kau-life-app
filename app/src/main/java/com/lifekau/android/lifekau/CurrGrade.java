@@ -1,13 +1,13 @@
 package com.lifekau.android.lifekau;
 
 public class CurrGrade {
-    String courseNumber;
-    String courseTitle;
-    String major;
-    String credits;
-    String grade;
-    String retake;
-    String remarks;
-    String evaluation;
-    String portfolio;
+    public String courseNumber;
+    public String courseTitle;
+    public String major;
+    public String credits;
+    public String grade;
+    public String retake;
+    public String remarks;
+    public String evaluation;
+    public String portfolio;
 }

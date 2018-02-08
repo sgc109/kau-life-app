@@ -1,12 +1,12 @@
 package com.lifekau.android.lifekau;
 
 public class AccumulatedGradeSummary {
-    String semester;
-    int year;
-    int semesterCode;
-    int registeredCredits;
-    int acquiredCredits;
-    double totalGrades;
-    double GPA;
-    String remarks;
+    public String semester;
+    public int year;
+    public int semesterCode;
+    public int registeredCredits;
+    public int acquiredCredits;
+    public double totalGrades;
+    public double GPA;
+    public String remarks;
 }
