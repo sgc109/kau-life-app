@@ -5,6 +5,6 @@ public class TotalCurrGrade {
     int acquiredCredits;
     double totalGrades;
     double GPA;
-    int semesterRanking;
+    String semesterRanking;
     String remarks;
 }

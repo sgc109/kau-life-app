@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PortalInfomation {
+public class PortalManager {
 
     private ArrayList<Scholarship> mScholarshipArray;
     private ArrayList<CurrGrade> mCurrGrade;
@@ -20,15 +20,21 @@ public class PortalInfomation {
     private TotalAccumulatedGrade mTotalAccumulatedGrade;
     private Map<String, String> mCookies;
 
-    public PortalInfomation(String id, String password) {
+    private PortalManager() {
         mScholarshipArray = new ArrayList<Scholarship>();
         mCurrGrade = new ArrayList<CurrGrade>();
         mTotalCurrGrade = new TotalCurrGrade();
         mAccumulatedGradeArray = new ArrayList<AccumulatedGrade>();
         mAccumulatedGradeSummaryArray = new ArrayList<AccumulatedGradeSummary>();
         mTotalAccumulatedGrade = new TotalAccumulatedGrade();
-        mCookies = getSession(id, password);
-        getAccumulatedGradeSummary();
+    }
+
+    private static class LazyHolder{
+        public static final PortalManager INSTANCE = new PortalManager();
+    }
+
+    public static PortalManager getInstance(){
+        return LazyHolder.INSTANCE;
     }
 
     public Map<String, String> getSession(String id, String password) {
@@ -91,7 +97,7 @@ public class PortalInfomation {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return cookies;
+        return mCookies = cookies;
     }
 
     public void getScholarshipInfomation() {
@@ -157,6 +163,14 @@ public class PortalInfomation {
                     mCurrGrade.add(grade);
                 }
             }
+            Elements totalGradeSummary = elements.get(1).select("tr").get(1).select("td");
+            mTotalCurrGrade.registeredCredits = Integer.valueOf(totalGradeSummary.get(0).text());
+            mTotalCurrGrade.acquiredCredits = Integer.valueOf(totalGradeSummary.get(1).text());
+            mTotalCurrGrade.totalGrades = Double.valueOf(totalGradeSummary.get(2).text());
+            mTotalCurrGrade.GPA = Double.valueOf(totalGradeSummary.get(3).text());
+            mTotalCurrGrade.semesterRanking = totalGradeSummary.get(4).text();
+            mTotalCurrGrade.remarks = totalGradeSummary.get(5).text();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -238,7 +252,7 @@ public class PortalInfomation {
         }
     }
 
-    public static String getMatchingCharSet(String charset) {
+    public String getMatchingCharSet(String charset) {
         final String[] ENCODE_TYPE = {"EUC-KR", "KSC5601", "X-WINDOWS-949", "ISO-8859-1", "UTF-8"};
         String res = ENCODE_TYPE[0];
         for (String encodeType : ENCODE_TYPE) {
