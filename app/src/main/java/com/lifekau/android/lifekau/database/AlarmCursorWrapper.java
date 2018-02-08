@@ -21,9 +21,11 @@ public class AlarmCursorWrapper extends CursorWrapper {
     public Alarm getAlarm(){
         String uuidString = getString(getColumnIndex(AlarmTable.Cols.UUID));
         String content = getString(getColumnIndex(AlarmTable.Cols.CONTENT));
+        int type = getInt(getColumnIndex(AlarmTable.Cols.TYPE));
         long date = getLong(getColumnIndex(AlarmTable.Cols.DATE));
         Alarm alarm = new Alarm(UUID.fromString(uuidString));
         alarm.setContent(content);
+        alarm.setType(type);
         alarm.setDate(new Date(date));
 
         return alarm;

@@ -38,8 +38,6 @@
         </activity>
         <activity android:name=".activity.LoginActivity">
         </activity>
-        <activity android:name=".activity.AlarmsActivity">
-        </activity>
     </application>
 
 </manifest>

@@ -28,21 +28,27 @@ public class AlarmManager {
     private AlarmManager(Context context){
         mContext = context.getApplicationContext();
         mDatabase = new AlarmBaseHelper(mContext).getWritableDatabase();
+
+        mDatabase.beginTransaction();
+        try {
+            for(int i = 0; i < 20; i++){
+                ContentValues values = getContentValues(new Alarm("test!!!", Alarm.TYPE_COMMENT));
+                mDatabase.insert(AlarmTable.NAME, null, values);
+            }
+            mDatabase.setTransactionSuccessful();
+        } finally {
+            mDatabase.endTransaction();
+        }
     }
 
-    public static AlarmManager get(Context context){
+    public static synchronized AlarmManager get(Context context){
         if(sAlarmManager == null){
             sAlarmManager = new AlarmManager(context);
         }
         return sAlarmManager;
     }
 
-    public void addAlarm(Alarm alarm){
-        ContentValues values = getContentValues(alarm);
-        mDatabase.insert(AlarmTable.NAME, null, values);
-    }
-
-    public void deleteAlarm(Alarm alarm){
+    public void removeAlarm(Alarm alarm){
         mDatabase.delete(
                 AlarmTable.NAME,
                 AlarmTable.Cols.UUID + " = ?",
@@ -54,12 +60,13 @@ public class AlarmManager {
         ContentValues values = new ContentValues();
         values.put(AlarmTable.Cols.UUID, alarm.getId().toString());
         values.put(AlarmTable.Cols.CONTENT, alarm.getContent());
+        values.put(AlarmTable.Cols.TYPE, alarm.getType());
         values.put(AlarmTable.Cols.DATE, alarm.getDate().getTime());
 
         return values;
     }
 
-    public List<Alarm> getAllAlarms(){
+    public List<Alarm> getAlarms(){
         List<Alarm> alarms = new ArrayList<>();
 
         AlarmCursorWrapper cursor = queryAlarms(
@@ -88,7 +95,7 @@ public class AlarmManager {
                 whereArgs,
                 null,
                 null,
-                AlarmTable.Cols.DATE
+                AlarmTable.Cols.DATE + " DESC"
         );
         return new AlarmCursorWrapper(cursor);
     }

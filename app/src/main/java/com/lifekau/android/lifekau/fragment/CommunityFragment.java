@@ -36,7 +36,7 @@ public class CommunityFragment extends PagerFragment {
                     LinearLayout.LayoutParams params = new
                             LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT);
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_upper_blanck, parent, false);
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_upper_blank, parent, false);
 //                    params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics());
 //                    view.findViewById(R.id.card_view).setLayoutParams(params);
                 } else {

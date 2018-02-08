@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.database.LectureBaseHelper;
 import com.lifekau.android.lifekau.database.LectureCursorWrapper;
 import com.lifekau.android.lifekau.database.LectureDbSchema;
@@ -30,7 +33,7 @@ public class LectureManager {
         mDatabase = new LectureBaseHelper(mContext).getWritableDatabase();
     }
 
-    public static LectureManager get(Context context) {
+    public static synchronized LectureManager get(Context context) {
         if (sLectureManager == null) {
             sLectureManager = new LectureManager(context);
         }

@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/list_item_alarms_card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_height="wrap_content">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/list_item_alarms_text_view"
+    <android.support.v7.widget.CardView
+        android:id="@+id/list_item_alarms_card_view"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        android:text="알림 내용"/>
-</android.support.v7.widget.CardView>
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+        <TextView
+            android:id="@+id/list_item_alarms_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="알림 내용"/>
+    </android.support.v7.widget.CardView>
+</android.support.design.widget.CoordinatorLayout>

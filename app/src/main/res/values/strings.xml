@@ -24,6 +24,7 @@
     <string name="review_write_success_message">리뷰가 성공적으로 게시되었습니다!</string>
     <string name="new_review_message">새로운 리뷰가 올라왔습니다!</string>
     <string name="please_write_something_alert_message">리뷰를 입력해 주세요!</string>
+    <string name="empty_alarm_list_message">알람이 없습니다.</string>
 
     <string name="menu_1">커뮤니티</string>
     <string name="menu_2">리뷰</string>
