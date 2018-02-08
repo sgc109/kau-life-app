@@ -13,6 +13,8 @@ import com.lifekau.android.lifekau.model.Lecture;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.lifekau.android.lifekau.database.LectureDbSchema.*;
+
 /**
  * Created by sgc109 on 2018-02-07.
  */
@@ -20,15 +22,15 @@ import java.util.List;
 public class LectureManager {
     private static LectureManager sLectureManager;
 
-    SQLiteDatabase mDatabase;
-    Context mContext;
+    private SQLiteDatabase mDatabase;
+    private Context mContext;
 
     private LectureManager(Context context) {
         mContext = context.getApplicationContext();
         mDatabase = new LectureBaseHelper(mContext).getWritableDatabase();
     }
 
-    public LectureManager get(Context context) {
+    public static LectureManager get(Context context) {
         if (sLectureManager == null) {
             sLectureManager = new LectureManager(context);
         }
@@ -54,15 +56,38 @@ public class LectureManager {
         return lectures;
     }
 
+    private ContentValues getContentValues(Lecture lecture){
+        ContentValues values = new ContentValues();
+        values.put(LectureTable.Cols.NAME, lecture.getName());
+        return values;
+    }
+
+    public void addLecture(Lecture lecture){
+        ContentValues values = getContentValues(lecture);
+        mDatabase.insert(LectureTable.NAME, null, values);
+    }
+
+    public void addLectures(List<Lecture> lectures){
+        mDatabase.beginTransaction();
+        try {
+            for (Lecture lecture : lectures) {
+                addLecture(lecture);
+            }
+            mDatabase.setTransactionSuccessful();
+        } finally {
+            mDatabase.endTransaction();
+        }
+    }
+
     private LectureCursorWrapper queryLectures(String whereClause, String[] whereArgs) {
         Cursor cursor = mDatabase.query(
-                LectureDbSchema.LectureTable.NAME,
+                LectureTable.NAME,
                 null,
                 whereClause,
                 whereArgs,
                 null,
                 null,
-                null
+                LectureTable.Cols.NAME
         );
 
         return new LectureCursorWrapper(cursor);

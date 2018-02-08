@@ -7,12 +7,10 @@ import java.util.UUID;
  */
 
 public class Lecture {
-    public UUID getId() {
-        return mId;
-    }
+    private String mName;
 
-    public void setId(UUID id) {
-        mId = id;
+    public Lecture(String name) {
+        mName = name;
     }
 
     public String getName() {
@@ -23,10 +21,4 @@ public class Lecture {
         mName = name;
     }
 
-    private UUID mId;
-    private String mName;
-
-    public Lecture(UUID id) {
-        mId = id;
-    }
 }

@@ -1,9 +1,11 @@
 package com.lifekau.android.lifekau.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -15,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.LectureSearchAdapter;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LectureManager;
+import com.lifekau.android.lifekau.model.Lecture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +27,8 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
 
     private AutoCompleteTextView mAutoCompleteSearchBar;
 //    private ActionBar mActionBar;
-    private List<String> mLectureList;
-
+    private List<Lecture> mLectureList;
+    private ProgressDialog mProgressDialog;
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, LectureReviewSearchActivity.class);
         return intent;
@@ -39,11 +43,20 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
         }
-        mAutoCompleteSearchBar = (AutoCompleteTextView) findViewById(R.id.lecture_review_search_bar);
+        mAutoCompleteSearchBar = findViewById(R.id.lecture_review_search_bar);
 
         if (mLectureList == null) mLectureList = new ArrayList<>();
 
-        updateLectureList();
+
+        mProgressDialog = ProgressDialog.show(this, "설정 중", "초기 설정을 하는 중입니다.", true, false);
+        List<Lecture> lectures = LectureManager.get(this).getAllLectures();
+        if(lectures.size() != 0) {
+            mLectureList = lectures;
+            updateAutoComplete();
+            mProgressDialog.dismiss();
+        } else {
+            updateLectureList();
+        }
     }
 
     @Override
@@ -58,13 +71,16 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> newLectureList = new ArrayList<>();
+                List<Lecture> newLectureList = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String lecture = snapshot.getValue(String.class);
-                    newLectureList.add(lecture);
+                    String lectureName = snapshot.getValue(String.class);
+                    newLectureList.add(new Lecture(lectureName));
                 }
+                Log.d("fuck", "cnt : " + newLectureList.size());
                 mLectureList = newLectureList;
+                LectureManager.get(LectureReviewSearchActivity.this).addLectures(mLectureList);
                 updateAutoComplete();
+                mProgressDialog.dismiss();
             }
 
             @Override
@@ -76,7 +92,13 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
 
     public void updateAutoComplete() {
         int layoutItemId = android.R.layout.simple_dropdown_item_1line;
-        LectureSearchAdapter adapter = new LectureSearchAdapter(this, layoutItemId, mLectureList);
+        List<String> lectureNameList = new ArrayList<>();
+
+        for(Lecture lecture : mLectureList){
+            lectureNameList.add(lecture.getName());
+        }
+
+        LectureSearchAdapter adapter = new LectureSearchAdapter(this, layoutItemId, lectureNameList);
         mAutoCompleteSearchBar.setAdapter(adapter);
         mAutoCompleteSearchBar.setThreshold(0);
         mAutoCompleteSearchBar.setOnItemClickListener(this);

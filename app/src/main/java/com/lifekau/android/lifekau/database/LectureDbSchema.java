@@ -9,7 +9,6 @@ public class LectureDbSchema {
         public static final String NAME = "lectures";
 
         public static final class Cols {
-            public static final String UUID = "uuid";
             public static final String NAME = "name";
         }
     }

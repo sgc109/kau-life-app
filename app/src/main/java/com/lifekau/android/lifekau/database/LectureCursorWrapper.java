@@ -18,10 +18,8 @@ public class LectureCursorWrapper extends CursorWrapper {
         super(cursor);
     }
     public Lecture getLecture(){
-        String uuidString = getString(getColumnIndex(LectureTable.Cols.UUID));
         String name = getString(getColumnIndex(LectureTable.Cols.NAME));
-        Lecture lecture = new Lecture(UUID.fromString(uuidString));
-        lecture.setName(name);
+        Lecture lecture = new Lecture(name);
 
         return lecture;
     }
