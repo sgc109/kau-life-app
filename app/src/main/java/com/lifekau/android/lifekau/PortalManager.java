@@ -1,5 +1,9 @@
 package com.lifekau.android.lifekau;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.text.TextUtils;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,22 +41,22 @@ public class PortalManager {
         return LazyHolder.INSTANCE;
     }
 
-    public Map<String, String> getSession(String id, String password) {
+    public Map<String, String> getSession(Context context, String id, String password) {
+        Resources resources = context.getResources();
         Map<String, String> cookies = null;
         try {
-            Connection.Response res = Jsoup.connect("https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
+            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_lms_check_page))
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
                     .execute();
-            res = Jsoup.connect("https://www.kau.ac.kr/page/act_login.jsp")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-                    .cookies(res.cookies())
-                    .referrer("https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1")
+            res = Jsoup.connect(resources.getString(R.string.portal_jsoup_act_login_page))
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
+                    .referrer(resources.getString(R.string.portal_jsoup_lms_check_page))
                     .data("target_page", "act_Lms_Check.jsp@chk1-1")
                     .data("refer_page", "")
                     .data("SessionID", "")
@@ -62,35 +66,36 @@ public class PortalManager {
                     .data("p_id", id)
                     .data("p_pwd", password)
                     .method(Connection.Method.POST)
+                    .cookies(res.cookies())
                     .execute();
             String string = new String(res.bodyAsBytes(), getMatchingCharSet(res.charset()));
             String[] strings = string.split("\'");
-            res = Jsoup.connect("https://www.kau.ac.kr/page/act_Portal_Check.jsp")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-                    .cookies(res.cookies())
+            res = Jsoup.connect(resources.getString(R.string.portal_jsoup_portal_check_page))
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
                     .data("chk1", "1")
-                    .execute();
-            res = Jsoup.connect("https://portal.kau.ac.kr/portal/PortalLoginSso")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .referrer("https://www.kau.ac.kr/page/act_Portal_Check.jsp?chk1=1")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
                     .cookies(res.cookies())
+                    .execute();
+            res = Jsoup.connect(resources.getString(R.string.portal_jsoup_portal_login_page))
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
+                    .referrer(resources.getString(R.string.portal_jsoup_portal_check_page))
                     .data("seq_id", strings[3])
                     .data("ppage", "")
+                    .cookies(res.cookies())
                     .validateTLSCertificates(false)
                     .execute();
             cookies = res.cookies();
-            res = Jsoup.connect("https://portal.kau.ac.kr/portal/MyPortal_No.jsp")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .referrer("https://portal.kau.ac.kr/portal/PortalLoginSso?seq_id=" + strings[3] + "&ppage=")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
+            res = Jsoup.connect(resources.getString(R.string.portal_jsoup_my_portal_page))
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
+                    .referrer(resources.getString(R.string.portal_jsoup_portal_login_page) + "?seq_id=" + strings[3] + "&ppage=")
                     .cookies(cookies)
                     .validateTLSCertificates(false)
                     .execute();
@@ -100,14 +105,19 @@ public class PortalManager {
         return mCookies = cookies;
     }
 
-    public void getScholarshipInfomation() {
+    public int checkSessionVaild(){
+        return 0;
+    }
+
+    public void getScholarshipInfomation(Context context) {
+        Resources resources = context.getResources();
         try {
-            Connection.Response res = Jsoup.connect("https://portal.kau.ac.kr/sugang/PersScholarTakeList.jsp")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .referrer("https://portal.kau.ac.kr/admt/MyMenuB.jsp")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
+            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_scholar_page))
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
+                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
                     .cookies(mCookies)
                     .validateTLSCertificates(false)
                     .execute();
@@ -121,7 +131,7 @@ public class PortalManager {
                 insert.semester = infomation.get(0).text();
                 insert.categorization = infomation.get(1).text();
                 insert.type = infomation.get(2).text();
-                insert.amount = Integer.valueOf(String.join("", infomation.get(3).text().split(",")));
+                insert.amount = Integer.valueOf(TextUtils.join("", infomation.get(3).text().split(",")));
                 mScholarshipArray.add(insert);
             }
         } catch (Exception e) {
@@ -129,21 +139,22 @@ public class PortalManager {
         }
     }
 
-    public void getCurrGradeInfomation() {
+    public void getCurrGradeInfomation(Context context) {
+        Resources resources = context.getResources();
         try {
-            Connection.Response res = Jsoup.connect("https://portal.kau.ac.kr/sugang/GradHakList.jsp")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .referrer("https://portal.kau.ac.kr/admt/MyMenuB.jsp")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
+            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_curr_grade_page))
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
+                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
                     .cookies(mCookies)
                     .validateTLSCertificates(false)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
             Elements elements = doc.getElementsByAttributeValue("cellspacing", "1");
             mCurrGrade.clear();
-            if ("데이터 없음".equals(elements.get(0).select("tr").get(1).select("td").text())) return;
+            if (resources.getString(R.string.portal_curr_grade_no_data).equals(elements.get(0).select("tr").get(1).select("td").text())) return;
             int elementsSize = elements.size();
             for (int i = 0; i < elementsSize; i++) {
                 Elements grades = elements.get(i).select("tr");
@@ -176,14 +187,52 @@ public class PortalManager {
         }
     }
 
-    public void getAccumulatedGradeSummary() {
+    public void getAccumulatedGrade(Context context, int year, int semesterCode) {
+        Resources resources = context.getResources();
         try {
-            Connection.Response res = Jsoup.connect("https://portal.kau.ac.kr/sugang/GradTermList.jsp")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .referrer("https://portal.kau.ac.kr/admt/MyMenuB.jsp")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
+            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_accumulated_grade_page) + "?guYear=" + year + "&guHakgi=" + semesterCode)
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
+                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                    .cookies(mCookies)
+                    .validateTLSCertificates(false)
+                    .execute();
+            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
+            mAccumulatedGradeArray.clear();
+            Elements elements = doc.getElementsByAttributeValue("class", "table1");
+            Elements gradeSummary = elements.get(1).select("tr");
+            int gradeSummarySize = gradeSummary.size();
+            for (int i = 2; i < gradeSummarySize; i++) {
+                Elements data = gradeSummary.get(i).select("td");
+                int adjustVal = (i == 2 ? 1 : 0);
+                AccumulatedGrade accumulatedGrade = new AccumulatedGrade();
+                accumulatedGrade.year = year;
+                accumulatedGrade.semesterCode = semesterCode;
+                accumulatedGrade.subjectCode = data.get(0 + adjustVal).text();
+                accumulatedGrade.subjectTitle = data.get(1 + adjustVal).text();
+                accumulatedGrade.professorName = data.get(2 + adjustVal).text();
+                accumulatedGrade.type = data.get(3 + adjustVal).text();
+                accumulatedGrade.credits = Integer.valueOf(data.get(4 + adjustVal).text());
+                accumulatedGrade.grade = data.get(5 + adjustVal).text();
+                accumulatedGrade.retake = data.get(6 + adjustVal).text();
+                accumulatedGrade.remarks = data.get(7 + adjustVal).text();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getAccumulatedGradeSummary(Context context) {
+        Resources resources = context.getResources();
+        try {
+            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_accumulated_grade_summary_page))
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
+                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
                     .cookies(mCookies)
                     .validateTLSCertificates(false)
                     .execute();
@@ -211,42 +260,6 @@ public class PortalManager {
             mTotalAccumulatedGrade.acquiredCredits = Integer.valueOf(totalGradeSummary.get(4).text());
             mTotalAccumulatedGrade.totalGrades = Double.valueOf(totalGradeSummary.get(6).text());
             mTotalAccumulatedGrade.GPA = Double.valueOf(totalGradeSummary.get(8).text());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getAccumulatedGrade(int year, int semesterCode) {
-        try {
-            Connection.Response res = Jsoup.connect("https://portal.kau.ac.kr/sugang/GradTotList.jsp" + "?guYear=" + year + "&guHakgi=" + semesterCode)
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .referrer("https://portal.kau.ac.kr/admt/MyMenuB.jsp")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-                    .cookies(mCookies)
-                    .validateTLSCertificates(false)
-                    .execute();
-            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
-            mAccumulatedGradeArray.clear();
-            Elements elements = doc.getElementsByAttributeValue("class", "table1");
-            Elements gradeSummary = elements.get(1).select("tr");
-            int gradeSummarySize = gradeSummary.size();
-            for (int i = 2; i < gradeSummarySize; i++) {
-                Elements data = gradeSummary.get(i).select("td");
-                int adjustVal = (i == 2 ? 1 : 0);
-                AccumulatedGrade accumulatedGrade = new AccumulatedGrade();
-                accumulatedGrade.year = year;
-                accumulatedGrade.semesterCode = semesterCode;
-                accumulatedGrade.subjectCode = data.get(0 + adjustVal).text();
-                accumulatedGrade.subjectTitle = data.get(1 + adjustVal).text();
-                accumulatedGrade.professorName = data.get(2 + adjustVal).text();
-                accumulatedGrade.type = data.get(3 + adjustVal).text();
-                accumulatedGrade.credits = Integer.valueOf(data.get(4 + adjustVal).text());
-                accumulatedGrade.grade = data.get(5 + adjustVal).text();
-                accumulatedGrade.retake = data.get(6 + adjustVal).text();
-                accumulatedGrade.remarks = data.get(7 + adjustVal).text();
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
