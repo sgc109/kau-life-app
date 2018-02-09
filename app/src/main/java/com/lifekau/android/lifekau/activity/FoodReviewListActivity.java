@@ -94,8 +94,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
             mOrderedByTimeAsc = -1;
         }
 
-        mToolbarTextView = findViewById(R.id.food_review_list_tool_bar_text_view);
-        mToolbarTextView.setText(getResources().getStringArray(R.array.food_corner_list)[mFoodCornerType]);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.food_review_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mProgressBar = (LinearLayout) findViewById(R.id.indeterminateBar);
