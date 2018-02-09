@@ -55,6 +55,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private TextView mEmptyListMessage;
     private LinearLayout mProgressBar;
     private ActionBar mActionBar;
+    private TextView mToolbarTextView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private int mFoodCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
@@ -79,6 +80,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
             mOrderedByRatingAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_RATING_ASC);
         }
 
+        mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
+
         if (getSupportActionBar() != null) {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
@@ -86,12 +89,13 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
         if (mFoodReviews == null) mFoodReviews = new ArrayList<>();
 
-        mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
         if (mOrderedByRatingAsc == 0 && mOrderedByTimeAsc == 0) {
             mOrderedByTimeAsc = -1;
         }
 
+        mToolbarTextView = findViewById(R.id.food_review_list_tool_bar_text_view);
+        mToolbarTextView.setText(getResources().getStringArray(R.array.food_corner_list)[mFoodCornerType]);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.food_review_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mProgressBar = (LinearLayout) findViewById(R.id.indeterminateBar);

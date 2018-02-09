@@ -14,44 +14,52 @@
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
-            android:elevation="4dp"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|enterAlways">
 
-
             <LinearLayout
-                android:id="@+id/food_review_list_button_bar_linear_layout"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="4dp"
-                android:orientation="horizontal"
-                >
-
+                android:layout_height="match_parent">
                 <LinearLayout
+                    android:id="@+id/food_review_list_button_bar_linear_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center">
+                    android:layout_margin="4dp"
+                    android:orientation="horizontal"
+                    >
 
-                    <Button
-                        android:id="@+id/order_by_time_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/food_review_order_by_time_string"/>
-                </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:gravity="center">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center">
+                        <Button
+                            android:id="@+id/order_by_time_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/food_review_order_by_time_string"/>
+                    </LinearLayout>
 
-                    <Button
-                        android:id="@+id/order_by_rating_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/food_review_order_by_rating_string"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:gravity="center">
+
+                        <Button
+                            android:id="@+id/order_by_rating_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/food_review_order_by_rating_string"/>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
 
         </android.support.v7.widget.Toolbar>
 
@@ -62,7 +70,7 @@
         <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
         <!--app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"-->
         <!--app:toolbarId="@+id/toolbar">-->
-
+        <!---->
 
         <!--</android.support.design.widget.CollapsingToolbarLayout>-->
     </android.support.design.widget.AppBarLayout>
