@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ import com.lifekau.android.lifekau.model.FoodReview;
 import com.lifekau.android.lifekau.viewholder.FoodReviewHolder;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -72,14 +75,10 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_food_review_list);
 
         if (savedInstanceState != null) {
-//            mFoodCornerType = savedInstanceState.getInt(SAVED_FOOD_CORNER_TYPE);
             mOrderedByTimeAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_TIME_ASC);
             mOrderedByRatingAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_RATING_ASC);
-
-//            mIsWriting = savedInstanceState.getBoolean(SAVED_IS_WRITING);
         }
 
-//        mIsWriting = true;
         if (getSupportActionBar() != null) {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
@@ -88,9 +87,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         if (mFoodReviews == null) mFoodReviews = new ArrayList<>();
 
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
-
-//        Toolbar toolbar = findViewById(R.id.food_review_list_toolbar);
-//        setSupportActionBar(toolbar);
 
         if (mOrderedByRatingAsc == 0 && mOrderedByTimeAsc == 0) {
             mOrderedByTimeAsc = -1;
@@ -108,33 +104,26 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         mRecyclerView = (RecyclerView) findViewById(R.id.food_review_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-    }
-
-    public void updateUI() {
+        mRecyclerView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
 
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.firebase_database_food_reviews))
-                .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType));
+                        .child(getString(R.string.firebase_database_food_reviews))
+                        .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType));
 
-        Query query = getQueryOrderedByTime(ref, -1);
-        if (mOrderedByRatingAsc != 0) query = getQueryOrderedByRating(ref, mOrderedByRatingAsc);
-        else if (mOrderedByTimeAsc != 0) query = getQueryOrderedByTime(ref, mOrderedByTimeAsc);
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mFoodReviews.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    mFoodReviews.add(snapshot.getValue(FoodReview.class));
-                }
-                mEmptyListMessage.setVisibility(mFoodReviews.size() == 0 ? View.VISIBLE : View.GONE);
-                mProgressBar.setVisibility(View.GONE);
-                mRecyclerAdapter.notifyDataSetChanged();
-//                if(!mIsWriting){
-//                    Toast.makeText(FoodReviewListActivity.this, getString(R.string.new_review_message), Toast.LENGTH_SHORT).show();
-//                }
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mFoodReviews.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            mFoodReviews.add(snapshot.getValue(FoodReview.class));
+                        }
+                        mProgressBar.setVisibility(View.GONE);
+                        mRecyclerAdapter.notifyDataSetChanged();
+                        setVisibilities();
+                        rearrangeReviews();
+                        Log.d("fuck", "data!!!!");
             }
 
             @Override
@@ -142,6 +131,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
             }
         });
+
         mRecyclerAdapter = new RecyclerView.Adapter<FoodReviewHolder>() {
             @Override
             public FoodReviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -164,30 +154,62 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
-    private Query getQueryOrderedByTime(DatabaseReference ref, int rev) {
-        Query query;
-        if (rev == -1) {
-            query = ref.orderByChild("mDateRev");
+    public void setVisibilities(){
+        if(mFoodReviews.size() != 0){
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyListMessage.setVisibility(View.GONE);
         } else {
-            query = ref.orderByChild("mDate");
+            mRecyclerView.setVisibility(View.GONE);
+            mEmptyListMessage.setVisibility(View.VISIBLE);
         }
-        return query;
     }
 
-    private Query getQueryOrderedByRating(DatabaseReference ref, int rev) {
-        Query query;
-        if (rev == -1) {
-            query = ref.orderByChild("mRatingRev");
-        } else {
-            query = ref.orderByChild("mRating");
+    private void rearrangeReviews(){
+        Comparator comparator = null;
+        if(mOrderedByRatingAsc != 0){
+            if(mOrderedByRatingAsc == -1){
+                comparator = new Comparator<FoodReview>() {
+                    @Override
+                    public int compare(FoodReview foodReview, FoodReview t1) {
+                        return Float.valueOf(t1.mRating).compareTo(foodReview.mRating);
+                    }
+                };
+            } else {
+                comparator = new Comparator<FoodReview>() {
+                    @Override
+                    public int compare(FoodReview foodReview, FoodReview t1) {
+                        return Float.valueOf(foodReview.mRating).compareTo(t1.mRating);
+                    }
+                };
+            }
+        } else if(mOrderedByTimeAsc != 0){
+            if(mOrderedByTimeAsc == -1){
+                comparator = new Comparator<FoodReview>() {
+                    @Override
+                    public int compare(FoodReview foodReview, FoodReview t1) {
+                        return Long.valueOf(t1.mDate).compareTo(Long.valueOf(foodReview.mDate));
+                    }
+                };
+            } else {
+                comparator = new Comparator<FoodReview>() {
+                    @Override
+                    public int compare(FoodReview foodReview, FoodReview t1) {
+                        return Long.valueOf(foodReview.mDate).compareTo(Long.valueOf(t1.mDate));
+                    }
+                };
+            }
         }
-        return query;
+        if(comparator == null) {
+            Log.e("fuck", "comparator is not initialized!! It's null.. check this right now");
+        }
+        Collections.sort(mFoodReviews, comparator);
+        mRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateUI();
+        setVisibilities();
     }
 
     @Override
@@ -196,7 +218,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     }
 
     public void onClickWriteFoodReviewFab(View view) {
-//        mIsWriting = true;
         writeFoodReview();
     }
 
@@ -214,8 +235,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         if (requestCode == REQUEST_FOOD_REVIEW) {
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
-//                mIsWriting = false;
-                updateUI();
+                mOrderedByTimeAsc = -1;
+                mOrderedByRatingAsc = 0;
             }
         }
     }
@@ -226,7 +247,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         outState.putInt(SAVED_FOOD_CORNER_TYPE, mFoodCornerType);
         outState.putInt(SAVED_ORDERED_BY_RATING_ASC, mOrderedByRatingAsc);
         outState.putInt(SAVED_ORDERED_BY_TIME_ASC, mOrderedByTimeAsc);
-//        outState.putBoolean(SAVED_IS_WRITING, mIsWriting);
     }
 
     @Override
@@ -239,7 +259,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
                     mOrderedByTimeAsc = -1;
                 }
                 mOrderedByRatingAsc = 0;
-                updateUI();
+                rearrangeReviews();
 //                mRecyclerView.smoothScrollToPosition(0);
                 break;
             default:
@@ -250,7 +270,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
                     mOrderedByRatingAsc = -1;
                 }
                 mOrderedByTimeAsc = 0;
-                updateUI();
+                rearrangeReviews();
 //                mRecyclerView.smoothScrollToPosition(0);
                 break;
         }

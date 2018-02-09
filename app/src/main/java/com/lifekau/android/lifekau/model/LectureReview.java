@@ -13,8 +13,6 @@ public class LectureReview extends Review {
     public LectureReview(float rating, String comment){
         mComment = comment;
         mRating = rating;
-        mRatingRev = -rating;
         mDate = new Date().getTime();
-        mDateRev = -mDate;
     }
 }

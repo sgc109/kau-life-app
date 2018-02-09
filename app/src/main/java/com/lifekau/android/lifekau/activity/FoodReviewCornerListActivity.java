@@ -134,7 +134,6 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         }
 
         public void bind(int position) { // 구현하기
-            Log.d("fuck", "position : " + position + ", bound : " + mListCntReviews.size());
             int cntReviews = mListCntReviews.get(position);
             float avgRating = cntReviews > 0 ? mListSumReviewRatings.get(position) / cntReviews : 0;
             mRatingBar.setRating(avgRating);

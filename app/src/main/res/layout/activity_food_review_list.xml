@@ -56,12 +56,12 @@
         </android.support.v7.widget.Toolbar>
 
         <!--<android.support.design.widget.CollapsingToolbarLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:contentScrim="?attr/colorPrimary"-->
-            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
-            <!--app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"-->
-            <!--app:toolbarId="@+id/toolbar">-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:contentScrim="?attr/colorPrimary"-->
+        <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
+        <!--app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"-->
+        <!--app:toolbarId="@+id/toolbar">-->
 
 
         <!--</android.support.design.widget.CollapsingToolbarLayout>-->
@@ -88,14 +88,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/food_review_list_button_bar_linear_layout"
-                    android:gravity="center_horizontal"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/food_review_list_empty_list_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/empty_review_list_message"
+                        android:textAlignment="center"
                         android:visibility="gone"/>
 
                     <LinearLayout

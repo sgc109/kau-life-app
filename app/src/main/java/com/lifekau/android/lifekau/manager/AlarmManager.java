@@ -32,7 +32,7 @@ public class AlarmManager {
         mDatabase.beginTransaction();
         try {
             for(int i = 0; i < 20; i++){
-                ContentValues values = getContentValues(new Alarm("test!!!", Alarm.TYPE_COMMENT));
+                ContentValues values = getContentValues(new Alarm("test alarm!", Alarm.TYPE_COMMENT));
                 mDatabase.insert(AlarmTable.NAME, null, values);
             }
             mDatabase.setTransactionSuccessful();

@@ -7,8 +7,6 @@ package com.lifekau.android.lifekau.model;
 public class Review {
     public String mComment;
     public float mRating;
-    public float mRatingRev;
     public long mDate;
-    public long mDateRev;
     Review(){}
 }

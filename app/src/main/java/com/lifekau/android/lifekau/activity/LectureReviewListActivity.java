@@ -3,6 +3,7 @@ package com.lifekau.android.lifekau.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ public class LectureReviewListActivity extends AppCompatActivity {
     private RecyclerView.Adapter mRecyclerAdapter;
     private TextView mLectureNameTextView;
     private FloatingActionButton mFab;
+    private NestedScrollView mNestedScrollView;
+//    private TextView mEmptyListMessage;
     List<LectureReview> mLectureReviews;
 
 
@@ -71,10 +74,12 @@ public class LectureReviewListActivity extends AppCompatActivity {
             mLectureReviews = new ArrayList<>();
         }
 
-        mCntReviewsTextView = (TextView)findViewById(R.id.lecture_review_number_of_reviews_text_view);
-        mAvgRatingTextView = (TextView)findViewById(R.id.lecture_review_average_rating_text_view);
-        mRatingBar = (RatingBar)findViewById(R.id.lecture_review_list_rating_bar);
-        mLectureNameTextView = (TextView) findViewById(R.id.lecture_review_list_lecture_text_view);
+//        mEmptyListMessage = findViewById(R.id.lecture_review_list_empty_list_text_view);
+        mNestedScrollView = findViewById(R.id.lecture_review_list_nested_scroll_view);
+        mCntReviewsTextView = findViewById(R.id.lecture_review_number_of_reviews_text_view);
+        mAvgRatingTextView = findViewById(R.id.lecture_review_average_rating_text_view);
+        mRatingBar = findViewById(R.id.lecture_review_list_rating_bar);
+        mLectureNameTextView = findViewById(R.id.lecture_review_list_lecture_text_view);
         mLectureNameTextView.setText(mLectureName);
 
         mRecyclerAdapter = new RecyclerView.Adapter<LectureReviewHolder>() {
@@ -128,8 +133,18 @@ public class LectureReviewListActivity extends AppCompatActivity {
 
             }
         });
+//        setVisibilities();
     }
 
+//    private void setVisibilities(){
+//        if(mLectureReviews.size() == 0){
+//            mNestedScrollView.setVisibility(View.GONE);
+//            mEmptyListMessage.setVisibility(View.VISIBLE);
+//        } else {
+//            mNestedScrollView.setVisibility(View.VISIBLE);
+//            mEmptyListMessage.setVisibility(View.GONE);
+//        }
+//    }
     public void onClickWriteLectureReviewFab(View view) {
         writeLectureReview();
     }

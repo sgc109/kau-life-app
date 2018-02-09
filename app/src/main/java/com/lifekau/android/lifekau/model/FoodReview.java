@@ -13,8 +13,6 @@ public class FoodReview extends Review {
         mCornerType = cornerType;
         mComment = comment;
         mRating = rating;
-        mRatingRev = -rating;
         mDate = new Date().getTime();
-        mDateRev = -mDate;
     }
 }

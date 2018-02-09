@@ -35,7 +35,7 @@ public class AlarmsListActivity extends AppCompatActivity implements OnAlarmClic
         setContentView(R.layout.activity_alarms_list);
 
         if(getSupportActionBar() != null){
-            getSupportActionBar().hide();
+            getSupportActionBar().setTitle("알림");
         }
         mEmptyListTextView = findViewById(R.id.alarms_list_empty_text_view);
 
