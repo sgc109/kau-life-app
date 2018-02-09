@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 public class LMSInfomationActivity extends AppCompatActivity {
-    static LMSInfomation lmsInfomation = new LMSInfomation();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,8 +16,9 @@ public class LMSInfomationActivity extends AppCompatActivity {
     private class LMSConnectSession extends AsyncTask<String, Void, Integer> {
         @Override
         protected Integer doInBackground(String... params){
-            if(lmsInfomation.connectSession(params[0], params[1]) != -1) return 0;
-            return -1;
+//            if(.connectSession(params[0], params[1]) != -1) return 0;
+//            return -1;
+            return 0;
         }
         @Override
         protected void onProgressUpdate(Void... params){
