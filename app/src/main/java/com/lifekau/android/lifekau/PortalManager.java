@@ -16,12 +16,16 @@ import java.util.Map;
 
 public class PortalManager {
 
+    private static final int EXAMIANATION_TIME_TABLE_ROW = 13;
+    private static final int EXAMIANATION_TIME_TABLE_COL = 7;
+
     private ArrayList<Scholarship> mScholarshipArray;
     private ArrayList<CurrGrade> mCurrGrade;
     private TotalCurrGrade mTotalCurrGrade;
     private ArrayList<AccumulatedGrade> mAccumulatedGradeArray;
     private ArrayList<AccumulatedGradeSummary> mAccumulatedGradeSummaryArray;
     private TotalAccumulatedGrade mTotalAccumulatedGrade;
+    private String[][] mExaminationTimeTable;
     private Map<String, String> mCookies;
 
     private PortalManager() {
@@ -31,6 +35,7 @@ public class PortalManager {
         mAccumulatedGradeArray = new ArrayList<AccumulatedGrade>();
         mAccumulatedGradeSummaryArray = new ArrayList<AccumulatedGradeSummary>();
         mTotalAccumulatedGrade = new TotalAccumulatedGrade();
+        mExaminationTimeTable = new String[EXAMIANATION_TIME_TABLE_ROW][EXAMIANATION_TIME_TABLE_COL];
     }
 
     private static class LazyHolder{
@@ -101,6 +106,7 @@ public class PortalManager {
                     .execute();
         } catch (Exception e) {
             e.printStackTrace();
+            return mCookies = null;
         }
         return mCookies = cookies;
     }
@@ -109,7 +115,7 @@ public class PortalManager {
         return 0;
     }
 
-    public void getScholarshipInfomation(Context context) {
+    public int getScholarshipInfomation(Context context) {
         Resources resources = context.getResources();
         try {
             Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_scholar_page))
@@ -136,10 +142,12 @@ public class PortalManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return -1;
         }
+        return 0;
     }
 
-    public void getCurrGradeInfomation(Context context) {
+    public int getCurrGradeInfomation(Context context) {
         Resources resources = context.getResources();
         try {
             Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_curr_grade_page))
@@ -154,7 +162,7 @@ public class PortalManager {
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
             Elements elements = doc.getElementsByAttributeValue("cellspacing", "1");
             mCurrGrade.clear();
-            if (resources.getString(R.string.portal_curr_grade_no_data).equals(elements.get(0).select("tr").get(1).select("td").text())) return;
+            if (resources.getString(R.string.portal_curr_grade_no_data).equals(elements.get(0).select("tr").get(1).select("td").text())) return -1;
             int elementsSize = elements.size();
             for (int i = 0; i < elementsSize; i++) {
                 Elements grades = elements.get(i).select("tr");
@@ -184,10 +192,12 @@ public class PortalManager {
 
         } catch (Exception e) {
             e.printStackTrace();
+            return -1;
         }
+        return 0;
     }
 
-    public void getAccumulatedGrade(Context context, int year, int semesterCode) {
+    public int getAccumulatedGrade(Context context, int year, int semesterCode) {
         Resources resources = context.getResources();
         try {
             Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_accumulated_grade_page) + "?guYear=" + year + "&guHakgi=" + semesterCode)
@@ -221,10 +231,12 @@ public class PortalManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return -1;
         }
+        return 0;
     }
 
-    public void getAccumulatedGradeSummary(Context context) {
+    public int getAccumulatedGradeSummary(Context context) {
         Resources resources = context.getResources();
         try {
             Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_accumulated_grade_summary_page))
@@ -262,7 +274,43 @@ public class PortalManager {
             mTotalAccumulatedGrade.GPA = Double.valueOf(totalGradeSummary.get(8).text());
         } catch (Exception e) {
             e.printStackTrace();
+            return -1;
         }
+        return 0;
+    }
+
+    public int getExaminationTimeTable(Context context, int year, int semesterCode, int examCode) {
+        Resources resources = context.getResources();
+        try {
+            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_examination_time_table_page) + "?" + year + "hakgi=" + examCode)
+                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
+                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                    .data("year", String.valueOf(year))
+                    .data("hakgi", String.valueOf(semesterCode))
+                    .data("junggi_gb", String.valueOf(examCode))
+                    .method(Connection.Method.POST)
+                    .cookies(mCookies)
+                    .validateTLSCertificates(false)
+                    .execute();
+            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
+            Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
+            if(timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_titme_table_no_data))) return -1;
+            int timeTableElementsSize = timeTableElements.size();
+            for (int i = 0; i < timeTableElementsSize; i++) {
+                Elements dataElements = timeTableElements.get(i).select("td");
+                int dataElementsSize = dataElements.size();
+                for(int j = 0; j < dataElementsSize; j++){
+                    mExaminationTimeTable[i][j] = dataElements.get(j).text();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return 0;
     }
 
     public String getMatchingCharSet(String charset) {

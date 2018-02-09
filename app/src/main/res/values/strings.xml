@@ -36,12 +36,14 @@
     <string name="portal_jsoup_curr_grade_page">https://portal.kau.ac.kr/sugang/GradHakList.jsp</string>
     <string name="portal_jsoup_accumulated_grade_page">https://portal.kau.ac.kr/sugang/GradTotList.jsp</string>
     <string name="portal_jsoup_accumulated_grade_summary_page">https://portal.kau.ac.kr/sugang/GradTermList.jsp</string>
+    <string name="portal_jsoup_examination_time_table_page">https://portal.kau.ac.kr/sugang/SugangExamList.jsp</string>
     <string name="portal_jsoup_header_accept">text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</string>
     <string name="portal_jsoup_header_accpet_encoding">gzip, deflate</string>
     <string name="portal_jsoup_header_accept_encoding_with_br">gzip, deflate, br</string>
     <string name="portal_jsoup_header_accpet_language">ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7</string>
     <string name="portal_jsoup_user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36</string>
     <string name="portal_curr_grade_no_data">데이터 없음</string>
+    <string name="portal_titme_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
