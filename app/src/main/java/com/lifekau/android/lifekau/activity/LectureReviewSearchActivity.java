@@ -67,7 +67,7 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
     }
 
     void updateLectureList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Lectures");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.firebase_database_lectures));
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

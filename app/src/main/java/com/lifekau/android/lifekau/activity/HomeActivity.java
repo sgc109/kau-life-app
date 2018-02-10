@@ -66,6 +66,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         bottomNavigation = findViewById(R.id.home_bottom_navigation_bar);
         viewPager = findViewById(R.id.home_view_pager);
         mFab = findViewById(R.id.new_post_fab);
+        setFabOnClickListenerToWritePost();
 
         tabColors = getApplicationContext().getResources().getIntArray(R.array.tab_colors);
         navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_menu_5);
@@ -130,6 +131,15 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         return bottomNavigation.getItemsCount();
     }
 
+    private void setFabOnClickListenerToWritePost(){
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = PostWriteActivity.newIntent(HomeActivity.this);
+                startActivity(intent);
+            }
+        });
+    }
     @Override
     public boolean onTabSelected(int position, boolean wasSelected) {
         if (currentFragment == null) {
@@ -151,6 +161,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         currentFragment.willBeDisplayed();
 
         if (position == 0) {
+            setFabOnClickListenerToWritePost();
             bottomNavigation.setNotification("", 1);
 
             mFab.setVisibility(View.VISIBLE);

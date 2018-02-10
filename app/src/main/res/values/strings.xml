@@ -17,14 +17,25 @@
     <string name="lecture_review_text_limit_message">최대 %1$d자 까지 입력할 수 있습니다</string>
     <string name="lecture_review_search_bar_hint">"강의명(교수)으로 검색하세요(초성으로도 가능)"</string>
     <string name="review_number_of_review_string"> 개의 평가</string>
-    <string name="firebase_database_food_reviews">Food_reviews</string>
-    <string name="firebase_database_lecture_reviews">Lecture_reviews</string>
-    <string name="firebase_database_food_review_corner_id">Corner %1$d</string>
+    <string name="firebase_database_food_reviews">food_reviews</string>
+    <string name="firebase_database_lecture_reviews">lecture_reviews</string>
+    <string name="firebase_database_food_review_corner_id">corner %1$d</string>
+    <string name="firebase_database_lectures">Lectures</string>
+    <string name="firebase_database_posts">posts</string>
+    <string name="firebase_database_post_comments">post-comments</string>
     <string name="review_write_success_message">리뷰가 성공적으로 게시되었습니다!</string>
     <string name="new_review_message">새로운 리뷰가 올라왔습니다!</string>
-    <string name="please_write_something_alert_message">리뷰를 입력해 주세요!</string>
+    <string name="please_write_review_alert_message">리뷰를 입력해 주세요!</string>
+    <string name="please_write_post_text_alert_message">내용을 작성해주세요!</string>
     <string name="empty_alarm_list_message">알람이 없습니다.</string>
     <string name="empty_review_list_message">평가가 없습니다.</string>
+    <string name="write_post_hint_message">하고 싶은 말을 자유롭게 써주세요.</string>
+    <string name="submit_post_button">게시하기</string>
+    <string name="write_new_post">새 글 쓰기</string>
+    <string name="text_gone_warning_message">작성 중인 글이 사라집니다.\n계속 하시겠습니까?</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
+
 
     <string name="menu_1">커뮤니티</string>
     <string name="menu_2">리뷰</string>
