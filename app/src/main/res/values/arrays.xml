@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 푸드 코너 리스트 관련 스트링 -->
     <string-array name="food_corner_list">
         <item>@string/food_corner_name1</item>
         <item>@string/food_corner_name2</item>
@@ -8,5 +9,21 @@
         <item>@string/food_corner_name5</item>
         <item>@string/food_corner_name6</item>
         <item>@string/food_corner_name7</item>
+    </string-array>
+    <!-- 라이브러리 리스트 관련 스트링 -->
+    <string-array name="library_reading_room_list">
+        <item>@string/library_reading_room_name_01</item>
+        <item>@string/library_reading_room_name_02</item>
+        <item>@string/library_reading_room_name_03</item>
+        <item>@string/library_reading_room_name_04</item>
+        <item>@string/library_reading_room_name_05</item>
+    </string-array>
+    <string-array name="library_study_room_list">
+        <item>@string/library_study_room_name_01</item>
+        <item>@string/library_study_room_name_02</item>
+        <item>@string/library_study_room_name_03</item>
+        <item>@string/library_study_room_name_04</item>
+        <item>@string/library_study_room_name_05</item>
+        <item>@string/library_study_room_name_06</item>
     </string-array>
 </resources>

@@ -1,4 +1,4 @@
-package com.lifekau.android.lifekau;
+package com.lifekau.android.lifekau.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,27 +18,29 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LibraryManager;
 
 import dmax.dialog.SpotsDialog;
 
 public class ReadingRoomDetailActivity extends AppCompatActivity {
 
-    static LibraryInfomation mLibraryInfomation = new LibraryInfomation();
-    static SpotsDialog mProgressDialog;
-    TextView mReadingRoomTitleTextView;
-    ConstraintLayout mReadingRoomDetailSeatLayout;
-    SwipeRefreshLayout mSwipeLayout;
+    private TextView mReadingRoomTitleTextView;
+    private ConstraintLayout mReadingRoomDetailSeatLayout;
+    private LibraryManager mLibraryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading_room_detail);
-        mReadingRoomTitleTextView = (TextView) findViewById(R.id.reading_room_detail_title);
-        mReadingRoomDetailSeatLayout = (ConstraintLayout) findViewById(R.id.reading_room_detail_seat_layout);
-        mProgressDialog = new SpotsDialog(this, R.style.Custom);
-        mProgressDialog.setCancelable(false);
+        mReadingRoomTitleTextView = findViewById(R.id.reading_room_detail_title);
+        mReadingRoomDetailSeatLayout = findViewById(R.id.reading_room_detail_seat_layout);
+        mLibraryManager = mLibraryManager.getInstance();
         Button closeButton = (Button)findViewById(R.id.reading_room_detail_close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,47 +48,8 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-        ReadingRoomStatusAsyncTask readingRoomStatusAsyncTask = new ReadingRoomStatusAsyncTask();
-        readingRoomStatusAsyncTask.execute();
         ReadingRoomDetailAsyncTask readingRoomDetailAsyncTask = new ReadingRoomDetailAsyncTask();
-        Intent intent = getIntent();
-        readingRoomDetailAsyncTask.execute(intent.getIntExtra("readingRoomNum", 1));
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mProgressDialog == null) {
-            mProgressDialog = new SpotsDialog(this, R.style.Custom);
-            mProgressDialog.setCancelable(false);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if(mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
+        readingRoomDetailAsyncTask.execute(getIntent().getIntExtra("roomNum", 0));
     }
 
     @Override
@@ -95,84 +58,53 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
-    private class ReadingRoomStatusAsyncTask extends AsyncTask<Void, Void, Integer> {
-        @Override
-        protected Integer doInBackground(Void... params) {
-            publishProgress();
-            if (mLibraryInfomation.getReadingRoomStatus() != -1) return 0;
-            return -1;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... value) {
-            super.onProgressUpdate(value);
-            if (mProgressDialog != null){
-                mProgressDialog.show();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            super.onPostExecute(result);
-            if (result != -1) {}
-            else {
-                //예외 처리
-                showErrorMessage();
-            }
-            if (mProgressDialog != null) mProgressDialog.hide();
-        }
-    }
-
     private class ReadingRoomDetailAsyncTask extends AsyncTask<Integer, Void, Integer> {
         @Override
         protected Integer doInBackground(Integer... params) {
             publishProgress();
-            if (mLibraryInfomation.getReadingRoomDetailStatus(params[0]) != -1) return params[0];
+            if (mLibraryManager.getReadingRoomDetailStatus(getApplicationContext(), params[0]) != -1) return params[0];
             return -1;
         }
 
         @Override
         protected void onProgressUpdate(Void... params) {
             super.onProgressUpdate(params);
-            if (mProgressDialog != null && !mProgressDialog.isShowing()) mProgressDialog.show();
         }
 
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             if (result != -1) {
+                if (result == 0) {
+                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(0));
+                    registerTextViewOnLayout(0, 1, 138);
+                    registerTextViewOnLayout(0, 229, 240);
+                }
                 if (result == 1) {
-                    mReadingRoomTitleTextView.setText(mLibraryInfomation.getReadingRoomName(1));
-                    registerTextViewOnLayout(1, 1, 138);
-                    registerTextViewOnLayout(1, 229, 240);
+                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(1));
+                    registerTextViewOnLayout(1, 139, 228);
+                    registerTextViewOnLayout(1, 241, 252);
                 }
                 if (result == 2) {
-                    mReadingRoomTitleTextView.setText(mLibraryInfomation.getReadingRoomName(2));
-                    registerTextViewOnLayout(2, 139, 228);
-                    registerTextViewOnLayout(2, 241, 252);
+                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(2));
+                    registerTextViewOnLayout(2, 1, 204);
                 }
                 if (result == 3) {
-                    mReadingRoomTitleTextView.setText(mLibraryInfomation.getReadingRoomName(3));
+                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(3));
                     registerTextViewOnLayout(3, 1, 204);
                 }
                 if (result == 4) {
-                    mReadingRoomTitleTextView.setText(mLibraryInfomation.getReadingRoomName(4));
-                    registerTextViewOnLayout(4, 1, 204);
-                }
-                if (result == 5) {
-                    mReadingRoomTitleTextView.setText(mLibraryInfomation.getReadingRoomName(5));
-                    registerTextViewOnLayout(5, 1, 108);
+                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(4));
+                    registerTextViewOnLayout(4, 1, 108);
                 }
             } else {
                 //예외 처리
                 showErrorMessage();
             }
-            if (mProgressDialog != null && mProgressDialog.isShowing()) mProgressDialog.hide();
         }
-
     }
 
-    public void registerTextViewOnLayout(Integer roomNum, Integer startSeatNum, Integer endSeatNum) {
+    public void registerTextViewOnLayout(int roomNum, int startSeatNum, int endSeatNum) {
         Bitmap emptySeatBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_empty_seat);
         Bitmap usedSeatBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_used_seat);
         View view = getWindow().getDecorView();
@@ -181,11 +113,11 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         size.y = view.getHeight();
         int bitmapSize = size.x / 20, textSize = size.x / 60;
         for (int i = startSeatNum; i <= endSeatNum; i++) {
-            Point point = mLibraryInfomation.getReadingRoomSeatPoint(roomNum, i);
+            Point point = mLibraryManager.getReadingRoomSeatPoint(roomNum, i);
             ImageView imageView = new ImageView(this);
             imageView.setX((int) (size.x * point.x / 1200.0 + 0.5));
             imageView.setY((int) (size.y * point.y / 700.0 + 0.5));
-            Bitmap bitmap = mLibraryInfomation.getReadingRoomDetailStatus(roomNum, i) ?
+            Bitmap bitmap = mLibraryManager.getReadingRoomDetailStatus(roomNum, i) ?
                     emptySeatBitmap.createScaledBitmap(emptySeatBitmap, bitmapSize, bitmapSize, true) :
                     usedSeatBitmap.createScaledBitmap(usedSeatBitmap, bitmapSize, bitmapSize, true);
             Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/SpoqaHanSansRegular.ttf");

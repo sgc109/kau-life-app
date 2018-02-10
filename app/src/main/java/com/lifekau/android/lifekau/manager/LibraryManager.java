@@ -1,27 +1,24 @@
-package com.lifekau.android.lifekau;
+package com.lifekau.android.lifekau.manager;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Point;
-import android.util.Log;
-
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
 
 import org.jsoup.Connection;
-import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-//TODO: 코드 리팩토링이 필요하다.
+import java.util.Calendar;
+import java.util.Map;
 
-public class LibraryInfomation {
+public class LibraryManager {
 
-    private static String[] ENCODE_TYPE = {"EUC-KR", "KSC5601", "X-WINDOWS-949", "ISO-8859-1", "UTF-8"};
-    private static int TOTAL_READING_ROOM_NUM = 5;
-    private static int TOTAL_READING_ROOM_SEAT_NUM = 300;
-    private static int TOTAL_STDUYING_ROOM_NUM = 6;
-    private static int TOTAL_STDUYING_ROOM_STATUS_NUM = 50;
+    private static final int TOTAL_READING_ROOM_NUM = 5;
+    private static final int TOTAL_READING_ROOM_SEAT_NUM = 300;
+    private static final int TOTAL_STDUYING_ROOM_NUM = 6;
+    private static final int TOTAL_STDUYING_ROOM_STATUS_NUM = 50;
+
     private int[] mReadingRoomAvailableSeat;
     private int[] mReadingRoomTotalSeat;
     private String[] mReadingRoomName;
@@ -30,7 +27,7 @@ public class LibraryInfomation {
     private String[] mStudyRoomName;
     private boolean[][] mStudyRoomDetailStatus;
 
-    LibraryInfomation() {
+    private LibraryManager() {
         mReadingRoomAvailableSeat = new int[TOTAL_READING_ROOM_NUM + 1];
         mReadingRoomTotalSeat = new int[TOTAL_READING_ROOM_NUM + 1];
         mReadingRoomName = new String[TOTAL_READING_ROOM_NUM + 1];
@@ -40,9 +37,18 @@ public class LibraryInfomation {
         mStudyRoomDetailStatus = new boolean[TOTAL_STDUYING_ROOM_NUM + 1][TOTAL_STDUYING_ROOM_STATUS_NUM];
     }
 
-    public Integer getReadingRoomStatus() {
+    private static class LazyHolder{
+        private static LibraryManager INSTANCE = new LibraryManager();
+    }
+
+    public static LibraryManager getInstance(){
+        return LazyHolder.INSTANCE;
+    }
+
+    public int getReadingRoomStatus(Context context) {
+        Resources resources = context.getResources();
         try {
-            Response res = Jsoup.connect("http://lib.kau.ac.kr/HAULMS/haulms/RoomRsv.csp")
+            Connection.Response res = Jsoup.connect("http://lib.kau.ac.kr/HAULMS/haulms/RoomRsv.csp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
                     .header("Accept-Encoding", "gzip, deflate")
                     .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
@@ -50,18 +56,17 @@ public class LibraryInfomation {
                     .data("HLOC", "HAULMS", "COUNT", "1qa9R5zy00", "Kor", "1")
                     .timeout(3000)
                     .execute();
-            Map<String, String> cookies = res.cookies();
             res = Jsoup.connect("http://ebook.kau.ac.kr:81/domian5.asp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
                     .header("Accept-Encoding", "gzip, deflate")
                     .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-                    .cookies(cookies)
+                    .cookies(res.cookies())
                     .timeout(3000)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharset(res.charset())));
-            for (int i = 1; i <= TOTAL_READING_ROOM_NUM; i++) {
-                String[] strings = doc.select("tr").get(i + 2).text().split("\\s+");
+            for (int i = 0; i < TOTAL_READING_ROOM_NUM; i++) {
+                String[] strings = doc.select("tr").get(i + 3).text().split("\\s+");
                 mReadingRoomName[i] = strings[1];
                 mReadingRoomTotalSeat[i] = Integer.parseInt(strings[2]);
                 mReadingRoomAvailableSeat[i] = Integer.parseInt(strings[4]);
@@ -73,38 +78,28 @@ public class LibraryInfomation {
         return 0;
     }
 
-    public Integer getReadingRoomDetailStatus(Integer index) {
+    public int getReadingRoomDetailStatus(Context context, int roomNum) {
         try {
-            Response res = Jsoup.connect("http://lib.kau.ac.kr/HAULMS/haulms/RoomRsv.csp")
+            Connection.Response res = Jsoup.connect("http://ebook.kau.ac.kr:81/roomview5.asp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
                     .header("Accept-Encoding", "gzip, deflate")
                     .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-                    .data("HLOC", "HAULMS", "COUNT", "1qa9R5zy00", "Kor", "1")
-                    .timeout(3000)
-                    .execute();
-            Map<String, String> cookies = res.cookies();
-            res = Jsoup.connect("http://ebook.kau.ac.kr:81/roomview5.asp?room_no=" + String.valueOf(index))
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-                    .cookies(cookies)
+                    .data("room_no", String.valueOf(roomNum + 1))
                     .timeout(3000)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharset(res.charset())));
-            Elements avail = doc.select("div").select("td");
-            Elements seatNum = doc.select("div").select("td").select("font");
-            Elements style = doc.select("div");
-            for (int i = 0; i < avail.size(); i++) {
-                int num = Integer.parseInt(seatNum.get(i).text());
-                mReadingRoomDetailStatus[index][num] = avail.get(i).attr("bgcolor").equals("gray");
-                String[] strings = style.get(i + 2).attr("style").split("\\s+");
+            Elements seatElements = doc.select("div");
+            Elements styleElements = doc.select("div").select("td");
+            for (int i = 2; i < seatElements.size(); i++) {
+                int seatNum = Integer.parseInt(seatElements.get(i).text());
+                mReadingRoomDetailStatus[roomNum][seatNum] = styleElements.get(i - 2).attr("bgcolor").equals("gray");
+                String[] strings = seatElements.get(i).attr("style").split("\\s+");
                 String string = strings[1].split(":")[1].split("px")[0];
-                mReadingRoomPoint[index][num] = new Point();
-                mReadingRoomPoint[index][num].x = Integer.parseInt(string);
+                mReadingRoomPoint[roomNum][seatNum] = new Point();
+                mReadingRoomPoint[roomNum][seatNum].x = Integer.parseInt(string);
                 string = strings[2].split(":")[1].split("px")[0];
-                mReadingRoomPoint[index][num].y = Integer.parseInt(string);
+                mReadingRoomPoint[roomNum][seatNum].y = Integer.parseInt(string);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,39 +108,37 @@ public class LibraryInfomation {
         return 0;
     }
 
-    public Point getReadingRoomSeatPoint(Integer roomNum, Integer seatNum) {
+    public Point getReadingRoomSeatPoint(int roomNum, int seatNum) {
         return mReadingRoomPoint[roomNum][seatNum];
     }
 
-    public String getReadingRoomName(Integer index) {
-        return mReadingRoomName[index];
+    public String getReadingRoomName(int roomNum) {
+        return mReadingRoomName[roomNum];
     }
 
-    public Integer getReadingRoomAvailableSeat(Integer index) {
-        if (index > TOTAL_READING_ROOM_NUM) return -1;
-        if (index <= 0) return -1;
-        return mReadingRoomAvailableSeat[index];
+    public int getReadingRoomAvailableSeat(int roomNum) {
+        return mReadingRoomAvailableSeat[roomNum];
     }
 
-    public Boolean getReadingRoomDetailStatus(Integer roomNum, Integer seatNum) {
+    public Boolean getReadingRoomDetailStatus(int roomNum, int seatNum) {
         return mReadingRoomDetailStatus[roomNum][seatNum];
     }
 
-    public Integer getReadingRoomUsedSeat(Integer index) {
-        return mReadingRoomTotalSeat[index] - mReadingRoomAvailableSeat[index];
+    public int getReadingRoomUsedSeat(int roomNum) {
+        return mReadingRoomTotalSeat[roomNum] - mReadingRoomAvailableSeat[roomNum];
     }
 
-    public Integer getReadingRoomTotalSeat(Integer index) {
-        return mReadingRoomTotalSeat[index];
+    public int getReadingRoomTotalSeat(int roomNum) {
+        return mReadingRoomTotalSeat[roomNum];
     }
 
-    public String getReadingRoomSummary(Integer index) {
-        return getReadingRoomName(index) + "(" + String.valueOf(getReadingRoomAvailableSeat(index)) + " / " + String.valueOf(getReadingRoomTotalSeat(index)) + ")";
+    public String getReadingRoomSummary(int roomNum) {
+        return "(" + String.valueOf(getReadingRoomAvailableSeat(roomNum)) + " / " + String.valueOf(getReadingRoomTotalSeat(roomNum)) + ")";
     }
 
-    public Integer getStudyRoomStatus() {
+    public int getStudyRoomStatus(Context context) {
         try {
-            Response res = Jsoup.connect("http://lib.kau.ac.kr/haulms/haulms/SRResv.csp")
+            Connection.Response res = Jsoup.connect("http://lib.kau.ac.kr/haulms/haulms/SRResv.csp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
                     .header("Accept-Encoding", "gzip, deflate")
                     .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
@@ -155,7 +148,7 @@ public class LibraryInfomation {
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharset(res.charset())));
             Elements studyRoomName = doc.getElementsByAttributeValue("class", "clsRoomBox");
             for (int i = 0, size = studyRoomName.size(); i < size; i++)
-                mStudyRoomName[i + 1] = studyRoomName.get(i).text();
+                mStudyRoomName[i] = studyRoomName.get(i).text();
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
@@ -163,10 +156,10 @@ public class LibraryInfomation {
         return 0;
     }
 
-    public Integer getStudyRoomDetailStatus(Integer index) {
-        final String[] STUDY_ROOM_CODE = {"", "STD-A", "STD-B1", "STD-B2", "STD-C1", "STD-C2", "STD-C3"};
+    public int getStudyRoomDetailStatus(Context context, int roomNum) {
+         String[] STUDY_ROOM_CODE = {"STD-A", "STD-B1", "STD-B2", "STD-C1", "STD-C2", "STD-C3"};
         try {
-            Response res = Jsoup.connect("http://lib.kau.ac.kr/haulms/haulms/SRResv.csp")
+            Connection.Response res = Jsoup.connect("http://lib.kau.ac.kr/haulms/haulms/SRResv.csp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
                     .header("Accept-Encoding", "gzip, deflate")
                     .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
@@ -180,14 +173,14 @@ public class LibraryInfomation {
                     .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
                     .cookies(cookies)
-                    .data("jc", "getTimes", "rc", STUDY_ROOM_CODE[index], "uid", "GUEST")
+                    .data("jc", "getTimes", "rc", STUDY_ROOM_CODE[roomNum], "uid", "GUEST")
                     .method(Connection.Method.POST)
                     .timeout(3000)
                     .execute();
             String[] strings = new String(res.bodyAsBytes(), getMatchingCharset(res.charset())).split("\u0011");
             for (int i = 3; i < strings.length; i++) {
                 String[] infomation = strings[i].split("\\^");
-                mStudyRoomDetailStatus[index][Integer.parseInt(infomation[0])] = infomation[2].equalsIgnoreCase("+");
+                mStudyRoomDetailStatus[roomNum][Integer.parseInt(infomation[0])] = infomation[2].equalsIgnoreCase("+");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -196,19 +189,19 @@ public class LibraryInfomation {
         return 0;
     }
 
-    public String getStudyRoomName(Integer roomNum) {
+    public String getStudyRoomName(int roomNum) {
         return mStudyRoomName[roomNum];
     }
 
-    public Boolean getStudyRoomDetailStatus(Integer roomNum, Integer index) {
-        return mStudyRoomDetailStatus[roomNum][index];
+    public Boolean getStudyRoomDetailStatus(int roomNum, int time) {
+        return mStudyRoomDetailStatus[roomNum][time];
     }
 
-    public String getStudyRoomSummary(Integer roomNum) {
+    public String getStudyRoomSummary(int roomNum) {
         Calendar currTime = Calendar.getInstance();
         int currHour = currTime.get(Calendar.HOUR_OF_DAY);
         currHour = currHour < 0 ? 0 : currHour;
-        return getStudyRoomName(roomNum) + "(" + (mStudyRoomDetailStatus[roomNum][currHour] ? "이용 가능" : "이용 불가") + ")";
+        return "(" + (mStudyRoomDetailStatus[roomNum][currHour] ? "이용 가능" : "이용 불가") + ")";
     }
 
     private String getMatchingCharset(String charset) {

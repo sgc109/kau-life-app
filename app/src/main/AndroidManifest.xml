@@ -23,10 +23,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ReadingRoomDetailActivity"
+            android:name=".activity.ReadingRoomDetailActivity"
             android:theme="@style/DialogTheme"></activity>
         <activity
-            android:name=".StudyRoomDetailActivity"
+            android:name=".activity.StudyRoomDetailActivity"
             android:theme="@style/DialogTheme"></activity>
         <activity
             android:name=".activity.FoodReviewListActivity"
@@ -42,7 +42,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"></activity>
-        <activity android:name=".LibraryInfomationActivity"></activity>
+        <activity android:name=".activity.LibraryListActivity"></activity>
 
         <service android:name=".PushAlarmService">
             <intent-filter>

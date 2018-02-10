@@ -1,4 +1,4 @@
-package com.lifekau.android.lifekau;
+package com.lifekau.android.lifekau.activity;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -7,23 +7,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LibraryManager;
 
 import dmax.dialog.SpotsDialog;
 
 public class StudyRoomDetailActivity extends AppCompatActivity {
 
-    static LibraryInfomation mLibraryInfomation;
-    static SpotsDialog mProgressDialog;
+    private LibraryManager mLibraryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_room_detail);
-        mLibraryInfomation = new LibraryInfomation();
-        mProgressDialog = new SpotsDialog(this, R.style.Custom);
-        mProgressDialog.setCancelable(false);
+        mLibraryManager = LibraryManager.getInstance();
         Button closeButton = (Button)findViewById(R.id.study_room_detail_close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,46 +33,8 @@ public class StudyRoomDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-        Intent intent = getIntent();
-        int studyRoomNum = intent.getIntExtra("studyRoomNum", 1);
         StudyRoomDetailAsyncTask studyRoomDetailAsyncTask = new StudyRoomDetailAsyncTask();
-        studyRoomDetailAsyncTask.execute(studyRoomNum);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mProgressDialog == null) {
-            mProgressDialog = new SpotsDialog(this, R.style.Custom);
-            mProgressDialog.setCancelable(false);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if(mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
+        studyRoomDetailAsyncTask.execute(getIntent().getIntExtra("roomNum", 0));
     }
 
     @Override
@@ -83,14 +47,13 @@ public class StudyRoomDetailActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Integer... params) {
             publishProgress();
-            if (mLibraryInfomation.getStudyRoomDetailStatus(params[0]) != -1) return params[0];
+            if (mLibraryManager.getStudyRoomDetailStatus(getApplicationContext(), params[0]) != -1) return params[0];
             return -1;
         }
 
         @Override
         protected void onProgressUpdate(Void... params) {
             super.onProgressUpdate(params);
-            if(mProgressDialog != null) mProgressDialog.show();
         }
 
         @Override
@@ -100,14 +63,13 @@ public class StudyRoomDetailActivity extends AppCompatActivity {
                 for (int i = 6; i <= 23; i++) {
                     String textViewId = "study_room_detail_time_text_view_" + String.format("%02d", i - 5);
                     TextView textView = (TextView) findViewById(getResources().getIdentifier(textViewId, "id", "com.lifekau.android.lifekau"));
-                    String showText = String.format("%02d:%02d ", i, 0) + (mLibraryInfomation.getStudyRoomDetailStatus(result, i) ? "이용 가능" : "이용 불가");
+                    String showText = String.format("%02d:%02d ", i, 0) + (mLibraryManager.getStudyRoomDetailStatus(result, i) ? "이용 가능" : "이용 불가");
                     textView.setText(showText);
                 }
             } else {
                 //예외 처리
                 showErrorMessage();
             }
-            if(mProgressDialog != null) mProgressDialog.hide();
         }
     }
 
