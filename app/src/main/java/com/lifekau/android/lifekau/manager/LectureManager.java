@@ -54,7 +54,7 @@ public class LectureManager {
                 cursor.moveToNext();
             }
         } finally {
-            cursor.close();
+        cursor.close();
         }
         return lectures;
     }

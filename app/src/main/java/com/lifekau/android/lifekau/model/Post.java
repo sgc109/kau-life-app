@@ -5,4 +5,9 @@ package com.lifekau.android.lifekau.model;
  */
 
 public class Post {
+    public String uid;
+    public String author;
+    public int likeCount;
+    public String text;
+    public long date;
 }

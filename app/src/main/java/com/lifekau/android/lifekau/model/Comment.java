@@ -5,8 +5,9 @@ package com.lifekau.android.lifekau.model;
  */
 
 public class Comment {
-    public String mKey;
-    public int mCntLikes;
-    public String mContent;
-    public long mDate;
+    public String uid;
+    public String author;
+    public int likeCount;
+    public String text;
+    public long date;
 }

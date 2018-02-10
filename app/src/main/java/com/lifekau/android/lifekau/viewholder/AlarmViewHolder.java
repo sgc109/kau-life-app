@@ -38,7 +38,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     public void bind(Alarm alarm) {
         mAlarm = alarm;
-        mContentTextView.setText(alarm.getContent());
+        mContentTextView.setText(alarm.getText());
     }
 
     public Alarm getAlarm(){

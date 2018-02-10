@@ -15,47 +15,47 @@ public class Alarm {
     public static final int TYPE_GRADE = 4;;
     public static final int TYPE_TEST_SCHEDULE = 5;
 
-    private UUID mId;
-    private String mContent;
-    private int mType;
-    private Date mDate;
+    private UUID uid;
+    private String text;
+    private int type;
+    private Long date;
 
-    public Alarm(String content, int type){
-        mId = UUID.randomUUID();
-        mContent = content;
-        mType = type;
-        mDate = new Date();
+    public Alarm(String text, int type){
+        this.uid = UUID.randomUUID();
+        this.text = text;
+        this.type = type;
+        this.date = new Date().getTime();
     }
 
     public Alarm(UUID id){
-        mId = id;
+        this.uid = id;
     }
 
     public int getType() {
-        return mType;
+        return type;
     }
 
     public void setType(int type) {
-        mType = type;
+        this.type = type;
     }
 
-    public void setDate(Date date) {
-        mDate = date;
+    public void setDate(Long date) {
+        this.date = date;
     }
 
-    public UUID getId() {
-        return mId;
+    public UUID getUid() {
+        return uid;
     }
 
-    public String getContent() {
-        return mContent;
+    public String getText() {
+        return text;
     }
 
-    public void setContent(String content) {
-        mContent = content;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public Date getDate() {
-        return mDate;
+    public Long getDate() {
+        return date;
     }
 }

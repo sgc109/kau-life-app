@@ -52,16 +52,16 @@ public class AlarmManager {
         mDatabase.delete(
                 AlarmTable.NAME,
                 AlarmTable.Cols.UUID + " = ?",
-                new String[]{alarm.getId().toString()}
+                new String[]{alarm.getUid().toString()}
                 );
     }
 
     private static ContentValues getContentValues(Alarm alarm){
         ContentValues values = new ContentValues();
-        values.put(AlarmTable.Cols.UUID, alarm.getId().toString());
-        values.put(AlarmTable.Cols.CONTENT, alarm.getContent());
+        values.put(AlarmTable.Cols.UUID, alarm.getUid().toString());
+        values.put(AlarmTable.Cols.CONTENT, alarm.getText());
         values.put(AlarmTable.Cols.TYPE, alarm.getType());
-        values.put(AlarmTable.Cols.DATE, alarm.getDate().getTime());
+        values.put(AlarmTable.Cols.DATE, alarm.getDate());
 
         return values;
     }
@@ -99,4 +99,5 @@ public class AlarmManager {
         );
         return new AlarmCursorWrapper(cursor);
     }
+
 }
