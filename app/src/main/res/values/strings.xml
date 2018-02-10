@@ -1,3 +1,56 @@
 <resources>
     <string name="app_name">LifeKAU</string>
+    <string name="food_review_title">학식 리뷰</string>
+    <string name="lecture_review_title">강의 리뷰</string>
+    <string name="cancel_button_string">취소</string>
+    <string name="submit_button_string">완료</string>
+    <string name="food_corner_name1">A 코너</string>
+    <string name="food_corner_name2">B 코너</string>
+    <string name="food_corner_name3">C 코너</string>
+    <string name="food_corner_name4">D 코너</string>
+    <string name="food_corner_name5">스낵</string>
+    <string name="food_corner_name6">프리미엄</string>
+    <string name="food_corner_name7">조식</string>
+    <string name="food_review_order_by_time_string">시간순</string>
+    <string name="food_review_order_by_rating_string">평점순</string>
+    <string name="food_review_text_limit_message">최대 %1$d자 까지 입력할 수 있습니다</string>
+    <string name="lecture_review_text_limit_message">최대 %1$d자 까지 입력할 수 있습니다</string>
+    <string name="lecture_review_search_bar_hint">"강의명(교수)으로 검색하세요(초성으로도 가능)"</string>
+    <string name="review_number_of_review_string"> 개의 평가</string>
+    <string name="firebase_database_food_reviews">Food_reviews</string>
+    <string name="firebase_database_lecture_reviews">Lecture_reviews</string>
+    <string name="firebase_database_food_review_corner_id">Corner %1$d</string>
+    <string name="review_write_success_message">리뷰가 성공적으로 게시되었습니다!</string>
+    <string name="new_review_message">새로운 리뷰가 올라왔습니다!</string>
+    <string name="please_write_something_alert_message">리뷰를 입력해 주세요!</string>
+    <string name="empty_alarm_list_message">알람이 없습니다.</string>
+    <string name="empty_review_list_message">평가가 없습니다.</string>
+
+    <string name="menu_1">커뮤니티</string>
+    <string name="menu_2">리뷰</string>
+    <string name="menu_3">공지</string>
+    <string name="menu_4">자리</string>
+    <string name="menu_5">LMS &amp; Info</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tab_1">Label 1</string>
+    <string name="tab_2">Label 2</string>
+    <string name="tab_3">Label 3</string>
+    <string name="tab_4">Label 4</string>
+    <string name="tab_5">Label 5</string>
+    <string name="title_activity_login">로그인</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>

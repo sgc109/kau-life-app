@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lifekau.android.lifekau">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- 파싱을 위한 인터넷 권한 요구 -->
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,23 +16,44 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".LibraryInfomationActivity">
-        </activity>
-        <activity
             android:name=".ReadingRoomDetailActivity"
-            android:theme="@style/DialogTheme">
-        </activity>
+            android:theme="@style/DialogTheme"></activity>
         <activity
             android:name=".StudyRoomDetailActivity"
-            android:theme="@style/DialogTheme">
-        </activity>
+            android:theme="@style/DialogTheme"></activity>
+        <activity
+            android:name=".activity.FoodReviewListActivity"
+            android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.FoodReviewWriteActivity"></activity>
+        <activity android:name=".activity.LectureReviewSearchActivity"></activity>
+        <activity android:name=".activity.LectureReviewListActivity"></activity>
+        <activity android:name=".activity.LectureReviewWriteActivity"></activity>
+        <activity android:name=".activity.FoodReviewCornerListActivity"></activity>
+        <activity android:name=".activity.HomeActivity"></activity>
+        <activity android:name=".activity.AlarmsListActivity"></activity>
+        <activity android:name=".activity.SettingsActivity"></activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="@string/title_activity_login"></activity>
+        <activity android:name=".LibraryInfomationActivity"></activity>
+
+        <service android:name=".PushAlarmService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".PushAlarmInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

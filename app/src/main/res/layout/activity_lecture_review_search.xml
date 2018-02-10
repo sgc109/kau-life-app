@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lifekau.android.lifekau.activity.LectureReviewSearchActivity">
+
+    <AutoCompleteTextView
+        android:id="@+id/lecture_review_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="4dp"
+        android:hint="@string/lecture_review_search_bar_hint"
+        android:maxLength="@integer/lecture_search_text_limit"
+        android:singleLine="true"/>
+</LinearLayout>
