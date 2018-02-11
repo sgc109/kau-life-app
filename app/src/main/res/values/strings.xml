@@ -35,6 +35,7 @@
     <string name="text_gone_warning_message">작성 중인 글이 사라집니다.\n계속 하시겠습니까?</string>
     <string name="yes">예</string>
     <string name="no">아니오</string>
+    <string name="post_comment_count">댓글 %1$s개</string>
 
 
     <string name="menu_1">커뮤니티</string>
