@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Post;
 
 public class PostWriteActivity extends AppCompatActivity implements View.OnTouchListener, TextWatcher {
@@ -128,13 +129,11 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (!view.isFocusable()) break;
-                Log.d("fuck", "down!");
                 mPushed = true;
                 view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 break;
             case MotionEvent.ACTION_UP:
                 if (!mPushed) break;
-                Log.d("fuck", "up!");
                 if (id == R.id.write_post_back_image_button) {
                     if (getValidCharCount(mPostEditText.getText().toString()) != 0) {
                         askDiscardTextOrNot();
@@ -143,15 +142,13 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
                     }
                 } else if (id == R.id.write_post_submit_button) {
                     mSubmitButton.setFocusable(false);
-                    writePost(new Post("2012122327", mPostEditText.getText().toString()));
+                    writePost(new Post(LoginManager.get(this).getStudentId(), mPostEditText.getText().toString()));
                     finish();
                 }
                 mPushed = false;
                 view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 break;
             case MotionEvent.ACTION_MOVE:
-                String who = view.getId() == R.id.write_post_back_image_button ? "back_button" : "submit_button";
-                Log.d("fuck", "move! (" + who + ")");
                 if (!isViewInBounds(view, posX, posY)) {
                     mPushed = false;
                     view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));

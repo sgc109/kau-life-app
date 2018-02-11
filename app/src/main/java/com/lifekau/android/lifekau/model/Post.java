@@ -15,8 +15,8 @@ public class Post {
     public Post(){}
     public Post(String author, String text){
         this.author = author;
-        this.commentCount = 0;
-        this.likeCount = 0;
+        this.commentCount = 1; // TODO 0으로 바꿔라
+        this.likeCount = 1; // TODO 0으로 바꿔라
         this.text = text;
         this.date = new Date().getTime();
     }
