@@ -9,22 +9,38 @@ import java.util.UUID;
 
 public class Alarm {
     public static final int TYPE_COMMENT = 0;
-    public static final int TYPE_LIKE = 1;
-    public static final int TYPE_NOTICE = 2;
-    public static final int TYPE_LECTURE_MATERIAL = 3;
-    public static final int TYPE_GRADE = 4;;
-    public static final int TYPE_TEST_SCHEDULE = 5;
+    public static final int TYPE_NOTICE = 1;
+    public static final int TYPE_LECTURE_MATERIAL = 2;
+    public static final int TYPE_GRADE = 3;
+    public static final int TYPE_TEST_SCHEDULE = 4;
 
     private UUID uid;
     private String text;
     private int type;
     private Long date;
+    private String postKey;
 
     public Alarm(String text, int type){
         this.uid = UUID.randomUUID();
         this.text = text;
         this.type = type;
         this.date = new Date().getTime();
+    }
+
+    public Alarm(String text, int type, String postKey){
+        this.uid = UUID.randomUUID();
+        this.text = text;
+        this.type = type;
+        this.date = new Date().getTime();
+        this.postKey = postKey;
+    }
+
+    public String getPostKey() {
+        return postKey;
+    }
+
+    public void setPostKey(String postKey) {
+        this.postKey = postKey;
     }
 
     public Alarm(UUID id){

@@ -96,14 +96,14 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.food_review_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mProgressBar = (LinearLayout) findViewById(R.id.indeterminateBar);
-        mEmptyListMessage = (TextView) findViewById(R.id.food_review_list_empty_list_text_view);
-        mOrderByRatingButton = (Button) findViewById(R.id.order_by_rating_button);
+        mProgressBar = findViewById(R.id.indeterminateBar);
+        mEmptyListMessage = findViewById(R.id.food_review_list_empty_list_text_view);
+        mOrderByRatingButton = findViewById(R.id.order_by_rating_button);
         mOrderByRatingButton.setOnClickListener(this);
-        mOrderByTimeButton = (Button) findViewById(R.id.order_by_time_button);
+        mOrderByTimeButton = findViewById(R.id.order_by_time_button);
         mOrderByTimeButton.setOnClickListener(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.food_review_recycler_view);
+        mRecyclerView = findViewById(R.id.food_review_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setVisibility(View.GONE);

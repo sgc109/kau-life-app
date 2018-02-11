@@ -10,4 +10,5 @@ public class Comment {
     public int likeCount;
     public String text;
     public long date;
+    public Comment(){}
 }

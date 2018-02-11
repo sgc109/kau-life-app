@@ -61,6 +61,7 @@ public class AlarmManager {
         values.put(AlarmTable.Cols.UUID, alarm.getUid().toString());
         values.put(AlarmTable.Cols.CONTENT, alarm.getText());
         values.put(AlarmTable.Cols.TYPE, alarm.getType());
+        values.put(AlarmTable.Cols.POST_KEY, alarm.getPostKey());
         values.put(AlarmTable.Cols.DATE, alarm.getDate());
 
         return values;
