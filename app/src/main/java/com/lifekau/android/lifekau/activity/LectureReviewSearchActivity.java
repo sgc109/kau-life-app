@@ -15,7 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.lifekau.android.lifekau.LectureSearchAdapter;
+import com.lifekau.android.lifekau.adapter.LectureSearchAdapter;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LectureManager;
 import com.lifekau.android.lifekau.model.Lecture;
