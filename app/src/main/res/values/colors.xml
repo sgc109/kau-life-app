@@ -8,6 +8,8 @@
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
     <color name="yellow">#fdd835</color>
+    <color name="heart_red">#f05228</color>
+    <color name="heart_hot_pink">#e04f5f</color>
 
     <color name="color_tab_1">#5C6D7B</color>
     <color name="color_tab_2">#5C6D7B</color>

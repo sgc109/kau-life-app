@@ -6,9 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Post;
 
 import java.text.DateFormat;
@@ -27,41 +29,70 @@ import com.lifekau.android.lifekau.R;
 public class PostViewHolder extends RecyclerView.ViewHolder {
     public CardView mCardView;
     public TextView mTextView;
-    public ImageButton mLikeButton;
-    public ImageView mCommentButton;
+    public ImageView mLikeButtonImageView;
+    public TextView mLikeButtonTextView;
+    public ImageView mCommentButtonImageView;
+    public TextView mCommentButtonTextView;
     public TextView mCommentCountTextView;
     public TextView mLikeCountTextView;
     public ImageView mCircleHeartImageView;
     public TextView mDateTextView;
+    public LinearLayout mLikeButtonContainer;
+    public LinearLayout mCommentButtonContainer;
     public Context mContext;
+    public Post mPost;
 
     public PostViewHolder(View itemView, Context context) {
         super(itemView);
         mContext = context;
         mCardView = itemView.findViewById(R.id.list_item_post_card_view);
         mTextView = itemView.findViewById(R.id.list_item_post_content_text_view);
-        mLikeButton = itemView.findViewById(R.id.list_item_post_like_image_button);
-        mCommentButton = itemView.findViewById(R.id.list_item_post_comment_image_button);
+        mLikeButtonImageView = itemView.findViewById(R.id.list_item_post_like_button_image_view);
+        mLikeButtonTextView = itemView.findViewById(R.id.list_item_post_like_button_text_view);
+        mCommentButtonImageView = itemView.findViewById(R.id.list_item_post_comment_button_image_view);
+        mCommentButtonTextView = itemView.findViewById(R.id.list_item_post_comment_button_text_view);
         mCommentCountTextView = itemView.findViewById(R.id.list_item_post_comment_count_text_view);
         mLikeCountTextView = itemView.findViewById(R.id.list_item_post_like_count);
         mCircleHeartImageView = itemView.findViewById(R.id.list_item_post_circle_heart_image_view);
+        mLikeButtonContainer = itemView.findViewById(R.id.list_item_post_like_button_container);
+        mCommentButtonContainer = itemView.findViewById(R.id.list_item_post_comment_button_container);
         mDateTextView = itemView.findViewById(R.id.post_list_date_text_view);
     }
 
-    public void bind(Post post) {
-        mTextView.setText(post.text);
+    public void updateUI(){
+        mTextView.setText(mPost.text);
         mCommentCountTextView.setText(String.format(
                 mContext.getString(R.string.post_comment_count),
-                NumberFormat.getNumberInstance(Locale.US).format(post.commentCount)));
-        mLikeCountTextView.setText(NumberFormat.getNumberInstance(Locale.US).format(post.likeCount));
-        mDateTextView.setText(dateToString(new Date(post.date)));
-        if (post.likeCount == 0) {
+                NumberFormat.getNumberInstance(Locale.US).format(mPost.commentCount)));
+        mLikeCountTextView.setText(NumberFormat.getNumberInstance(Locale.US).format(mPost.likeCount));
+        mDateTextView.setText(dateToString(new Date(mPost.date)));
+        if (mPost.likeCount == 0) {
             mLikeCountTextView.setVisibility(View.GONE);
             mCircleHeartImageView.setVisibility(View.GONE);
+        } else {
+            mLikeCountTextView.setVisibility(View.VISIBLE);
+            mCircleHeartImageView.setVisibility(View.VISIBLE);
         }
-        if (post.commentCount == 0) {
+        if (mPost.commentCount == 0) {
             mCommentCountTextView.setVisibility(View.GONE);
+        } else {
+            mCommentCountTextView.setVisibility(View.VISIBLE);
         }
+
+        if(mPost.likes.get(LoginManager.get(mContext).getStudentId()) != null){
+            mLikeButtonImageView.setImageResource(R.drawable.ic_heart);
+            mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(R.color.heart_hot_pink));
+            mLikeButtonTextView.setTextColor(mContext.getResources().getColor(R.color.heart_hot_pink));
+        } else {
+            mLikeButtonImageView.setImageResource(R.drawable.ic_heart_empty);
+            mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(android.R.color.tab_indicator_text));
+            mLikeButtonTextView.setTextColor(mContext.getResources().getColor(android.R.color.tab_indicator_text));
+        }
+    }
+
+    public void bind(Post post) {
+        mPost = post;
+        updateUI();
     }
 
     private String dateToString(Date past) {
