@@ -67,60 +67,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostViewHolder> {
             }
         });
         final Post post = mPosts.get(position);
-        holder.bind(post);
-        holder.mLikeButtonContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String studentId = LoginManager.get(mContext).getStudentId();
-                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
-                        .child(mContext.getString(R.string.firebase_database_posts))
-                        .child(mPostKeys.get(position));
-                if(post.likes.containsKey(studentId)) {
-                    post.likes.remove(studentId);
-                    post.likeCount--;
-                } else {
-                    post.likes.put(studentId, true);
-                    post.likeCount++;
-                }
-                onLikeClicked(postRef);
-                holder.updateUI();
-//                notifyItemChanged(position);
-            }
-        });
-    }
+        holder.bind(post, mPostKeys.get(position));
 
-    private void onLikeClicked(DatabaseReference postRef) {
-        final String studentId = LoginManager.get(mContext).getStudentId();
-        postRef.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                Post p = mutableData.getValue(Post.class);
-                if (p == null) {
-                    return Transaction.success(mutableData);
-                }
-
-                if (p.likes.containsKey(studentId)) {
-                    // Unstar the post and remove self from stars
-                    p.likeCount--;
-                    p.likes.remove(studentId);
-                } else {
-                    // Star the post and add self to stars
-                    p.likeCount++;
-                    p.likes.put(studentId, true);
-                }
-
-                // Set value and report transaction success
-                mutableData.setValue(p);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b,
-                                   DataSnapshot dataSnapshot) {
-                // Transaction completed
-                Log.d("fuck", "postTransaction:onComplete:" + databaseError);
-            }
-        });
     }
 
     @Override

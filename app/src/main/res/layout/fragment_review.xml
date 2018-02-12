@@ -35,7 +35,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/dinner"
+                    android:src="@drawable/lecture3"
                     />
 
                 <TextView
@@ -44,9 +44,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
                     android:gravity="center"
-                    android:text="학식 리뷰"
+                    android:text="강의 리뷰"
                     android:textSize="48dp"/>
-
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
@@ -73,7 +72,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/lecture3"
+                    android:src="@drawable/dinner"
                     />
 
                 <TextView
@@ -82,8 +81,9 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
                     android:gravity="center"
-                    android:text="강의 리뷰"
+                    android:text="학식 리뷰"
                     android:textSize="48dp"/>
+
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
