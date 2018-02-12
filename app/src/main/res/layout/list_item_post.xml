@@ -24,6 +24,7 @@
                 android:layout_marginLeft="8dp">
 
                 <TextView
+                    android:id="@+id/post_list_date_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"

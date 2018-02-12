@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class CommunityFragment extends PagerFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private final int NUM_OF_POST_PER_PAGE = 10;
+    private final int NUM_OF_POST_PER_PAGE = 20;
     private int mTotalItemCount = 0;
     private int mLastVisibleItemPosition;
     private boolean mIsLoading;
@@ -58,6 +59,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         mProgressBar = view.findViewById(R.id.post_list_progress_bar);
         mSwipeRefreshLayout = view.findViewById(R.id.post_list_swipe_refresh_layout);
 
+        initPostList();
         return view;
     }
 
@@ -67,6 +69,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     }
 
     private void initPostList() {
+        Log.d("fuck", "initPostList");
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
 
@@ -161,15 +164,11 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     @Override
     public void onResume() {
         super.onResume();
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        initPostList();
     }
 
     @Override
