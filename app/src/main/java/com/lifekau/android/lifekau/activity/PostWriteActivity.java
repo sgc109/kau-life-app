@@ -53,7 +53,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-
+      
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mPostEditText = findViewById(R.id.write_post_edit_text);

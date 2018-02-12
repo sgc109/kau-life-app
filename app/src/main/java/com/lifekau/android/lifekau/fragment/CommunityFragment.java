@@ -102,10 +102,8 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     }
 
     private void getPosts() {
-
         Query query = mPostsRef
                 .orderByKey();
-
         if (mAdapter.getItemCount() != 0) {
             query = query.endAt(mAdapter.getLastKey());
         }
@@ -138,7 +136,6 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
                 mIsLoading = false;
             }
         });
-
     }
 
 
@@ -169,6 +166,17 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initPostList();
     }
 
     @Override

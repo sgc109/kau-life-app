@@ -43,7 +43,7 @@ public class PostDetailActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_POST_KEY, postKey);
         return intent;
     }
-
+  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
