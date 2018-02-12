@@ -24,6 +24,7 @@
     <string name="firebase_database_posts">posts</string>
     <string name="firebase_database_post_comments">post-comments</string>
     <string name="review_write_success_message">리뷰가 성공적으로 게시되었습니다!</string>
+    <string name="post_write_success_message">이야기가 성공적으로 게시되었습니다!</string>
     <string name="new_review_message">새로운 리뷰가 올라왔습니다!</string>
     <string name="please_write_review_alert_message">리뷰를 입력해 주세요!</string>
     <string name="please_write_post_text_alert_message">내용을 작성해주세요!</string>

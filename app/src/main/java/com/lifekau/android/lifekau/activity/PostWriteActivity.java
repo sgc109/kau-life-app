@@ -21,12 +21,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Post;
+
+import java.util.Date;
 
 public class PostWriteActivity extends AppCompatActivity implements View.OnTouchListener, TextWatcher {
 
@@ -35,6 +38,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
     private TextView mSubmitButton;
     private DatabaseReference mDatabase;
     private boolean mPushed = false;
+    private long mLastWritePostTime = 0;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, PostWriteActivity.class);
@@ -49,6 +53,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+      
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mPostEditText = findViewById(R.id.write_post_edit_text);
@@ -141,8 +146,14 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
                         finish();
                     }
                 } else if (id == R.id.write_post_submit_button) {
+                    if(false) {
+                        new AlertDialog.Builder(this).setMessage("1분이 지나야 글을 쓸 수가 있습니다.").show();
+                        return true;
+                    }
                     mSubmitButton.setFocusable(false);
+                    mLastWritePostTime = new Date().getTime();
                     writePost(new Post(LoginManager.get(this).getStudentId(), mPostEditText.getText().toString()));
+                    Toast.makeText(this, getString(R.string.post_write_success_message), Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 mPushed = false;
@@ -158,7 +169,9 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
         return true;
     }
 
-//    int dist
+    boolean hasTimePassed(long seconds){
+        return new Date().getTime() - mLastWritePostTime > seconds;
+    }
 
     private int getValidCharCount(String str) {
         int ret = 0;

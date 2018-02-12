@@ -48,18 +48,9 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_food_review_corner_list);
 
 
-        if(getSupportActionBar() != null ) {
+        if (getSupportActionBar() != null) {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
-        }
-        int cntCorners = getResources().getStringArray(R.array.food_corner_list).length;
-        if (mListCntReviews == null) {
-            mListCntReviews = new ArrayList<>();
-            for(int i = 0; i < cntCorners; i++) mListCntReviews.add(0);
-        }
-        if (mListSumReviewRatings == null) {
-            mListSumReviewRatings = new ArrayList<>();
-            for(int i = 0; i < cntCorners; i++) mListSumReviewRatings.add(0.0f);
         }
 
         mRecyclerAdapter = new RecyclerView.Adapter<FoodCornerViewHolder>() {
@@ -84,6 +75,14 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mRecyclerAdapter);
 
         mProgressBar = findViewById(R.id.food_review_corner_list_progress_bar);
+    }
+
+    private void updateUI() {
+        int cntCorners = getResources().getStringArray(R.array.food_corner_list).length;
+        mListCntReviews = new ArrayList<>();
+        for (int i = 0; i < cntCorners; i++) mListCntReviews.add(0);
+        mListSumReviewRatings = new ArrayList<>();
+        for (int i = 0; i < cntCorners; i++) mListSumReviewRatings.add(0.0f);
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
 
@@ -98,7 +97,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
                     for (DataSnapshot reviewSnapshot : cornerSnapshot.getChildren()) {
                         cntReviews++;
                         FoodReview review = reviewSnapshot.getValue(FoodReview.class);
-                        if(cornerType == -1) cornerType = review.mCornerType;
+                        if (cornerType == -1) cornerType = review.mCornerType;
                         sumRating += review.mRating;
                     }
                     mListCntReviews.set(cornerType, cntReviews);
@@ -155,5 +154,11 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         if (mRecyclerAdapter != null) {
             mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateUI();
     }
 }
