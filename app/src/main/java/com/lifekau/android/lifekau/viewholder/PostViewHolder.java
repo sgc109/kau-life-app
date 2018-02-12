@@ -66,9 +66,24 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         mCommentButtonContainer = itemView.findViewById(R.id.list_item_post_comment_button_container);
         mDateTextView = itemView.findViewById(R.id.post_list_date_text_view);
     }
+
     public void bind(Post post, String postKey) {
         mPost = post;
         mPostKey = postKey;
+
+        mCommentButtonContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startDetailActivity();
+            }
+        });
+        mTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startDetailActivity();
+            }
+        });
+
         updateUI();
 
         mLikeButtonContainer.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +93,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
                 DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
                         .child(mContext.getString(R.string.firebase_database_posts))
                         .child(mPostKey);
-                if(mPost.likes.containsKey(studentId)) {
+                if (mPost.likes.containsKey(studentId)) {
                     mPost.likes.remove(studentId);
                     mPost.likeCount--;
                 } else {
@@ -91,7 +106,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void updateUI(){
+    public void updateUI() {
         mTextView.setText(mPost.text);
         mCommentCountTextView.setText(String.format(
                 mContext.getString(R.string.post_comment_count),
@@ -111,7 +126,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
             mCommentCountTextView.setVisibility(View.VISIBLE);
         }
 
-        if(mPost.likes.get(LoginManager.get(mContext).getStudentId()) != null){
+        if (mPost.likes.get(LoginManager.get(mContext).getStudentId()) != null) {
             mLikeButtonImageView.setImageResource(R.drawable.ic_heart);
             mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(R.color.heart_hot_pink));
             mLikeButtonTextView.setTextColor(mContext.getResources().getColor(R.color.heart_hot_pink));
@@ -120,20 +135,6 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
             mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(android.R.color.tab_indicator_text));
             mLikeButtonTextView.setTextColor(mContext.getResources().getColor(android.R.color.tab_indicator_text));
         }
-
-        mCommentButtonContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDetailActivity();
-            }
-        });
-
-        mTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDetailActivity();
-            }
-        });
     }
 
     private void onLikeClicked(DatabaseReference postRef) {
@@ -167,7 +168,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private void startDetailActivity(){
+    private void startDetailActivity() {
         Intent intent = PostDetailActivity.newIntent(mContext, mPostKey);
         mContext.startActivity(intent);
     }
