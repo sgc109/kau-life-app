@@ -66,8 +66,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostViewHolder> {
                 mContext.startActivity(intent);
             }
         });
-        final Post post = mPosts.get(position);
-        holder.bind(post, mPostKeys.get(position));
+
+        holder.bind(mPosts.get(position), mPostKeys.get(position));
 
     }
 
