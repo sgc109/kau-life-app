@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LibraryManager;
 import com.lifekau.android.lifekau.model.FoodReview;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,10 +37,11 @@ public class LibraryListActivity extends AppCompatActivity {
     private static final int TOTAL_READING_ROOM_NUM = 5;
     private static final int TOTAL_STUDY_ROOM_NUM = 6;
 
+    private static LibraryManager mLibraryManager = LibraryManager.getInstance();
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mRecyclerAdapter;
     private ProgressBar mProgressBar;
-    private LibraryManager mLibraryManager;
     private int mRoomType;
     private int mSelectedArray;
 
@@ -77,8 +80,7 @@ public class LibraryListActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.library_list_progress_bar);
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
-        mLibraryManager = LibraryManager.getInstance();
-        LibraryManagerAsyncTask libraryManagerAsyncTask = new LibraryManagerAsyncTask();
+        LibraryManagerAsyncTask libraryManagerAsyncTask = new LibraryManagerAsyncTask(getApplication(), this);
         libraryManagerAsyncTask.execute();
     }
 
@@ -116,27 +118,41 @@ public class LibraryListActivity extends AppCompatActivity {
         }
     }
 
-    private class LibraryManagerAsyncTask extends AsyncTask<Void, Void, Integer> {
+    private static class LibraryManagerAsyncTask extends AsyncTask<Void, Void, Integer> {
+
+        private WeakReference<LibraryListActivity> activityReference;
+        private WeakReference<Application> applicationWeakReference;
+
+        // only retain a weak reference to the activity
+        LibraryManagerAsyncTask(Application application, LibraryListActivity libraryListActivity) {
+            applicationWeakReference = new WeakReference<>(application);
+            activityReference = new WeakReference<>(libraryListActivity);
+        }
+
         @Override
         protected Integer doInBackground(Void... params) {
             for(int i = 0; i < TOTAL_STUDY_ROOM_NUM; i++) {
-                if (mLibraryManager.getStudyRoomDetailStatus(getApplicationContext(), i) == -1) return -1;
+                if (mLibraryManager.getStudyRoomDetailStatus(applicationWeakReference.get(), i) == -1) return -1;
             }
-            if (mLibraryManager.getStudyRoomStatus(getApplicationContext()) == -1) return -1;
-            if (mLibraryManager.getReadingRoomStatus(getApplicationContext()) == -1) return -1;
+            if (mLibraryManager.getStudyRoomStatus(applicationWeakReference.get()) == -1) return -1;
+            if (mLibraryManager.getReadingRoomStatus(applicationWeakReference.get()) == -1) return -1;
             return 0;
         }
 
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
+            LibraryListActivity libraryListActivity = activityReference.get();
+            if(libraryListActivity == null || libraryListActivity.isFinishing()) return;
             if (result != -1) {
             } else {
                 //예외 처리
-                showErrorMessage();
+                libraryListActivity.showErrorMessage();
             }
-            mProgressBar.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
+            ProgressBar progressBar = libraryListActivity.findViewById(R.id.library_list_progress_bar);
+            RecyclerView recyclerView = libraryListActivity.findViewById(R.id.library_list_recycler_view);
+            progressBar.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 

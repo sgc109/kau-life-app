@@ -1,5 +1,7 @@
 package com.lifekau.android.lifekau.activity;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,13 +28,16 @@ import android.widget.Toast;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LibraryManager;
 
+import java.lang.ref.WeakReference;
+
 import dmax.dialog.SpotsDialog;
 
 public class ReadingRoomDetailActivity extends AppCompatActivity {
 
+    private static LibraryManager mLibraryManager = LibraryManager.getInstance();
+
     private TextView mReadingRoomTitleTextView;
     private ConstraintLayout mReadingRoomDetailSeatLayout;
-    private LibraryManager mLibraryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +45,6 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reading_room_detail);
         mReadingRoomTitleTextView = findViewById(R.id.reading_room_detail_title);
         mReadingRoomDetailSeatLayout = findViewById(R.id.reading_room_detail_seat_layout);
-        mLibraryManager = mLibraryManager.getInstance();
         Button closeButton = (Button)findViewById(R.id.reading_room_detail_close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,7 +52,7 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-        ReadingRoomDetailAsyncTask readingRoomDetailAsyncTask = new ReadingRoomDetailAsyncTask();
+        ReadingRoomDetailAsyncTask readingRoomDetailAsyncTask = new ReadingRoomDetailAsyncTask(getApplication(), this);
         readingRoomDetailAsyncTask.execute(getIntent().getIntExtra("roomNum", 0));
     }
 
@@ -58,11 +62,20 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
-    private class ReadingRoomDetailAsyncTask extends AsyncTask<Integer, Void, Integer> {
+    private static class ReadingRoomDetailAsyncTask extends AsyncTask<Integer, Void, Integer> {
+
+        private WeakReference<ReadingRoomDetailActivity> activityReference;
+        private WeakReference<Application> applicationWeakReference;
+
+        ReadingRoomDetailAsyncTask(Application application, ReadingRoomDetailActivity readingRoomDetailActivity) {
+            applicationWeakReference = new WeakReference<>(application);
+            activityReference = new WeakReference<>(readingRoomDetailActivity);
+        }
+
         @Override
         protected Integer doInBackground(Integer... params) {
             publishProgress();
-            if (mLibraryManager.getReadingRoomDetailStatus(getApplicationContext(), params[0]) != -1) return params[0];
+            if (mLibraryManager.getReadingRoomDetailStatus(applicationWeakReference.get(), params[0]) != -1) return params[0];
             return -1;
         }
 
@@ -74,32 +87,35 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
+            ReadingRoomDetailActivity readingRoomDetailActivity = activityReference.get();
+            if(readingRoomDetailActivity == null || readingRoomDetailActivity.isFinishing()) return;
+            TextView readingRoomTitleTextView = readingRoomDetailActivity.findViewById(R.id.reading_room_detail_title);
             if (result != -1) {
                 if (result == 0) {
-                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(0));
-                    registerTextViewOnLayout(0, 1, 138);
-                    registerTextViewOnLayout(0, 229, 240);
+                    readingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(0));
+                    readingRoomDetailActivity.registerTextViewOnLayout(0, 1, 138);
+                    readingRoomDetailActivity.registerTextViewOnLayout(0, 229, 240);
                 }
                 if (result == 1) {
-                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(1));
-                    registerTextViewOnLayout(1, 139, 228);
-                    registerTextViewOnLayout(1, 241, 252);
+                    readingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(1));
+                    readingRoomDetailActivity.registerTextViewOnLayout(1, 139, 228);
+                    readingRoomDetailActivity.registerTextViewOnLayout(1, 241, 252);
                 }
                 if (result == 2) {
-                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(2));
-                    registerTextViewOnLayout(2, 1, 204);
+                    readingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(2));
+                    readingRoomDetailActivity.registerTextViewOnLayout(2, 1, 204);
                 }
                 if (result == 3) {
-                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(3));
-                    registerTextViewOnLayout(3, 1, 204);
+                    readingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(3));
+                    readingRoomDetailActivity.registerTextViewOnLayout(3, 1, 204);
                 }
                 if (result == 4) {
-                    mReadingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(4));
-                    registerTextViewOnLayout(4, 1, 108);
+                    readingRoomTitleTextView.setText(mLibraryManager.getReadingRoomName(4));
+                    readingRoomDetailActivity.registerTextViewOnLayout(4, 1, 108);
                 }
             } else {
                 //예외 처리
-                showErrorMessage();
+                readingRoomDetailActivity.showErrorMessage();
             }
         }
     }
@@ -111,12 +127,12 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         Point size = new Point();
         size.x = view.getWidth();
         size.y = view.getHeight();
-        int bitmapSize = size.x / 20, textSize = size.x / 60;
+        int bitmapSize = size.x / 15, textSize = size.x / 50;
         for (int i = startSeatNum; i <= endSeatNum; i++) {
             Point point = mLibraryManager.getReadingRoomSeatPoint(roomNum, i);
             ImageView imageView = new ImageView(this);
-            imageView.setX((int) (size.x * point.x / 1200.0 + 0.5));
-            imageView.setY((int) (size.y * point.y / 700.0 + 0.5));
+            imageView.setX((int) (size.x * point.x / 1100.0 + 0.5));
+            imageView.setY((int) (size.y * point.y / 650.0 + 0.5));
             Bitmap bitmap = mLibraryManager.getReadingRoomDetailStatus(roomNum, i) ?
                     emptySeatBitmap.createScaledBitmap(emptySeatBitmap, bitmapSize, bitmapSize, true) :
                     usedSeatBitmap.createScaledBitmap(usedSeatBitmap, bitmapSize, bitmapSize, true);

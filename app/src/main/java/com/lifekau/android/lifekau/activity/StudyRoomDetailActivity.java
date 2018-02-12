@@ -1,5 +1,6 @@
 package com.lifekau.android.lifekau.activity;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -15,17 +16,18 @@ import android.widget.Toast;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LibraryManager;
 
+import java.lang.ref.WeakReference;
+
 import dmax.dialog.SpotsDialog;
 
 public class StudyRoomDetailActivity extends AppCompatActivity {
 
-    private LibraryManager mLibraryManager;
+    private static LibraryManager mLibraryManager = LibraryManager.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_room_detail);
-        mLibraryManager = LibraryManager.getInstance();
         Button closeButton = (Button)findViewById(R.id.study_room_detail_close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,7 +35,7 @@ public class StudyRoomDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-        StudyRoomDetailAsyncTask studyRoomDetailAsyncTask = new StudyRoomDetailAsyncTask();
+        StudyRoomDetailAsyncTask studyRoomDetailAsyncTask = new StudyRoomDetailAsyncTask(getApplication(), this);
         studyRoomDetailAsyncTask.execute(getIntent().getIntExtra("roomNum", 0));
     }
 
@@ -43,11 +45,20 @@ public class StudyRoomDetailActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
-    private class StudyRoomDetailAsyncTask extends AsyncTask<Integer, Void, Integer> {
+    private static class StudyRoomDetailAsyncTask extends AsyncTask<Integer, Void, Integer> {
+
+        private WeakReference<Application> applicationWeakReference;
+        private WeakReference<StudyRoomDetailActivity> studyRoomDetailActivityWeakReference;
+
+        public StudyRoomDetailAsyncTask(Application application, StudyRoomDetailActivity studyRoomDetailActivity){
+            applicationWeakReference = new WeakReference<>(application);
+            studyRoomDetailActivityWeakReference = new WeakReference<>(studyRoomDetailActivity);
+        }
+
         @Override
         protected Integer doInBackground(Integer... params) {
             publishProgress();
-            if (mLibraryManager.getStudyRoomDetailStatus(getApplicationContext(), params[0]) != -1) return params[0];
+            if (mLibraryManager.getStudyRoomDetailStatus(applicationWeakReference.get(), params[0]) != -1) return params[0];
             return -1;
         }
 
@@ -59,16 +70,18 @@ public class StudyRoomDetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
+            StudyRoomDetailActivity studyRoomDetailActivity = studyRoomDetailActivityWeakReference.get();
+            if(studyRoomDetailActivity == null || studyRoomDetailActivity.isFinishing()) return;
             if (result != -1) {
                 for (int i = 6; i <= 23; i++) {
                     String textViewId = "study_room_detail_time_text_view_" + String.format("%02d", i - 5);
-                    TextView textView = (TextView) findViewById(getResources().getIdentifier(textViewId, "id", "com.lifekau.android.lifekau"));
+                    TextView textView = studyRoomDetailActivity.findViewById(applicationWeakReference.get().getResources().getIdentifier(textViewId, "id", "com.lifekau.android.lifekau"));
                     String showText = String.format("%02d:%02d ", i, 0) + (mLibraryManager.getStudyRoomDetailStatus(result, i) ? "이용 가능" : "이용 불가");
                     textView.setText(showText);
                 }
             } else {
                 //예외 처리
-                showErrorMessage();
+                studyRoomDetailActivity.showErrorMessage();
             }
         }
     }
