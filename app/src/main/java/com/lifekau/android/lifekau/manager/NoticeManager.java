@@ -1,4 +1,4 @@
-package com.lifekau.android.lifekau;
+package com.lifekau.android.lifekau.manager;
 
 import com.lifekau.android.lifekau.model.Notice;
 
@@ -9,38 +9,47 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 
-public class NoticeInfomation {
+public class NoticeManager {
 
-    final static String[] COMMUNITY_KEY = {"", "B0146", "B0147", "B0230", "B0259", "B0148"};
-    final static String[] NOTICE_LIST = {"", "general_list", "academicinfo_list", "scholarship_list", "career_list", "event_list"};
-    private ArrayList<Notice> mGeneralNotice;
-    private ArrayList<Notice> mBachelorNotice;
-    private ArrayList<Notice> mScholarshipLoanNotice;
-    private ArrayList<Notice> mEmploymentNotice;
-    private ArrayList<Notice> mEventNotice;
+    private final static String[] COMMUNITY_KEY = {"B0146", "B0147", "B0230", "B0259", "B0148"};
+    private final static String[] NOTICE_LIST = {"general_list", "academicinfo_list", "scholarship_list", "career_list", "event_list"};
 
-    public NoticeInfomation() {
-        mGeneralNotice = new ArrayList<Notice>();
-        mBachelorNotice = new ArrayList<Notice>();
-        mScholarshipLoanNotice = new ArrayList<Notice>();
-        mEmploymentNotice = new ArrayList<Notice>();
-        mEventNotice = new ArrayList<Notice>();
+    private ArrayList<Notice> mGeneralNoticeList;
+    private ArrayList<Notice> mBachelorNoticeList;
+    private ArrayList<Notice> mScholarshipLoanNoticeList;
+    private ArrayList<Notice> mEmploymentNoticeList;
+    private ArrayList<Notice> mEventNoticeList;
+
+    private NoticeManager() {
+        mGeneralNoticeList = new ArrayList<>();
+        mBachelorNoticeList = new ArrayList<>();
+        mScholarshipLoanNoticeList = new ArrayList<>();
+        mEmploymentNoticeList = new ArrayList<>();
+        mEventNoticeList = new ArrayList<>();
+    }
+
+    private static class LazyHolder {
+        private static NoticeManager INSTANCE = new NoticeManager();
+    }
+
+    public static NoticeManager getInstance(){
+        return LazyHolder.INSTANCE;
     }
 
     public void getNotice(int listIndex, int pageNum) {
-        ArrayList<Notice> selectdNotice = mGeneralNotice;
-        if(listIndex == 1) selectdNotice = mGeneralNotice;
-        if(listIndex == 2) selectdNotice = mBachelorNotice;
-        if(listIndex == 3) selectdNotice = mScholarshipLoanNotice;
-        if(listIndex == 4) selectdNotice = mEmploymentNotice;
-        if(listIndex == 5) selectdNotice = mEventNotice;
+        ArrayList<Notice> currNoticeList = mGeneralNoticeList;
+        if(listIndex == 1) currNoticeList = mGeneralNoticeList;
+        if(listIndex == 2) currNoticeList = mBachelorNoticeList;
+        if(listIndex == 3) currNoticeList = mScholarshipLoanNoticeList;
+        if(listIndex == 4) currNoticeList = mEmploymentNoticeList;
+        if(listIndex == 5) currNoticeList = mEventNoticeList;
         try {
             Connection.Response res = Jsoup.connect("http://www.kau.ac.kr/page/kauspace/" + NOTICE_LIST[listIndex] + ".jsp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
                     .header("Accept-Encoding", "gzip, deflate")
                     .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .referrer("http://www.kau.ac.kr/page/kauspace/" + NOTICE_LIST[listIndex] + ".jsp")
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
+                    .referrer("http://www.kau.ac.kr/page/kauspace/" + NOTICE_LIST[listIndex] + ".jsp")
                     .data("communityKey", COMMUNITY_KEY[listIndex])
                     .data("pageNum", String.valueOf(pageNum))
                     .data("pageSize", "10")
@@ -63,13 +72,13 @@ public class NoticeInfomation {
             int elementsSize = elements.size();
             for (int i = 0; i < elementsSize; i++) {
                 Elements infomation = elements.get(i).select("td");
-                Notice insert = new Notice();
-                insert.postNum = Integer.valueOf(infomation.get(0).text().equals("") ? "0" : infomation.get(0).text());
-                insert.postDetailNum = Integer.valueOf(infomation.get(1).select("a").attr("href").replaceAll("[^0-9]", ""));
-                insert.postTitle = infomation.get(1).text();
-                insert.writer = infomation.get(2).text();
-                insert.RegistrationDate = infomation.get(3).text();
-                selectdNotice.add(insert);
+                Notice insertNotice = new Notice();
+                insertNotice.postNum = Integer.valueOf(infomation.get(0).text().equals("") ? "0" : infomation.get(0).text());
+                insertNotice.postDetailNum = Integer.valueOf(infomation.get(1).select("a").attr("href").replaceAll("[^0-9]", ""));
+                insertNotice.postTitle = infomation.get(1).text();
+                insertNotice.writer = infomation.get(2).text();
+                insertNotice.RegistrationDate = infomation.get(3).text();
+                currNoticeList.add(insertNotice);
             }
         } catch (Exception e) {
             e.printStackTrace();
