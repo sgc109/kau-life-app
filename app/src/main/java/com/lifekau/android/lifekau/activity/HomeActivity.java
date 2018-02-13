@@ -19,9 +19,10 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+
 import com.lifekau.android.lifekau.HomeViewPagerAdapter;
-import com.lifekau.android.lifekau.PagerFragment;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.fragment.PagerFragment;
 
 import java.util.ArrayList;
 

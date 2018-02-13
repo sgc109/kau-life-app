@@ -42,6 +42,8 @@
         </activity>
         <activity android:name=".SettingsActivity">
         </activity>
+        <activity android:name=".activity.NoticeListActivity">
+        </activity>
     </application>
 
 </manifest>
