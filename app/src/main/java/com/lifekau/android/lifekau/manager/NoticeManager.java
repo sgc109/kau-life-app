@@ -8,24 +8,28 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map;
 
 public class NoticeManager {
 
     private final static String[] COMMUNITY_KEY = {"B0146", "B0147", "B0230", "B0259", "B0148"};
     private final static String[] NOTICE_LIST = {"general_list", "academicinfo_list", "scholarship_list", "career_list", "event_list"};
 
-    private ArrayList<Notice> mGeneralNoticeList;
-    private ArrayList<Notice> mBachelorNoticeList;
-    private ArrayList<Notice> mScholarshipLoanNoticeList;
-    private ArrayList<Notice> mEmploymentNoticeList;
-    private ArrayList<Notice> mEventNoticeList;
+    private Hashtable<Integer, Notice> mGeneralNoticeMap;
+    private Hashtable<Integer, Notice> mBachelorNoticeMap;
+    private Hashtable<Integer, Notice> mScholarshipLoanNoticeMap;
+    private Hashtable<Integer, Notice> mEmploymentNoticeMap;
+    private Hashtable<Integer, Notice> mEventNoticeMap;
 
     private NoticeManager() {
-        mGeneralNoticeList = new ArrayList<>();
-        mBachelorNoticeList = new ArrayList<>();
-        mScholarshipLoanNoticeList = new ArrayList<>();
-        mEmploymentNoticeList = new ArrayList<>();
-        mEventNoticeList = new ArrayList<>();
+        mGeneralNoticeMap = new Hashtable<>();
+        mBachelorNoticeMap = new Hashtable<>();
+        mScholarshipLoanNoticeMap = new Hashtable<>();
+        mEmploymentNoticeMap = new Hashtable<>();
+        mEventNoticeMap = new Hashtable<>();
     }
 
     private static class LazyHolder {
@@ -37,12 +41,12 @@ public class NoticeManager {
     }
 
     public void getNotice(int listIndex, int pageNum) {
-        ArrayList<Notice> currNoticeList = mGeneralNoticeList;
-        if(listIndex == 1) currNoticeList = mGeneralNoticeList;
-        if(listIndex == 2) currNoticeList = mBachelorNoticeList;
-        if(listIndex == 3) currNoticeList = mScholarshipLoanNoticeList;
-        if(listIndex == 4) currNoticeList = mEmploymentNoticeList;
-        if(listIndex == 5) currNoticeList = mEventNoticeList;
+        Hashtable<Integer, Notice> currNoticeList = mGeneralNoticeMap;
+        if(listIndex == 1) currNoticeList = mGeneralNoticeMap;
+        if(listIndex == 2) currNoticeList = mBachelorNoticeMap;
+        if(listIndex == 3) currNoticeList = mScholarshipLoanNoticeMap;
+        if(listIndex == 4) currNoticeList = mEmploymentNoticeMap;
+        if(listIndex == 5) currNoticeList = mEventNoticeMap;
         try {
             Connection.Response res = Jsoup.connect("http://www.kau.ac.kr/page/kauspace/" + NOTICE_LIST[listIndex] + ".jsp")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
@@ -68,17 +72,17 @@ public class NoticeManager {
                     .data("chg_page_size", "10")
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
-            Elements elements = doc.getElementsByAttributeValue("id", "board_form").select("tbody").select("tr");
-            int elementsSize = elements.size();
-            for (int i = 0; i < elementsSize; i++) {
-                Elements infomation = elements.get(i).select("td");
-                Notice insertNotice = new Notice();
-                insertNotice.postNum = Integer.valueOf(infomation.get(0).text().equals("") ? "0" : infomation.get(0).text());
-                insertNotice.postDetailNum = Integer.valueOf(infomation.get(1).select("a").attr("href").replaceAll("[^0-9]", ""));
-                insertNotice.postTitle = infomation.get(1).text();
-                insertNotice.writer = infomation.get(2).text();
-                insertNotice.RegistrationDate = infomation.get(3).text();
-                currNoticeList.add(insertNotice);
+            Elements postElements = doc.getElementsByAttributeValue("id", "board_form").select("tbody").select("tr");
+            int postElementsSize = postElements.size();
+            for (int i = 0; i < postElementsSize; i++) {
+                Elements infomation = postElements.get(i).select("td");
+                Notice insertedNotice = new Notice();
+                insertedNotice.postNum = Integer.valueOf(infomation.get(0).text().equals("") ? "0" : infomation.get(0).text());
+                insertedNotice.postDetailNum = Integer.valueOf(infomation.get(1).select("a").attr("href").replaceAll("[^0-9]", ""));
+                insertedNotice.postTitle = infomation.get(1).text();
+                insertedNotice.writer = infomation.get(2).text();
+                insertedNotice.RegistrationDate = infomation.get(3).text();
+                currNoticeList.put(insertedNotice.postNum, insertedNotice);
             }
         } catch (Exception e) {
             e.printStackTrace();
