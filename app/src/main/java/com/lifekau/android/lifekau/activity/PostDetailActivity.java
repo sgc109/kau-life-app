@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -84,7 +85,9 @@ public class PostDetailActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(new RecyclerView.Adapter<CommentViewHolder>() {
             @Override
             public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return null;
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_comment, parent, false);
+                return new CommentViewHolder(view);
             }
 
             @Override
@@ -94,7 +97,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                return 0;
+                return 10;
             }
         });
     }

@@ -11,15 +11,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
             <include
                 android:id="@+id/post_detail_post_container"
                 layout="@layout/list_item_post"/>
-
-        </RelativeLayout>
 
         <View
             android:id="@+id/separator"
@@ -34,6 +29,9 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@android:layout/simple_list_item_checked"/>
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
