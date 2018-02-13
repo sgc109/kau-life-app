@@ -45,6 +45,7 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/list_item_comment_content_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
@@ -60,6 +61,8 @@
                 android:id="@+id/list_item_comment_date_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
@@ -68,41 +71,50 @@
 
             <TextView
                 android:id="@+id/list_item_comment_edited_text_view"
-                android:layout_toRightOf="@id/list_item_comment_date_text_view"
-                android:layout_toEndOf="@id/list_item_comment_date_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="4dp"
+                android:layout_toEndOf="@id/list_item_comment_date_text_view"
+                android:layout_toRightOf="@id/list_item_comment_date_text_view"
                 android:text="수정됨"
                 android:visibility="gone"/>
 
             <TextView
+                android:id="@+id/list_item_comment_like_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="4dp"
+                android:layout_toEndOf="@id/list_item_comment_edited_text_view"
+                android:layout_toRightOf="@id/list_item_comment_edited_text_view"
                 android:text="좋아요"/>
 
             <ImageView
+                android:id="@+id/list_item_comment_like_image_view"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="4dp"
+                android:layout_toEndOf="@id/list_item_comment_like_text_view"
+                android:layout_toRightOf="@id/list_item_comment_like_text_view"
                 android:src="@drawable/ic_heart_circle"/>
 
             <TextView
+                android:id="@+id/list_item_comment_like_count_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="4dp"
+                android:layout_toEndOf="@id/list_item_comment_like_image_view"
+                android:layout_toRightOf="@id/list_item_comment_like_image_view"
                 android:text="1"
                 android:textSize="7pt"
                 android:textStyle="bold"/>
