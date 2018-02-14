@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.adapter.CommentRecyclerAdapter;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Post;
 import com.lifekau.android.lifekau.viewholder.CommentViewHolder;
@@ -38,6 +39,7 @@ public class PostDetailActivity extends AppCompatActivity {
     private DatabaseReference mPostRef;
     private DatabaseReference mCommentsRef;
     private RecyclerView mRecyclerView;
+    private CommentRecyclerAdapter mAdater;
 
     public static Intent newIntent(Context context, String postKey) {
         Intent intent = new Intent(context, PostDetailActivity.class);
@@ -82,24 +84,8 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
 
-        mRecyclerView.setAdapter(new RecyclerView.Adapter<CommentViewHolder>() {
-            @Override
-            public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_comment, parent, false);
-                return new CommentViewHolder(view);
-            }
-
-            @Override
-            public void onBindViewHolder(CommentViewHolder holder, int position) {
-
-            }
-
-            @Override
-            public int getItemCount() {
-                return 10;
-            }
-        });
+        mAdater = new CommentRecyclerAdapter(mPostKey, this);
+        mRecyclerView.setAdapter(mAdater);
     }
 
     @Override

@@ -16,6 +16,7 @@
                 android:id="@+id/post_detail_post_container"
                 layout="@layout/list_item_post"/>
 
+
         <View
             android:id="@+id/separator"
             android:layout_width="match_parent"
