@@ -42,6 +42,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder{
         mLikeTextView = itemView.findViewById(R.id.list_item_comment_like_text_view);
         mLikeCountTextView = itemView.findViewById(R.id.list_item_comment_like_count_text_view);
         mLikeImageView = itemView.findViewById(R.id.list_item_comment_like_image_view);
+        mContext = context;
     }
 
     public void bind(Comment comment, String commentKey, final String postKey){
@@ -75,7 +76,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder{
     private void updateUI(){
         mContentTextView.setText(mComment.text);
         mDateTextView.setText(DateDisplayer.dateToStringFormat(new Date(mComment.date)));
-        mLikeCountTextView.setText(mComment.likeCount);
+        mLikeCountTextView.setText("" + mComment.likeCount);
         if(mComment.likeCount == 0){
             mLikeImageView.setVisibility(View.GONE);
             mLikeCountTextView.setVisibility(View.GONE);

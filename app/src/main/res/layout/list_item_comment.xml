@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="4dp"
     android:orientation="horizontal">
 
     <FrameLayout
@@ -31,14 +32,16 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_corner"
+            android:background="@drawable/rounded_corner_comment_text_view"
             android:orientation="vertical">
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
                 android:text="익명"
                 android:textColor="@android:color/black"
                 android:textSize="7pt"
@@ -48,7 +51,10 @@
                 android:id="@+id/list_item_comment_content_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
                 android:text="이러쿵저러쿵 어쩌구 저쩌구 이러쿵저러쿵 어쩌구 저쩌구 이러쿵저러쿵 어쩌구 저쩌구 이러쿵저러쿵 어쩌구 저쩌구 이러쿵저러쿵 어쩌구 저쩌구 "
                 android:textColor="@android:color/black"/>
         </LinearLayout>

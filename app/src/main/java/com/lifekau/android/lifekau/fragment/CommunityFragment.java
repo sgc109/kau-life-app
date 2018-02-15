@@ -59,29 +59,11 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         mProgressBar = view.findViewById(R.id.post_list_progress_bar);
         mSwipeRefreshLayout = view.findViewById(R.id.post_list_swipe_refresh_layout);
 
-        initPostList();
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    private void initPostList() {
-        Log.d("fuck", "initPostList");
-        mProgressBar.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
-
         mLayoutManager = new LinearLayoutManager(getContext());
-
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setProgressViewOffset(true, PxDpConverter.convertDpToPx(72), PxDpConverter.convertDpToPx(100));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PostRecyclerAdapter(getActivity());
-        mRecyclerView.setAdapter(mAdapter);
-        mIsLoading = false;
         RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -98,6 +80,24 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
         mRecyclerView.addOnScrollListener(scrollListener);
         setHasOptionsMenu(true);
+
+        initPostList();
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    private void initPostList() {
+        Log.d("fuck", "initPostList");
+        mProgressBar.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+
+        mAdapter = new PostRecyclerAdapter(getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+        mIsLoading = true;
         getPosts();
     }
 
@@ -117,7 +117,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
                     newPosts.add(snapshot.getValue(Post.class));
                     newPostKeys.add(snapshot.getKey());
                 }
-                if (mAdapter.mPosts.size() != 0) {
+                if (mAdapter.getItemCount() != 0) {
                     newPosts.remove(newPosts.size() - 1);
                     newPostKeys.remove(newPostKeys.size() - 1);
                 }

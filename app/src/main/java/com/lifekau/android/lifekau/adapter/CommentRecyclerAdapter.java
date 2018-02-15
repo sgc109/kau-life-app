@@ -51,4 +51,8 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentViewHold
         mCommentKeys.addAll(commentKeys);
         notifyItemRangeInserted(initialSize, comments.size());
     }
+
+    public String getLastKey() {
+        return mCommentKeys.get(mCommentKeys.size() - 1);
+    }
 }

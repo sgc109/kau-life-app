@@ -95,7 +95,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     }
 
     public void updateBottomNavigationItems() {
-        bottomNavigation.setAccentColor(Color.parseColor("#3f1dcb"));
+        bottomNavigation.setAccentColor(getResources().getColor(R.color.colorPrimaryDark));
 //        bottomNavigation.setNotification("1", 2);
 //        bottomNavigation.setNotification("1", 4);
     }

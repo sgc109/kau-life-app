@@ -75,13 +75,13 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         mCommentButtonContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startDetailActivity();
+                startDetailActivity(true);
             }
         });
         mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startDetailActivity();
+                startDetailActivity(false);
             }
         });
 
@@ -169,8 +169,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private void startDetailActivity() {
-        Intent intent = PostDetailActivity.newIntent(mContext, mPostKey);
+    private void startDetailActivity(boolean hasClickedComment) {
+        Intent intent = PostDetailActivity.newIntent(mContext, mPostKey, hasClickedComment);
         mContext.startActivity(intent);
     }
 }

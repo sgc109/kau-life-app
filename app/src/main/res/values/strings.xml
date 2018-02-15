@@ -37,6 +37,10 @@
     <string name="yes">예</string>
     <string name="no">아니오</string>
     <string name="post_comment_count">댓글 %1$s개</string>
+    <string name="see_previous_comments">이전 댓글 보기</string>
+    <string name="reading_more_comments">댓글을 읽어들이는 중...</string>
+    <string name="type_the_comment">댓글을 입력하세요...</string>
+    <string name="successfully_comment_registered">댓글이 성공적으로 등록되었습니다!</string>
 
 
     <string name="menu_1">커뮤니티</string>
