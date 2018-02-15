@@ -147,6 +147,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 
                 mMoreCommentsProgressBar.setVisibility(View.GONE);
                 mMoreCommentsImageView.setVisibility(View.VISIBLE);
+                mMoreCommentsTextView.setText(R.string.see_previous_comments);
 
                 if (mJustWroteComment) {
                     mJustWroteComment = false;
@@ -239,6 +240,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private void pressedMoreComments() {
         mMoreCommentsImageView.setVisibility(View.GONE);
         mMoreCommentsProgressBar.setVisibility(View.VISIBLE);
+        mMoreCommentsTextView.setText(R.string.reading_more_comments);
         getComments();
     }
 

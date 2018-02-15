@@ -30,7 +30,7 @@
     <string name="please_write_post_text_alert_message">내용을 작성해주세요!</string>
     <string name="empty_alarm_list_message">알람이 없습니다.</string>
     <string name="empty_review_list_message">평가가 없습니다.</string>
-    <string name="write_post_hint_message">하고 싶은 말을 자유롭게 써주세요.</string>
+    <string name="write_post_hint_message">하고 싶은 이야기를 자유롭게 써주세요.</string>
     <string name="submit_post_button">게시하기</string>
     <string name="write_new_post">새 글 쓰기</string>
     <string name="text_gone_warning_message">작성 중인 글이 사라집니다.\n계속 하시겠습니까?</string>
