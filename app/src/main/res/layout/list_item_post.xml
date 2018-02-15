@@ -86,7 +86,7 @@
                 android:layout_marginLeft="4dp"
                 android:scaleX="0.8"
                 android:scaleY="0.8"
-                android:src="@drawable/ic_heart_circle"/>
+                android:src="@drawable/ic_heart_circle_light"/>
 
             <TextView
                 android:id="@+id/list_item_post_like_count"

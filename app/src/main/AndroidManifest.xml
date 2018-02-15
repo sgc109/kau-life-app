@@ -25,15 +25,17 @@
             android:name=".activity.FoodReviewListActivity"
             android:parentActivityName=".activity.MainActivity">
         </activity>
-        <activity android:name=".activity.FoodReviewWriteActivity"
-                  android:windowSoftInputMode="adjustResize">
+        <activity
+            android:name=".activity.FoodReviewWriteActivity"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".activity.LectureReviewSearchActivity">
         </activity>
         <activity android:name=".activity.LectureReviewListActivity">
         </activity>
-        <activity android:name=".activity.LectureReviewWriteActivity"
-                  android:windowSoftInputMode="adjustResize">
+        <activity
+            android:name=".activity.LectureReviewWriteActivity"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".activity.FoodReviewCornerListActivity">
         </activity>
@@ -59,10 +61,12 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activity.PostDetailActivity">
+        <activity
+            android:name=".activity.PostDetailActivity"
+            >
         </activity>
-        <activity android:name=".activity.PostWriteActivity"
-                  android:windowSoftInputMode="adjustResize">
+        <activity
+            android:name=".activity.PostWriteActivity">
         </activity>
     </application>
 

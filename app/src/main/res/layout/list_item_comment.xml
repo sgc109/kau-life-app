@@ -110,7 +110,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_toEndOf="@id/list_item_comment_like_text_view"
                 android:layout_toRightOf="@id/list_item_comment_like_text_view"
-                android:src="@drawable/ic_heart_circle"/>
+                android:src="@drawable/ic_heart_circle_light"/>
 
             <TextView
                 android:id="@+id/list_item_comment_like_count_text_view"

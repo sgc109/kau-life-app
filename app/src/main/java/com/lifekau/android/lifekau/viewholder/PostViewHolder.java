@@ -129,8 +129,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
 
         if (mPost.likes.get(LoginManager.get(mContext).getStudentId()) != null) {
             mLikeButtonImageView.setImageResource(R.drawable.ic_heart);
-            mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(R.color.heart_hot_pink));
-            mLikeButtonTextView.setTextColor(mContext.getResources().getColor(R.color.heart_hot_pink));
+            mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(R.color.heart_color));
+            mLikeButtonTextView.setTextColor(mContext.getResources().getColor(R.color.heart_color));
         } else {
             mLikeButtonImageView.setImageResource(R.drawable.ic_heart_empty);
             mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(android.R.color.tab_indicator_text));

@@ -4,24 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,18 +32,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.PxDpConverter;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.adapter.CommentRecyclerAdapter;
-import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Comment;
 import com.lifekau.android.lifekau.model.Post;
-import com.lifekau.android.lifekau.viewholder.CommentViewHolder;
 import com.lifekau.android.lifekau.viewholder.PostViewHolder;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 public class PostDetailActivity extends AppCompatActivity implements OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String EXTRA_HAS_CLICKED_COMMENT = "extra_has_clicked_comment";
@@ -69,6 +61,12 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private ImageView mCommentSubmitImageView;
     private EditText mCommentEditText;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private NestedScrollView mNestedScrollView;
+    private ImageView mMoreCommentsImageView;
+    private TextView mMoreCommentsTextView;
+    private ProgressBar mMoreCommentsProgressBar;
+    private LinearLayout mMoreCommentsLinearLayout;
+    private boolean mJustWroteComment;
 
 
     public static Intent newIntent(Context context, String postKey, boolean hasClickedComment) {
@@ -100,8 +98,14 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 .child(mPostKey);
 
         mBottomMarginView.setVisibility(View.GONE);
-
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.setItemAnimator(null);
+        mNestedScrollView.setSmoothScrollingEnabled(true);
+        mMoreCommentsImageView.setOnClickListener(this);
+        mMoreCommentsTextView.setOnClickListener(this);
         mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mCommentSubmitImageView.setOnClickListener(this);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -111,8 +115,8 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 
     private void getComments() {
         Query query = mCommentsRef.orderByKey();
-        if (mAdapter.getItemCount() != 0) query = query.startAt(mAdapter.getLastKey());
-        query = query.limitToFirst(NUM_OF_COMMENT_PER_PAGE);
+        if (mAdapter.getItemCount() != 0) query = query.endAt(mAdapter.getLastKey());
+        query = query.limitToLast(NUM_OF_COMMENT_PER_PAGE + 1);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -122,17 +126,38 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                     newComments.add(snapshot.getValue(Comment.class));
                     newCommentKeys.add(snapshot.getKey());
                 }
-                if (mAdapter.getItemCount() != 0) {
-                    newComments.remove(0);
-                    newCommentKeys.remove(0);
+                if (newCommentKeys.size() <= NUM_OF_COMMENT_PER_PAGE) {
+                    mMoreCommentsLinearLayout.setVisibility(View.GONE);
+                } else {
+                    mMoreCommentsLinearLayout.setVisibility(View.VISIBLE);
+
+                    newComments = newComments.subList(newComments.size() - NUM_OF_COMMENT_PER_PAGE, newComments.size());
+                    newCommentKeys = newCommentKeys.subList(newCommentKeys.size() - NUM_OF_COMMENT_PER_PAGE, newCommentKeys.size());
                 }
+
+                if (mAdapter.getItemCount() != 0) {
+                    newComments.remove(newComments.size() - 1);
+                    newCommentKeys.remove(newCommentKeys.size() - 1);
+                }
+                Collections.reverse(newComments);
+                Collections.reverse(newCommentKeys);
+
                 mAdapter.addAll(newComments, newCommentKeys);
                 mIsLoading = false;
+
+                mMoreCommentsProgressBar.setVisibility(View.GONE);
+                mMoreCommentsImageView.setVisibility(View.VISIBLE);
+
+                if (mJustWroteComment) {
+                    mJustWroteComment = false;
+                    mNestedScrollView.fullScroll(View.FOCUS_DOWN);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("fuck", "PostDetailActivity:onCancelled");
+                mJustWroteComment = false;
             }
         });
     }
@@ -144,7 +169,14 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 Log.d("fuck", "PostDetailActivity:onDataChange");
                 Post post = dataSnapshot.getValue(Post.class);
                 mPostViewHolder.bind(post, mPostKey);
-                mPostViewHolder.mCommentButtonContainer.setOnClickListener(null);
+                mPostViewHolder.mCommentButtonContainer.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCommentEditText.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(mCommentEditText, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
                 mPostViewHolder.mTextView.setOnClickListener(null);
             }
 
@@ -165,8 +197,8 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private void updateUI() {
 //        mProgressBar.setVisibility(View.VISIBLE);
 //        mRecyclerView.setVisibility(View.GONE);
-        updatePost();
         updateComments();
+        updatePost();
     }
 
     @Override
@@ -175,6 +207,11 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     }
 
     private void initializeViews() {
+        mMoreCommentsLinearLayout = findViewById(R.id.more_comments_linear_layout);
+        mMoreCommentsProgressBar = findViewById(R.id.more_comments_progress_bar);
+        mMoreCommentsTextView = findViewById(R.id.more_comments_text_view);
+        mMoreCommentsImageView = findViewById(R.id.more_comments_refresh_image_view);
+        mNestedScrollView = findViewById(R.id.post_detail_nested_scroll_view);
         mCommentSubmitImageView = findViewById(R.id.post_detail_comment_send_image_view);
         mCommentEditText = findViewById(R.id.post_detail_comment_edit_text);
         mRecyclerView = findViewById(R.id.post_detail_recycler_view);
@@ -189,14 +226,39 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         switch (view.getId()) {
             case R.id.post_detail_comment_send_image_view:
                 writeComment(new Comment(LoginManager.get(this).getStudentId(), mCommentEditText.getText().toString()));
-                mCommentEditText.setText("");
+                break;
+            case R.id.more_comments_refresh_image_view:
+                pressedMoreComments();
+                break;
+            case R.id.more_comments_text_view:
+                pressedMoreComments();
                 break;
         }
     }
 
+    private void pressedMoreComments() {
+        mMoreCommentsImageView.setVisibility(View.GONE);
+        mMoreCommentsProgressBar.setVisibility(View.VISIBLE);
+        getComments();
+    }
+
     private void writeComment(Comment comment) {
-        mCommentsRef.push().setValue(comment);
-        Toast.makeText(this, getString(R.string.successfully_comment_registered), Toast.LENGTH_SHORT).show();
+        mCommentsRef.push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                mJustWroteComment = true;
+                updateComments();
+                InputMethodManager imm = (InputMethodManager) getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mCommentEditText.getWindowToken(), 0);
+
+                mCommentEditText.setText("");
+                Toast.makeText(PostDetailActivity.this,
+                        getString(R.string.successfully_comment_registered),
+                        Toast.LENGTH_SHORT).
+                        show();
+            }
+        });
     }
 
     @Override

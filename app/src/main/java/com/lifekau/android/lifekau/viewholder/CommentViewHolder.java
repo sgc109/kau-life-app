@@ -86,7 +86,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder{
         }
 
         if (mComment.likes.get(LoginManager.get(mContext).getStudentId()) != null) {
-            mLikeTextView.setTextColor(mContext.getResources().getColor(R.color.heart_hot_pink));
+            mLikeTextView.setTextColor(mContext.getResources().getColor(R.color.heart_color));
         } else {
             mLikeTextView.setTextColor(mContext.getResources().getColor(android.R.color.tab_indicator_text));
         }
