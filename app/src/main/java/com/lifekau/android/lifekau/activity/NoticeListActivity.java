@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.NoticeManager;
+import com.lifekau.android.lifekau.model.Notice;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -23,13 +24,14 @@ import java.util.Arrays;
 public class NoticeListActivity extends AppCompatActivity {
 
     private static final int TOTAL_NOTICE_LIST_NUM = 5;
+    private static final int VIEW_ITEM = 0;
+    private static final int VIEW_PROGRESS = 1;
 
     private static NoticeManager mNoticeManager = NoticeManager.getInstance();
 
     private NoticeManagerAsyncTask mNoticeManagerAsyncTask;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mRecyclerAdapter;
-    private ProgressBar mProgressBar;
     private int mNoticeType;
     private int mLoadedPageNum[];
 
@@ -43,18 +45,33 @@ public class NoticeListActivity extends AppCompatActivity {
         }
         Intent intent = getIntent();
         mNoticeType = intent.getIntExtra("noticeType", 0);
-        mLoadedPageNum = new int[5];
+        mLoadedPageNum = new int[TOTAL_NOTICE_LIST_NUM];
         Arrays.fill(mLoadedPageNum, 1);
-        mRecyclerAdapter = new RecyclerView.Adapter<NoticeListViewHolder>() {
+        mRecyclerAdapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             @Override
-            public NoticeListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_notice, parent, false);
-                return new NoticeListViewHolder(view);
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view;
+                RecyclerView.ViewHolder viewHolder;
+                if (viewType == VIEW_ITEM) {
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_notice, parent, false);
+                    viewHolder = new NoticeListItemViewHolder(view);
+                } else {
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_progress, parent, false);
+                    viewHolder = new NoticeListProgressViewHolder(view);
+                }
+                return viewHolder;
             }
 
             @Override
-            public void onBindViewHolder(NoticeListViewHolder holder, int position) {
-                holder.bind(position);
+            public int getItemViewType(int position) {
+                return mNoticeManager.getNotice(mNoticeType, position) != null ? VIEW_ITEM : VIEW_PROGRESS;
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                if (holder instanceof NoticeListItemViewHolder)
+                    ((NoticeListItemViewHolder) holder).bind(position);
+                else ((NoticeListProgressViewHolder) holder).bind(position);
             }
 
             @Override
@@ -69,37 +86,37 @@ public class NoticeListActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
                 super.onScrollStateChanged(recyclerView, scrollState);
-                int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
                 int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
-                if(lastVisibleItemPosition == itemTotalCount) {
+                if (lastVisibleItemPosition == itemTotalCount) {
                     mNoticeManagerAsyncTask = new NoticeManagerAsyncTask(getApplication(), (NoticeListActivity) recyclerView.getContext());
                     mNoticeManagerAsyncTask.execute(mLoadedPageNum[mNoticeType]++);
                 }
             }
         });
         mRecyclerView.setAdapter(mRecyclerAdapter);
-        mProgressBar = findViewById(R.id.notice_list_progress_bar);
         mNoticeManagerAsyncTask = new NoticeManagerAsyncTask(getApplication(), this);
         mNoticeManagerAsyncTask.execute(mLoadedPageNum[mNoticeType]++);
     }
 
-    public class NoticeListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class NoticeListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mTitleTextView;
         private TextView mWriterTextView;
         private TextView RegistrationTextView;
 
-        public NoticeListViewHolder(View itemView) {
+        public NoticeListItemViewHolder(View itemView) {
             super(itemView);
-            mTitleTextView = itemView.findViewById(R.id.list_item_notice_item_title);
-            mWriterTextView = itemView.findViewById(R.id.list_item_notice_item_writer);
-            RegistrationTextView = itemView.findViewById(R.id.list_item_notice_item_registration_date);
+            mTitleTextView = itemView.findViewById(R.id.list_item_notice_title);
+            mWriterTextView = itemView.findViewById(R.id.list_item_notice_writer);
+            RegistrationTextView = itemView.findViewById(R.id.list_item_notice_registration_date);
             itemView.setOnClickListener(this);
         }
 
         public void bind(int position) {
-            mTitleTextView.setText(mNoticeManager.getListPageTitle(mNoticeType, position));
-            mWriterTextView.setText(mNoticeManager.getListPageWriter(mNoticeType, position));
-            RegistrationTextView.setText(mNoticeManager.getListPageRegistrationDate(mNoticeType, position));
+            Notice notice = mNoticeManager.getNotice(mNoticeType, position);
+            mTitleTextView.setText(notice.postTitle);
+            mWriterTextView.setText(notice.writer);
+            RegistrationTextView.setText(notice.RegistrationDate);
         }
 
         @Override
@@ -107,6 +124,19 @@ public class NoticeListActivity extends AppCompatActivity {
 //            WebView webview = new WebView(view.getContext());
 //            setContentView(webview);
 //
+        }
+    }
+
+    public class NoticeListProgressViewHolder extends RecyclerView.ViewHolder {
+        private ProgressBar mProgressBar;
+
+        public NoticeListProgressViewHolder(View progressView) {
+            super(progressView);
+            mProgressBar = progressView.findViewById(R.id.list_item_progress_bar);
+        }
+
+        public void bind(int position) {
+
         }
     }
 
@@ -122,6 +152,7 @@ public class NoticeListActivity extends AppCompatActivity {
 
         private WeakReference<NoticeListActivity> activityReference;
         private WeakReference<Application> applicationWeakReference;
+        private int prevPageSize;
 
         // only retain a weak reference to the activity
         NoticeManagerAsyncTask(Application application, NoticeListActivity NoticeListActivity) {
@@ -134,15 +165,12 @@ public class NoticeListActivity extends AppCompatActivity {
             super.onPreExecute();
             NoticeListActivity NoticeListActivity = activityReference.get();
             if (NoticeListActivity == null || NoticeListActivity.isFinishing()) return;
-            ProgressBar progressBar = NoticeListActivity.findViewById(R.id.notice_list_progress_bar);
-            RecyclerView recyclerView = NoticeListActivity.findViewById(R.id.notice_list_recycler_view);
-            progressBar.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
+            prevPageSize = mNoticeManager.getListCount(NoticeListActivity.mNoticeType);
         }
 
         @Override
         protected Integer doInBackground(Integer... params) {
-            mNoticeManager.getNotice(activityReference.get().mNoticeType, params[0]);
+            mNoticeManager.getNoticeList(activityReference.get().mNoticeType, params[0]);
             return 0;
         }
 
@@ -151,15 +179,12 @@ public class NoticeListActivity extends AppCompatActivity {
             super.onPostExecute(result);
             NoticeListActivity NoticeListActivity = activityReference.get();
             if (NoticeListActivity == null || NoticeListActivity.isFinishing()) return;
+            NoticeListActivity.mRecyclerAdapter.notifyItemRangeChanged(prevPageSize - 1, mNoticeManager.getListCount(NoticeListActivity.mNoticeType));
             if (result != -1) {
             } else {
                 //예외 처리
                 NoticeListActivity.showErrorMessage();
             }
-            ProgressBar progressBar = NoticeListActivity.findViewById(R.id.notice_list_progress_bar);
-            RecyclerView recyclerView = NoticeListActivity.findViewById(R.id.notice_list_recycler_view);
-            progressBar.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 

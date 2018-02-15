@@ -42,7 +42,7 @@ public class NoticeManager {
         return LazyHolder.INSTANCE;
     }
 
-    public void getNotice(int noticeType, int pageNum) {
+    public void getNoticeList(int noticeType, int listNum) {
         Hashtable<Integer, Notice> currNoticeList = null;
         for(int i = 0; i < TOTAL_NOTICE_NUM; i++){
             if(noticeType != i) continue;
@@ -57,7 +57,7 @@ public class NoticeManager {
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
                     .referrer("http://www.kau.ac.kr" + URL_TYPE[noticeType != 3 ? 0 : 1] + NOTICE_LIST[noticeType] + ".jsp")
                     .data("communityKey", COMMUNITY_KEY[noticeType])
-                    .data("pageNum", String.valueOf(pageNum))
+                    .data("pageNum", String.valueOf(listNum))
                     .data("pageSize", "10")
                     .data("act", "LIST")
                     .data("boardId", "")
@@ -94,27 +94,12 @@ public class NoticeManager {
     }
 
     public int getListCount(int noticeType){
-        return mNoticeListMap[noticeType].size() + mImportantNoticeList[noticeType].size();
-    }
-    
-    public String getListPageTitle(int noticeType, int index){
-        if(index < mImportantNoticeList[noticeType].size()) return mImportantNoticeList[noticeType].get(index).postTitle;
-        return mNoticeListMap[noticeType].get(mLatestPageNum[noticeType] - index + mImportantNoticeList[noticeType].size()).postTitle;
+        return mNoticeListMap[noticeType].size() + mImportantNoticeList[noticeType].size() + 1;
     }
 
-    public String getListPageWriter(int noticeType, int index){
-        if(index < mImportantNoticeList[noticeType].size()) return mImportantNoticeList[noticeType].get(index).writer;
-        return mNoticeListMap[noticeType].get(mLatestPageNum[noticeType] - index + mImportantNoticeList[noticeType].size()).writer;
-    }
-
-    public String getListPageRegistrationDate(int noticeType, int index){
-        if(index < mImportantNoticeList[noticeType].size()) return mImportantNoticeList[noticeType].get(index).RegistrationDate;
-        return mNoticeListMap[noticeType].get(mLatestPageNum[noticeType] - index + mImportantNoticeList[noticeType].size()).RegistrationDate;
-    }
-
-    public int getListPageDetailNum(int noticeType, int index){
-        if(index < mImportantNoticeList[noticeType].size()) return mImportantNoticeList[noticeType].get(index).postDetailNum;
-        return mNoticeListMap[noticeType].get(mLatestPageNum[noticeType] - index + mImportantNoticeList[noticeType].size()).postDetailNum;
+    public Notice getNotice(int noticeType, int index){
+        if(index < mImportantNoticeList[noticeType].size()) return mImportantNoticeList[noticeType].get(index);
+        return mNoticeListMap[noticeType].get(mLatestPageNum[noticeType] - index + mImportantNoticeList[noticeType].size());
     }
 
     public String getMatchingCharSet(String charset) {
