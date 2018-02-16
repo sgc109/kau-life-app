@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:theme="@style/AppTheme">
 
-
     <ProgressBar
         android:id="@+id/post_list_progress_bar"
         android:layout_width="wrap_content"

@@ -86,7 +86,8 @@
                 android:layout_marginLeft="4dp"
                 android:scaleX="0.8"
                 android:scaleY="0.8"
-                android:src="@drawable/ic_heart_circle_light"/>
+                android:src="@drawable/ic_heart_circle_light"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/list_item_post_like_count"
@@ -97,7 +98,8 @@
                 android:layout_toEndOf="@id/list_item_post_circle_heart_image_view"
                 android:layout_toRightOf="@id/list_item_post_circle_heart_image_view"
                 android:text="3"
-                android:textSize="7pt"/>
+                android:textSize="7pt"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/list_item_post_comment_count_text_view"
@@ -106,7 +108,8 @@
                 android:layout_alignBottom="@id/list_item_post_circle_heart_image_view"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="8dp"
-                android:text="댓글 3개"/>
+                android:text="댓글 3개"
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <View
@@ -191,6 +194,6 @@
         android:id="@+id/list_item_post_bottom_margin_view"
         android:layout_width="match_parent"
         android:layout_height="12dp"
-        android:background="#e5e5e5"/>
+        android:background="@color/community_fragment_background"/>
 
 </LinearLayout>

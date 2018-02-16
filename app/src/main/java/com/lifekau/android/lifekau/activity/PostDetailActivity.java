@@ -27,7 +27,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.PxDpConverter;
 import com.lifekau.android.lifekau.R;
@@ -248,8 +250,16 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mCommentsRef.push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                mJustWroteComment = true;
+                increaseCommentCount();
                 updateComments();
+//                updatePost();
+                mJustWroteComment = true;
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                    }
+//                }, 0);
+
                 InputMethodManager imm = (InputMethodManager) getSystemService(
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mCommentEditText.getWindowToken(), 0);
@@ -259,6 +269,31 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                         getString(R.string.successfully_comment_registered),
                         Toast.LENGTH_SHORT).
                         show();
+
+            }
+        });
+    }
+
+    private void increaseCommentCount() {
+        final String studentId = LoginManager.get(this).getStudentId();
+        mPostRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Post p = mutableData.getValue(Post.class);
+                if (p == null) {
+                    return Transaction.success(mutableData);
+                }
+                p.commentCount++;
+
+                mutableData.setValue(p);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                Log.d("fuck", "commentTransaction:onComplete:" + databaseError);
+                updatePost();
             }
         });
     }

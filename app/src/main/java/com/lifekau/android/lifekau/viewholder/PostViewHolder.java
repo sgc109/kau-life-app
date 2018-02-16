@@ -84,6 +84,12 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
                 startDetailActivity(false);
             }
         });
+        mCommentCountTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startDetailActivity(false);
+            }
+        });
 
         updateUI();
 
