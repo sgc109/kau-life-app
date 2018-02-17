@@ -41,6 +41,7 @@
     <string name="reading_more_comments">댓글을 읽어들이는 중...</string>
     <string name="type_the_comment">댓글을 입력하세요...</string>
     <string name="successfully_comment_registered">댓글이 성공적으로 등록되었습니다!</string>
+    <string name="post_deleted_by_author">보고 계신 글이 작성자에 의해 삭제 되었습니다.</string>
 
 
     <string name="menu_1">커뮤니티</string>

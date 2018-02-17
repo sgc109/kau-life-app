@@ -33,7 +33,7 @@
             android:background="@color/colorPrimary"
             android:elevation="4dp"
             android:theme="@style/ToolBarStyle"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            app:layout_scrollFlags="scroll|enterAlways|snap"/>
     </android.support.design.widget.AppBarLayout>
 
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation

@@ -3,9 +3,12 @@ package com.lifekau.android.lifekau.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +27,7 @@ import com.lifekau.android.lifekau.PxDpConverter;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
 import com.lifekau.android.lifekau.model.Post;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +44,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     private PostRecyclerAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private int mCurrentY = 0;
 
     public CommunityFragment() {
     }
@@ -68,12 +74,32 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                // 맨위에 빈공간 안보이도록 좀 내려가고나서 툴바올라가도록 설정하기
+//                final AppCompatActivity act = (AppCompatActivity) getActivity();
+//                Toolbar toolbar = (Toolbar) act.getSupportActionBar().getCustomView();
+//                AppBarLayout.LayoutParams params =
+//                        (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+//
+//                mCurrentY += dy;
+//                if (mCurrentY >= 100) {
+//                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+//                    | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+//                } else {
+//                    params.setScrollFlags(0);
+//                }
+//                toolbar.setLayoutParams(params);
+
                 mTotalItemCount = mLayoutManager.getItemCount();
                 mLastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
 
                 if (!mIsLoading && mTotalItemCount <= (mLastVisibleItemPosition + NUM_OF_POST_PER_PAGE)) {
                     mIsLoading = true;
                     getPosts();
+                }
+
+                if (mLayoutManager.findFirstVisibleItemPosition() != 0) {
+
                 }
             }
         };
@@ -148,7 +174,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
     @Override
     public void onRefresh() {
-        if(mIsLoading) return;
+        if (mIsLoading) return;
         initPostList();
         new Handler().postDelayed(new Runnable() {
             @Override

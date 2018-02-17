@@ -227,4 +227,9 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         }
         return true;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

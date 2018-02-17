@@ -112,7 +112,8 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mCommentSubmitImageView.setOnClickListener(this);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setProgressViewOffset(true, PxDpConverter.convertDpToPx(72), PxDpConverter.convertDpToPx(100));
-        updateUI();
+        initComments();
+        initPost();
     }
 
     private void getComments() {
@@ -165,12 +166,18 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         });
     }
 
-    private void updatePost() {
-        mPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void initPost() {
+        mPostRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("fuck", "PostDetailActivity:onDataChange");
                 Post post = dataSnapshot.getValue(Post.class);
+                if (post == null) {
+                    Toast.makeText(PostDetailActivity.this, getString(R.string.post_deleted_by_author), Toast.LENGTH_SHORT).show();
+                    PostDetailActivity.this.finish();
+                    // 부모 액티비티 적절히 업데이트해야되는데.. 어떻게할지
+                    return;
+                }
                 mPostViewHolder.bind(post, mPostKey);
                 mPostViewHolder.mCommentButtonContainer.setOnClickListener(new OnClickListener() {
                     @Override
@@ -190,18 +197,11 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         });
     }
 
-    private void updateComments() {
+    private void initComments() {
         mAdapter = new CommentRecyclerAdapter(mPostKey, this);
         mRecyclerView.setAdapter(mAdapter);
         mIsLoading = true;
         getComments();
-    }
-
-    private void updateUI() {
-//        mProgressBar.setVisibility(View.VISIBLE);
-//        mRecyclerView.setVisibility(View.GONE);
-        updateComments();
-        updatePost();
     }
 
     @Override
@@ -251,14 +251,15 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 increaseCommentCount();
-                updateComments();
-//                updatePost();
-                mJustWroteComment = true;
+                initComments();
+                // 여기 장치 회전된다거나 갑자기 어플죽으면 파베디비에 댓글은 써졌는데 댓글개수가 업뎃이 안되는 치명적인 일이 생길 수 있기 때문에
+                // 스레드를 만들어서 돌려야할 수도 있을것같음.. 아니면
 //                new Handler().postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
 //                    }
 //                }, 0);
+                mJustWroteComment = true;
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(
                         Context.INPUT_METHOD_SERVICE);
@@ -293,7 +294,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 Log.d("fuck", "commentTransaction:onComplete:" + databaseError);
-                updatePost();
+//                updatePost();
             }
         });
     }
@@ -301,7 +302,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     @Override
     public void onRefresh() {
         if (mIsLoading) return;
-        updateUI();
+        initComments();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
