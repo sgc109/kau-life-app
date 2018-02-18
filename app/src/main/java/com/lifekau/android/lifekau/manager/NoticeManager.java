@@ -12,6 +12,13 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class NoticeManager {
 
     private final static int TOTAL_NOTICE_NUM = 5;
@@ -48,41 +55,33 @@ public class NoticeManager {
             currNoticeList = mNoticeListMap[i];
             break;
         }
-        Connection.Response res;
-        try {
-            res = Jsoup.connect("http://www.kau.ac.kr" + URL_TYPE[noticeType != 3 ? 0 : 1] + NOTICE_LIST[noticeType] + ".jsp")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip, deflate")
-                    .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-                    .referrer("http://www.kau.ac.kr" + URL_TYPE[noticeType != 3 ? 0 : 1] + NOTICE_LIST[noticeType] + ".jsp")
-                    .data("communityKey", COMMUNITY_KEY[noticeType])
-                    .data("pageNum", String.valueOf(listNum))
-                    .data("pageSize", "10")
-                    .data("act", "LIST")
-                    .data("boardId", "")
-                    .data("branch_session", "")
-                    .data("only_reply", "")
-                    .data("mbo_mother_page", URL_TYPE[noticeType != 3 ? 0 : 1] + NOTICE_LIST[noticeType])
-                    .data("board_table_name", "WCM_BOARD_" + COMMUNITY_KEY[noticeType])
-                    .data("sort_type", "DESC")
-                    .data("sort_column", "")
-                    .data("memoTable", "WCM_BOARD_MEMO" + COMMUNITY_KEY[noticeType])
-                    .data("login_id", "")
-                    .data("searchType", "TITLE")
-                    .data("searchWord", "")
-                    .data("chg_page_size", "10")
-                    .execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-        if (res.statusCode() <= 199 || res.statusCode() >= 300){
-            Log.e("ERROR", res.statusCode() + res.statusMessage());
-            return -1;
-        }
-        try {
-            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = new FormBody.Builder()
+                .add("communityKey", COMMUNITY_KEY[noticeType])
+                .add("pageNum", String.valueOf(listNum))
+                .add("pageSize", "10")
+                .add("act", "LIST")
+                .add("boardId", "")
+                .add("branch_session", "")
+                .add("only_reply", "")
+                .add("mbo_mother_page", URL_TYPE[noticeType != 3 ? 0 : 1] + NOTICE_LIST[noticeType])
+                .add("board_table_name", "WCM_BOARD_" + COMMUNITY_KEY[noticeType])
+                .add("sort_type", "DESC")
+                .add("sort_column", "")
+                .add("memoTable", "WCM_BOARD_MEMO" + COMMUNITY_KEY[noticeType])
+                .add("login_id", "")
+                .add("searchType", "TITLE")
+                .add("searchWord", "")
+                .add("chg_page_size", "10")
+                .build();
+        Request request = new Request.Builder()
+                .url("http://www.kau.ac.kr" + URL_TYPE[noticeType != 3 ? 0 : 1] + NOTICE_LIST[noticeType] + ".jsp")
+                .post(body)
+                .build();
+        Call call = client.newCall(request);
+        try(Response res = call.execute()){
+            if(res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
             Elements postElements = doc.getElementsByAttributeValue("id", "board_form").select("tbody").select("tr");
             int postElementsSize = postElements.size();
             if(postElementsSize == 1 && postElements.get(0).select("td").get(0).text().equals("등록된 글이 없습니다.")){
@@ -103,7 +102,8 @@ public class NoticeManager {
                 else currNoticeList.put(insertedNotice.postNum, insertedNotice);
             }
             return 0;
-        } catch (Exception e) {
+        }
+        catch(Exception e){
             e.printStackTrace();
             return -1;
         }
@@ -146,17 +146,5 @@ public class NoticeManager {
             stringBuffer.append(values[i]);
         }
         return stringBuffer.toString();
-    }
-
-    public String getMatchingCharSet(String charset) {
-        final String[] ENCODE_TYPE = {"EUC-KR", "KSC5601", "X-WINDOWS-949", "ISO-8859-1", "UTF-8"};
-        String res = ENCODE_TYPE[0];
-        for (String encodeType : ENCODE_TYPE) {
-            if (encodeType.equalsIgnoreCase(charset)) {
-                res = encodeType;
-                break;
-            }
-        }
-        return res;
     }
 }
