@@ -185,11 +185,6 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         initPostList();
