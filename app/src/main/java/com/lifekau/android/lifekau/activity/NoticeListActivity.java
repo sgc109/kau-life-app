@@ -3,6 +3,8 @@ package com.lifekau.android.lifekau.activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,7 +26,7 @@ import java.util.Arrays;
 
 public class NoticeListActivity extends AppCompatActivity {
 
-    private static final int TOTAL_NOTICE_LIST_NUM = 5;
+    private static final String LOADED_PAGE_NUM = "loadedPageNum";
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_PROGRESS = 1;
 
@@ -32,10 +34,10 @@ public class NoticeListActivity extends AppCompatActivity {
 
     private boolean mLoading;
     private int mNoticeType;
-    private int mLoadedPageNum[];
-    private NoticeManagerAsyncTask mNoticeManagerAsyncTask;
-    private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.Adapter mRecyclerAdapter;
+    private RecyclerView mRecyclerView;
+    private NoticeManagerAsyncTask mNoticeManagerAsyncTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +49,22 @@ public class NoticeListActivity extends AppCompatActivity {
         mLoading = false;
         Intent intent = getIntent();
         mNoticeType = intent.getIntExtra("noticeType", 0);
-        mLoadedPageNum = new int[TOTAL_NOTICE_LIST_NUM];
-        Arrays.fill(mLoadedPageNum, 1);
+        mSwipeRefreshLayout = findViewById(R.id.notice_list_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mNoticeManager.reset(mNoticeType);
+                mRecyclerAdapter.notifyDataSetChanged();
+                executeAsyncTask();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 500);
+            }
+        });
         mRecyclerAdapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -81,7 +97,7 @@ public class NoticeListActivity extends AppCompatActivity {
                 return mNoticeManager.getListCount(mNoticeType);
             }
         };
-        mRecyclerView = (RecyclerView) findViewById(R.id.notice_list_recycler_view);
+        mRecyclerView = findViewById(R.id.notice_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -92,14 +108,32 @@ public class NoticeListActivity extends AppCompatActivity {
                 int itemTotalCount = recyclerView.getAdapter().getItemCount();
                 if (!mLoading && lastVisibleItemPosition >= itemTotalCount - 2) {
                     mLoading = true;
-                    mNoticeManagerAsyncTask = new NoticeManagerAsyncTask(getApplication(), (NoticeListActivity) recyclerView.getContext());
-                    mNoticeManagerAsyncTask.execute(mLoadedPageNum[mNoticeType]);
+                    executeAsyncTask();
                 }
             }
         });
         mRecyclerView.setAdapter(mRecyclerAdapter);
+        executeAsyncTask();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!mNoticeManager.getAllPageFetched(mNoticeType)) mLoading = false;
+        if (mRecyclerAdapter != null) {
+            mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mNoticeManagerAsyncTask.cancel(true);
+    }
+
+    public void executeAsyncTask(){
         mNoticeManagerAsyncTask = new NoticeManagerAsyncTask(getApplication(), this);
-        mNoticeManagerAsyncTask.execute(mLoadedPageNum[mNoticeType]);
+        mNoticeManagerAsyncTask.execute();
     }
 
     public class NoticeListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -147,21 +181,6 @@ public class NoticeListActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(!mNoticeManager.getAllPageFetched(mNoticeType)) mLoading = false;
-        if (mRecyclerAdapter != null) {
-            mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mNoticeManagerAsyncTask.cancel(true);
-    }
-
     private static class NoticeManagerAsyncTask extends AsyncTask<Integer, Void, Integer> {
 
         private WeakReference<NoticeListActivity> activityReference;
@@ -184,10 +203,13 @@ public class NoticeListActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Integer... params) {
             NoticeListActivity NoticeListActivity = activityReference.get();
+            int count = 0;
             while ((NoticeListActivity != null && !NoticeListActivity.isFinishing()) &&
-                    mNoticeManager.getNoticeList(activityReference.get().mNoticeType, params[0]) == -1 && !isCancelled()) {
+                    mNoticeManager.getNoticeList(activityReference.get().mNoticeType) == -1 && !isCancelled()) {
                 Log.e("ERROR", "페이지 불러오기 실패!");
                 sleep(3000);
+                count++;
+                if(count == 5) return -1;
             }
             return 0;
         }
@@ -195,21 +217,26 @@ public class NoticeListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            NoticeListActivity NoticeListActivity = activityReference.get();
-            if (NoticeListActivity == null || NoticeListActivity.isFinishing()) return;
-            int noticeType = NoticeListActivity.mNoticeType;
+            final NoticeListActivity noticeListActivity = activityReference.get();
+            if (noticeListActivity == null || noticeListActivity.isFinishing()) return;
+            int noticeType = noticeListActivity.mNoticeType;
             if (result != -1) {
                 if (mNoticeManager.getAllPageFetched(noticeType)) {
-                    NoticeListActivity.mRecyclerAdapter.notifyItemRemoved(mNoticeManager.getListCount(noticeType) + 1);
+                    noticeListActivity.mRecyclerAdapter.notifyItemRemoved(mNoticeManager.getListCount(noticeType) + 1);
                 } else {
-                    NoticeListActivity.mLoading = false;
-                    NoticeListActivity.mLoadedPageNum[noticeType]++;
-                    NoticeListActivity.mRecyclerAdapter.notifyItemRangeChanged(prevPageSize - 1, mNoticeManager.getListCount(NoticeListActivity.mNoticeType));
+                    noticeListActivity.mLoading = false;
+                    noticeListActivity.mRecyclerAdapter.notifyItemRangeChanged(prevPageSize - 1, mNoticeManager.getListCount(noticeListActivity.mNoticeType));
                 }
             } else {
                 //예외 처리
-                if(!mNoticeManager.getAllPageFetched(noticeType)) NoticeListActivity.mLoading = false;
-                NoticeListActivity.showErrorMessage();
+                if(!mNoticeManager.getAllPageFetched(noticeType)) noticeListActivity.mLoading = false;
+                noticeListActivity.showErrorMessage();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        noticeListActivity.mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 1000);
             }
         }
 
