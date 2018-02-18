@@ -24,7 +24,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="4dp"
             android:text="공지제목"
-            android:textSize="12pt" />
+            android:textSize="10pt" />
 
         <LinearLayout
             android:layout_width="match_parent"

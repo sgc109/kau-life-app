@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,20 +30,21 @@ public class NoticeListActivity extends AppCompatActivity {
 
     private static NoticeManager mNoticeManager = NoticeManager.getInstance();
 
+    private boolean mLoading;
+    private int mNoticeType;
+    private int mLoadedPageNum[];
     private NoticeManagerAsyncTask mNoticeManagerAsyncTask;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mRecyclerAdapter;
-    private int mNoticeType;
-    private int mLoadedPageNum[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_list);
         if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
         }
+        mLoading = false;
         Intent intent = getIntent();
         mNoticeType = intent.getIntExtra("noticeType", 0);
         mLoadedPageNum = new int[TOTAL_NOTICE_LIST_NUM];
@@ -87,16 +89,17 @@ public class NoticeListActivity extends AppCompatActivity {
             public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
                 super.onScrollStateChanged(recyclerView, scrollState);
                 int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-                int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
-                if (lastVisibleItemPosition == itemTotalCount) {
+                int itemTotalCount = recyclerView.getAdapter().getItemCount();
+                if (!mLoading && lastVisibleItemPosition >= itemTotalCount - 2) {
+                    mLoading = true;
                     mNoticeManagerAsyncTask = new NoticeManagerAsyncTask(getApplication(), (NoticeListActivity) recyclerView.getContext());
-                    mNoticeManagerAsyncTask.execute(mLoadedPageNum[mNoticeType]++);
+                    mNoticeManagerAsyncTask.execute(mLoadedPageNum[mNoticeType]);
                 }
             }
         });
         mRecyclerView.setAdapter(mRecyclerAdapter);
         mNoticeManagerAsyncTask = new NoticeManagerAsyncTask(getApplication(), this);
-        mNoticeManagerAsyncTask.execute(mLoadedPageNum[mNoticeType]++);
+        mNoticeManagerAsyncTask.execute(mLoadedPageNum[mNoticeType]);
     }
 
     public class NoticeListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -121,9 +124,13 @@ public class NoticeListActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-//            WebView webview = new WebView(view.getContext());
-//            setContentView(webview);
-//
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                Intent intent = new Intent(view.getContext(), NoticePageActivity.class);
+                intent.putExtra("URL", mNoticeManager.getURL(mNoticeType));
+                intent.putExtra("POST", mNoticeManager.getPOST(mNoticeType, position));
+                startActivity(intent);
+            }
         }
     }
 
@@ -143,9 +150,16 @@ public class NoticeListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(!mNoticeManager.getAllPageFetched(mNoticeType)) mLoading = false;
         if (mRecyclerAdapter != null) {
             mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mNoticeManagerAsyncTask.cancel(true);
     }
 
     private static class NoticeManagerAsyncTask extends AsyncTask<Integer, Void, Integer> {
@@ -154,7 +168,6 @@ public class NoticeListActivity extends AppCompatActivity {
         private WeakReference<Application> applicationWeakReference;
         private int prevPageSize;
 
-        // only retain a weak reference to the activity
         NoticeManagerAsyncTask(Application application, NoticeListActivity NoticeListActivity) {
             applicationWeakReference = new WeakReference<>(application);
             activityReference = new WeakReference<>(NoticeListActivity);
@@ -170,7 +183,12 @@ public class NoticeListActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Integer... params) {
-            mNoticeManager.getNoticeList(activityReference.get().mNoticeType, params[0]);
+            NoticeListActivity NoticeListActivity = activityReference.get();
+            while ((NoticeListActivity != null && !NoticeListActivity.isFinishing()) &&
+                    mNoticeManager.getNoticeList(activityReference.get().mNoticeType, params[0]) == -1 && !isCancelled()) {
+                Log.e("ERROR", "페이지 불러오기 실패!");
+                sleep(3000);
+            }
             return 0;
         }
 
@@ -179,11 +197,27 @@ public class NoticeListActivity extends AppCompatActivity {
             super.onPostExecute(result);
             NoticeListActivity NoticeListActivity = activityReference.get();
             if (NoticeListActivity == null || NoticeListActivity.isFinishing()) return;
-            NoticeListActivity.mRecyclerAdapter.notifyItemRangeChanged(prevPageSize - 1, mNoticeManager.getListCount(NoticeListActivity.mNoticeType));
+            int noticeType = NoticeListActivity.mNoticeType;
             if (result != -1) {
+                if (mNoticeManager.getAllPageFetched(noticeType)) {
+                    NoticeListActivity.mRecyclerAdapter.notifyItemRemoved(mNoticeManager.getListCount(noticeType) + 1);
+                } else {
+                    NoticeListActivity.mLoading = false;
+                    NoticeListActivity.mLoadedPageNum[noticeType]++;
+                    NoticeListActivity.mRecyclerAdapter.notifyItemRangeChanged(prevPageSize - 1, mNoticeManager.getListCount(NoticeListActivity.mNoticeType));
+                }
             } else {
                 //예외 처리
+                if(!mNoticeManager.getAllPageFetched(noticeType)) NoticeListActivity.mLoading = false;
                 NoticeListActivity.showErrorMessage();
+            }
+        }
+
+        public void sleep(int time) {
+            try {
+                Thread.sleep(time);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
