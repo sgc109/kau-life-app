@@ -56,11 +56,11 @@ public class PortalManager {
         mExaminationTimeTable = new String[EXAMIANATION_TIME_TABLE_ROW][EXAMIANATION_TIME_TABLE_COL];
     }
 
-    private static class LazyHolder{
+    private static class LazyHolder {
         public static final PortalManager INSTANCE = new PortalManager();
     }
 
-    public static PortalManager getInstance(){
+    public static PortalManager getInstance() {
         return LazyHolder.INSTANCE;
     }
 
@@ -81,8 +81,7 @@ public class PortalManager {
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) return -1;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
@@ -111,15 +110,11 @@ public class PortalManager {
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) return -1;
             loginInfomation = res.body().string();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
-        Log.e("MESSAGE", "두번째 성공 테스트");
-        Log.e("MESSAGE", loginInfomation);
-        if(loginInfomation.contains(resources.getString(R.string.portal_login_failed))) return -1;
-        Log.e("MESSAGE", "why???");
+        if (loginInfomation.contains(resources.getString(R.string.portal_login_failed))) return -1;
         String[] seqId = loginInfomation.split("\'");
         String url = HttpUrl.parse(resources.getString(R.string.portal_jsoup_portal_check_page)).newBuilder()
                 .addQueryParameter("chk1", "1")
@@ -133,15 +128,11 @@ public class PortalManager {
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
-            Log.e("MESSAGE", res.code() + "");
             if (res.code() <= 199 || res.code() >= 301) return -1;
-            Log.e("MESSAGE", res.body().string());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
-        Log.e("MESSAGE", "세번째 성공 테스트");
         url = HttpUrl.parse(resources.getString(R.string.portal_jsoup_portal_login_page)).newBuilder()
                 .addQueryParameter("seq_id", seqId[3])
                 .addQueryParameter("ppage", "")
@@ -157,16 +148,14 @@ public class PortalManager {
         call = client.newCall(request);
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) return -1;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
-        Log.e("MESSAGE", "네번째 성공 테스트");
         return 0;
     }
 
-    public int checkSessionVaild(){
+    public int checkSessionVaild() {
         return 0;
     }
 
@@ -201,8 +190,7 @@ public class PortalManager {
                 insert.amount = Integer.valueOf(TextUtils.join("", infomation.get(3).text().split(",")));
                 mScholarshipArray.add(insert);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
@@ -211,20 +199,27 @@ public class PortalManager {
 
     public int getCurrGradeInfomation(Context context) {
         Resources resources = context.getResources();
-        try {
-            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_curr_grade_page))
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
-//                    .cookies(mCookies)
-                    .validateTLSCertificates(false)
-                    .execute();
-            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .build();
+        Request request = new Request.Builder()
+                .url(resources.getString(R.string.portal_jsoup_curr_grade_page))
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("cellspacing", "1");
             mCurrGrade.clear();
-            if (resources.getString(R.string.portal_curr_grade_no_data).equals(elements.get(0).select("tr").get(1).select("td").text())) return -1;
+            if (resources.getString(R.string.portal_curr_grade_no_data).equals(elements.get(0).select("tr").get(1).select("td").text()))
+                return -1;
             int elementsSize = elements.size();
             for (int i = 0; i < elementsSize; i++) {
                 Elements grades = elements.get(i).select("tr");
@@ -261,17 +256,27 @@ public class PortalManager {
 
     public int getAccumulatedGrade(Context context, int year, int semesterCode) {
         Resources resources = context.getResources();
-        try {
-            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_accumulated_grade_page) + "?guYear=" + year + "&guHakgi=" + semesterCode)
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
-//                    .cookies(mCookies)
-                    .validateTLSCertificates(false)
-                    .execute();
-            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .build();
+        String url = HttpUrl.parse(resources.getString(R.string.portal_jsoup_accumulated_grade_page)).newBuilder()
+                .addQueryParameter("guYear", String.valueOf(year))
+                .addQueryParameter("guHakgi", String.valueOf(semesterCode))
+                .build().toString();
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
             mAccumulatedGradeArray.clear();
             Elements elements = doc.getElementsByAttributeValue("class", "table1");
             Elements gradeSummary = elements.get(1).select("tr");
@@ -300,17 +305,23 @@ public class PortalManager {
 
     public int getAccumulatedGradeSummary(Context context) {
         Resources resources = context.getResources();
-        try {
-            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_accumulated_grade_summary_page))
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
-//                    .cookies(mCookies)
-                    .validateTLSCertificates(false)
-                    .execute();
-            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .build();
+        Request request = new Request.Builder()
+                .url(resources.getString(R.string.portal_jsoup_accumulated_grade_summary_page))
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()){
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
             mAccumulatedGradeSummaryArray.clear();
             Elements elements = doc.getElementsByAttributeValue("class", "table1");
             Elements gradeSummary = elements.get(0).select("tr");
@@ -343,28 +354,37 @@ public class PortalManager {
 
     public int getExaminationTimeTable(Context context, int year, int semesterCode, int examCode) {
         Resources resources = context.getResources();
-        try {
-            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_examination_time_table_page) + "?" + year + "hakgi=" + examCode)
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
-                    .data("year", String.valueOf(year))
-                    .data("hakgi", String.valueOf(semesterCode))
-                    .data("junggi_gb", String.valueOf(examCode))
-                    .method(Connection.Method.POST)
-//                    .cookies(mCookies)
-                    .validateTLSCertificates(false)
-                    .execute();
-            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .build();
+        FormBody body = new FormBody.Builder()
+                .add("year", String.valueOf(year))
+                .add("hakgi", String.valueOf(semesterCode))
+                .add("junggi_gb", String.valueOf(examCode))
+                .build();
+        Request request = new Request.Builder()
+                .url(resources.getString(R.string.portal_jsoup_examination_time_table_page) + "?" + year + "hakgi=" + examCode)
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .post(body)
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()){
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
             Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
-            if(timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_titme_table_no_data))) return -1;
+            if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_titme_table_no_data)))
+                return -1;
             int timeTableElementsSize = timeTableElements.size();
             for (int i = 0; i < timeTableElementsSize; i++) {
                 Elements dataElements = timeTableElements.get(i).select("td");
                 int dataElementsSize = dataElements.size();
-                for(int j = 0; j < dataElementsSize; j++){
+                for (int j = 0; j < dataElementsSize; j++) {
                     mExaminationTimeTable[i][j] = dataElements.get(j).text();
                 }
             }
@@ -373,17 +393,5 @@ public class PortalManager {
             return -1;
         }
         return 0;
-    }
-
-    public String getMatchingCharSet(String charset) {
-        final String[] ENCODE_TYPE = {"EUC-KR", "KSC5601", "X-WINDOWS-949", "ISO-8859-1", "UTF-8"};
-        String res = ENCODE_TYPE[0];
-        for (String encodeType : ENCODE_TYPE) {
-            if (encodeType.equalsIgnoreCase(charset)) {
-                res = encodeType;
-                break;
-            }
-        }
-        return res;
     }
 }
