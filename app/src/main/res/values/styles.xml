@@ -14,6 +14,10 @@
         <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 
+    <style name="MyBottomBarStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">#795548</item>
+    </style>
+
     <style name="setting">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

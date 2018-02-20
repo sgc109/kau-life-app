@@ -4,16 +4,16 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:orientation="vertical"
-             tools:context="com.lifekau.android.lifekau.ReviewFragment">
+             tools:context="com.lifekau.android.lifekau.fragment.ReviewFragment">
 
     <LinearLayout
-        android:layout_marginTop="@dimen/toolbar_height"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/toolbar_height"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/go_to_food_review_button"
+        <android.support.v7.widget.CardView
+            android:id="@+id/go_to_lecture_review_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -28,6 +28,44 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/lecture3"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="center"
+                    android:text="강의 리뷰"
+                    android:textSize="48dp"/>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/go_to_food_review_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -47,44 +85,7 @@
                     android:textSize="48dp"/>
 
             </LinearLayout>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/go_to_lecture_review_button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:background="#eeeeee"
-            android:gravity="center"
-            android:padding="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/lecture3"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="8dp"
-                    android:gravity="center"
-                    android:text="강의 리뷰"
-                    android:textSize="48dp"/>
-            </LinearLayout>
-            />
-        </FrameLayout>
+        </android.support.v7.widget.CardView>
 
         <ImageView
             android:layout_width="match_parent"

@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.lifekau.android.lifekau">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -17,24 +22,51 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FoodReviewListActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".activity.FoodReviewListActivity"
+            android:parentActivityName=".activity.MainActivity">
         </activity>
-        <activity android:name=".FoodReviewWriteActivity">
+        <activity
+            android:name=".activity.FoodReviewWriteActivity"
+            android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".LectureReviewSearchActivity">
+        <activity android:name=".activity.LectureReviewSearchActivity">
         </activity>
-        <activity android:name=".LectureReviewListActivity">
+        <activity android:name=".activity.LectureReviewListActivity">
         </activity>
-        <activity android:name=".LectureReviewWriteActivity">
+        <activity
+            android:name=".activity.LectureReviewWriteActivity"
+            android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".FoodReviewCornerListActivity">
+        <activity android:name=".activity.FoodReviewCornerListActivity">
         </activity>
-        <activity android:name=".HomeActivity">
+        <activity android:name=".activity.HomeActivity">
         </activity>
-        <activity android:name=".AlarmsActivity">
+        <activity android:name=".activity.AlarmsListActivity">
         </activity>
-        <activity android:name=".SettingsActivity">
+        <activity android:name=".activity.SettingsActivity">
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="@string/title_activity_login">
+        </activity>
+
+        <service android:name=".PushAlarmService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".PushAlarmInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".activity.PostDetailActivity"
+            >
+        </activity>
+        <activity
+            android:name=".activity.PostWriteActivity">
         </activity>
     </application>
 
