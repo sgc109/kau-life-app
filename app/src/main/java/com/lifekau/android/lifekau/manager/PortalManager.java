@@ -45,6 +45,9 @@ public class PortalManager {
     private ArrayList<AccumulatedGradeSummary> mAccumulatedGradeSummaryArray;
     private TotalAccumulatedGrade mTotalAccumulatedGrade;
     private String[][] mExaminationTimeTable;
+    private OkHttpClient mClient;
+    private String mSSOToken;
+    private String mStudentId;
 
     private PortalManager() {
         mScholarshipArray = new ArrayList<Scholarship>();
@@ -64,19 +67,26 @@ public class PortalManager {
         return LazyHolder.INSTANCE;
     }
 
-    public int getSession(Context context, String id, String password) {
+    public synchronized OkHttpClient getClient(Context context) {
+        if (mClient == null) {
+            ClearableCookieJar cookieJar =
+                    new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+            mClient = new OkHttpClient.Builder()
+                    .cookieJar(cookieJar)
+                    .build();
+        }
+        return mClient;
+    }
+
+    public int pullSession(Context context, String id, String password) {
         Resources resources = context.getResources();
-        ClearableCookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
+        OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
-                .url(resources.getString(R.string.portal_jsoup_lms_check_page))
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .url(resources.getString(R.string.portal_lms_check_page))
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -85,7 +95,6 @@ public class PortalManager {
             e.printStackTrace();
             return -1;
         }
-        Log.e("MESSAGE", "첫번째 성공 테스트");
         RequestBody body = new FormBody.Builder()
                 .add("target_page", "act_Lms_Check.jsp@chk1-1")
                 .add("refer_page", "")
@@ -97,12 +106,12 @@ public class PortalManager {
                 .add("p_pwd", password)
                 .build();
         request = new Request.Builder()
-                .url(resources.getString(R.string.portal_jsoup_act_login_page))
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
-                .addHeader("Referer", resources.getString(R.string.portal_jsoup_lms_check_page))
+                .url(resources.getString(R.string.portal_act_login_page))
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_lms_check_page))
                 .post(body)
                 .build();
         call = client.newCall(request);
@@ -115,16 +124,16 @@ public class PortalManager {
             return -1;
         }
         if (loginInfomation.contains(resources.getString(R.string.portal_login_failed))) return -1;
-        String[] seqId = loginInfomation.split("\'");
-        String url = HttpUrl.parse(resources.getString(R.string.portal_jsoup_portal_check_page)).newBuilder()
+        mSSOToken = loginInfomation.split("\'")[3];
+        String url = HttpUrl.parse(resources.getString(R.string.portal_portal_check_page)).newBuilder()
                 .addQueryParameter("chk1", "1")
                 .build().toString();
         request = new Request.Builder()
                 .url(url)
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -133,17 +142,17 @@ public class PortalManager {
             e.printStackTrace();
             return -1;
         }
-        url = HttpUrl.parse(resources.getString(R.string.portal_jsoup_portal_login_page)).newBuilder()
-                .addQueryParameter("seq_id", seqId[3])
+        url = HttpUrl.parse(resources.getString(R.string.portal_portal_login_page)).newBuilder()
+                .addQueryParameter("seq_id", mSSOToken)
                 .addQueryParameter("ppage", "")
                 .build().toString();
         request = new Request.Builder()
                 .url(url)
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
-                .addHeader("Referer", resources.getString(R.string.portal_jsoup_portal_check_page))
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_portal_check_page))
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -159,20 +168,17 @@ public class PortalManager {
         return 0;
     }
 
-    public int getScholarshipInfomation(Context context) {
+    public int pullScholarship(Context context) {
         Resources resources = context.getResources();
-        ClearableCookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
+        OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
-                .url(resources.getString(R.string.portal_jsoup_scholar_page))
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
-                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .url(resources.getString(R.string.portal_scholar_page))
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.
+                        getString(R.string.portal_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -197,20 +203,16 @@ public class PortalManager {
         return 0;
     }
 
-    public int getCurrGradeInfomation(Context context) {
+    public int pullCurrGrade(Context context) {
         Resources resources = context.getResources();
-        ClearableCookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
+        OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
-                .url(resources.getString(R.string.portal_jsoup_curr_grade_page))
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
-                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .url(resources.getString(R.string.portal_curr_grade_page))
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -254,24 +256,20 @@ public class PortalManager {
         return 0;
     }
 
-    public int getAccumulatedGrade(Context context, int year, int semesterCode) {
+    public int pullAccumulatedGrade(Context context, int year, int semesterCode) {
         Resources resources = context.getResources();
-        ClearableCookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
-        String url = HttpUrl.parse(resources.getString(R.string.portal_jsoup_accumulated_grade_page)).newBuilder()
+        OkHttpClient client = getClient(context);
+        String url = HttpUrl.parse(resources.getString(R.string.portal_accumulated_grade_page)).newBuilder()
                 .addQueryParameter("guYear", String.valueOf(year))
                 .addQueryParameter("guHakgi", String.valueOf(semesterCode))
                 .build().toString();
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
-                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -303,23 +301,19 @@ public class PortalManager {
         return 0;
     }
 
-    public int getAccumulatedGradeSummary(Context context) {
+    public int pullAccumulatedGradeSummary(Context context) {
         Resources resources = context.getResources();
-        ClearableCookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
+        OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
-                .url(resources.getString(R.string.portal_jsoup_accumulated_grade_summary_page))
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
-                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .url(resources.getString(R.string.portal_accumulated_grade_summary_page))
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .build();
         Call call = client.newCall(request);
-        try (Response res = call.execute()){
+        try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) return -1;
             Document doc = Jsoup.parse(res.body().string());
             mAccumulatedGradeSummaryArray.clear();
@@ -352,29 +346,25 @@ public class PortalManager {
         return 0;
     }
 
-    public int getExaminationTimeTable(Context context, int year, int semesterCode, int examCode) {
+    public int pullExaminationTimeTable(Context context, int year, int semesterCode, int examCode) {
         Resources resources = context.getResources();
-        ClearableCookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
+        OkHttpClient client = getClient(context);
         FormBody body = new FormBody.Builder()
                 .add("year", String.valueOf(year))
                 .add("hakgi", String.valueOf(semesterCode))
                 .add("junggi_gb", String.valueOf(examCode))
                 .build();
         Request request = new Request.Builder()
-                .url(resources.getString(R.string.portal_jsoup_examination_time_table_page) + "?" + year + "hakgi=" + examCode)
-                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
-                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .url(resources.getString(R.string.portal_examination_time_table_page) + "?" + year + "hakgi=" + examCode)
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .post(body)
                 .build();
         Call call = client.newCall(request);
-        try (Response res = call.execute()){
+        try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) return -1;
             Document doc = Jsoup.parse(res.body().string());
             Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
@@ -393,5 +383,45 @@ public class PortalManager {
             return -1;
         }
         return 0;
+    }
+
+    public int pullStudentId(Context context) {
+        Resources resources = context.getResources();
+        OkHttpClient client = getClient(context);
+        String url = HttpUrl.parse(resources.getString(R.string.portal_get_student_id_page)).newBuilder()
+                .addQueryParameter("sso_token", mSSOToken)
+                .addQueryParameter("sso_link", "portal")
+                .build().toString();
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
+            mStudentId = doc.getElementsByAttributeValue("name", "USERID").get(0).attr("value");
+            return 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public String getStudentId() {
+        return mStudentId;
+    }
+
+
+    public int getScholarshipSize() {
+        return mScholarshipArray.size();
+    }
+
+    public Scholarship getScholarship(int index) {
+        return index < getScholarshipSize() ? mScholarshipArray.get(index) : null;
     }
 }

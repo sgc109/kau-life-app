@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Application;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -29,12 +30,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.manager.PortalManager;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -319,7 +322,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
             try {
                 // Simulate network access.
-                if(mPortalManager.getSession(activityReference.get(), mEmail, mPassword) == -1) return false;
+                if (mPortalManager.pullSession(applicationWeakReference.get(), mEmail, mPassword) == -1)
+                    return false;
+//                if (mPortalManager.pullStudentId(applicationWeakReference.get()) == -1)
+//                    return false;
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
@@ -332,7 +338,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
             if (success) {
-                finish();
+                LoginManager loginManager = LoginManager.get(activityReference.get());
+                loginManager.setUserId(mEmail);
+                loginManager.setPassword(mPassword);
+//                loginManager.setStudentId(mPortalManager.getStudentId());
+                if (loginManager.getStudentId() == null) showErrorMessage();
+                else {
+                    Intent intent = HomeActivity.newIntent(activityReference.get());
+                    startActivity(intent);
+                }
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -344,6 +358,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    public void showErrorMessage() {
+        Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
 

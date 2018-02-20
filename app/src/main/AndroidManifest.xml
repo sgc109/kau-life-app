@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.lifekau.android.lifekau">
+    package="com.lifekau.android.lifekau">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -16,58 +16,43 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.FoodReviewListActivity"
-            android:parentActivityName=".activity.MainActivity">
-        </activity>
+            android:parentActivityName=".activity.MainActivity"></activity>
         <activity
             android:name=".activity.FoodReviewWriteActivity"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-        <activity android:name=".activity.LectureReviewSearchActivity">
-        </activity>
-        <activity android:name=".activity.LectureReviewListActivity">
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name=".activity.LectureReviewSearchActivity"></activity>
+        <activity android:name=".activity.LectureReviewListActivity"></activity>
         <activity
             android:name=".activity.LectureReviewWriteActivity"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-        <activity android:name=".activity.FoodReviewCornerListActivity">
-        </activity>
-        <activity android:name=".activity.HomeActivity">
-        </activity>
-        <activity android:name=".activity.AlarmsListActivity">
-        </activity>
-        <activity android:name=".activity.SettingsActivity">
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name=".activity.FoodReviewCornerListActivity"></activity>
+        <activity android:name=".activity.HomeActivity"></activity>
+        <activity android:name=".activity.AlarmsListActivity"></activity>
+        <activity android:name=".activity.SettingsActivity"></activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login">
-        </activity>
+            android:label="@string/title_activity_login"></activity>
 
         <service android:name=".PushAlarmService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service android:name=".PushAlarmInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <activity
-            android:name=".activity.PostDetailActivity"
-            >
-        </activity>
-        <activity
-            android:name=".activity.PostWriteActivity">
-        </activity>
+        <activity android:name=".activity.PostDetailActivity"></activity>
+        <activity android:name=".activity.PostWriteActivity"></activity>
+        <activity android:name=".activity.ScholarshipActivity"></activity>
     </application>
 
 </manifest>

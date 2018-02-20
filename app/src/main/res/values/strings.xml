@@ -50,22 +50,23 @@
     <string name="menu_5">LMS &amp; Info</string>
 
     <!-- Portal 관련 스트링 정의-->
-    <string name="portal_jsoup_lms_check_page">https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1</string>
-    <string name="portal_jsoup_act_login_page">https://www.kau.ac.kr/page/act_login.jsp</string>
-    <string name="portal_jsoup_portal_check_page">https://www.kau.ac.kr/page/act_Portal_Check.jsp</string>
-    <string name="portal_jsoup_portal_login_page">https://portal.kau.ac.kr/portal/PortalLoginSso</string>
-    <string name="portal_jsoup_my_portal_page">https://portal.kau.ac.kr/portal/MyPortal_No.jsp</string>
-    <string name="portal_jsoup_my_menu_b_page">https://portal.kau.ac.kr/admt/MyMenuB.jsp</string>
-    <string name="portal_jsoup_scholar_page">https://portal.kau.ac.kr/sugang/PersScholarTakeList.jsp</string>
-    <string name="portal_jsoup_curr_grade_page">https://portal.kau.ac.kr/sugang/GradHakList.jsp</string>
-    <string name="portal_jsoup_accumulated_grade_page">https://portal.kau.ac.kr/sugang/GradTotList.jsp</string>
-    <string name="portal_jsoup_accumulated_grade_summary_page">https://portal.kau.ac.kr/sugang/GradTermList.jsp</string>
-    <string name="portal_jsoup_examination_time_table_page">https://portal.kau.ac.kr/sugang/SugangExamList.jsp</string>
-    <string name="portal_jsoup_header_accept">text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</string>
-    <string name="portal_jsoup_header_accpet_encoding">gzip, deflate</string>
-    <string name="portal_jsoup_header_accept_encoding_with_br">gzip, deflate, br</string>
-    <string name="portal_jsoup_header_accpet_language">ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7</string>
-    <string name="portal_jsoup_user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36</string>
+    <string name="portal_lms_check_page">https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1</string>
+    <string name="portal_act_login_page">https://www.kau.ac.kr/page/act_login.jsp</string>
+    <string name="portal_portal_check_page">https://www.kau.ac.kr/page/act_Portal_Check.jsp</string>
+    <string name="portal_portal_login_page">https://portal.kau.ac.kr/portal/PortalLoginSso</string>
+    <string name="portal_my_portal_page">https://portal.kau.ac.kr/portal/MyPortal_No.jsp</string>
+    <string name="portal_my_menu_b_page">https://portal.kau.ac.kr/admt/MyMenuB.jsp</string>
+    <string name="portal_scholar_page">https://portal.kau.ac.kr/sugang/PersScholarTakeList.jsp</string>
+    <string name="portal_curr_grade_page">https://portal.kau.ac.kr/sugang/GradHakList.jsp</string>
+    <string name="portal_accumulated_grade_page">https://portal.kau.ac.kr/sugang/GradTotList.jsp</string>
+    <string name="portal_accumulated_grade_summary_page">https://portal.kau.ac.kr/sugang/GradTermList.jsp</string>
+    <string name="portal_examination_time_table_page">https://portal.kau.ac.kr/sugang/SugangExamList.jsp</string>
+    <string name="portal_get_student_id_page">https://lib.kau.ac.kr/HAULMS/sso/LoginPortalSSO.csp</string>
+    <string name="portal_header_accept">text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</string>
+    <string name="portal_header_accpet_encoding">gzip, deflate</string>
+    <string name="portal_header_accept_encoding_with_br">gzip, deflate, br</string>
+    <string name="portal_header_accpet_language">ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7</string>
+    <string name="portal_user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36</string>
     <string name="portal_curr_grade_no_data">데이터 없음</string>
     <string name="portal_titme_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
     <string name="portal_login_failed">아이디 또는 비밀번호 오류입니다.</string>
