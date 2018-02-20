@@ -46,7 +46,7 @@ public class PortalManager {
         return LazyHolder.INSTANCE;
     }
 
-    public Map<String, String> getSession(Context context, String id, String password) {
+    public int getSession(Context context, String id, String password) {
         Resources resources = context.getResources();
         Map<String, String> cookies = null;
         try {
@@ -74,6 +74,7 @@ public class PortalManager {
                     .cookies(res.cookies())
                     .execute();
             String string = new String(res.bodyAsBytes(), getMatchingCharSet(res.charset()));
+            if(string.contains(resources.getString(R.string.portal_login_failed))) return -1;
             String[] strings = string.split("\'");
             res = Jsoup.connect(resources.getString(R.string.portal_jsoup_portal_check_page))
                     .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
@@ -106,9 +107,11 @@ public class PortalManager {
                     .execute();
         } catch (Exception e) {
             e.printStackTrace();
-            return mCookies = null;
+            mCookies = null;
+            return -1;
         }
-        return mCookies = cookies;
+        mCookies = cookies;
+        return 0;
     }
 
     public int checkSessionVaild(){
