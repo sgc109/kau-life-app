@@ -1,18 +1,37 @@
-package com.lifekau.android.lifekau;
+package com.lifekau.android.lifekau.manager;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.model.AccumulatedGrade;
+import com.lifekau.android.lifekau.model.AccumulatedGradeSummary;
+import com.lifekau.android.lifekau.model.CurrGrade;
+import com.lifekau.android.lifekau.model.Scholarship;
+import com.lifekau.android.lifekau.model.TotalAccumulatedGrade;
+import com.lifekau.android.lifekau.model.TotalCurrGrade;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class PortalManager {
 
@@ -26,7 +45,6 @@ public class PortalManager {
     private ArrayList<AccumulatedGradeSummary> mAccumulatedGradeSummaryArray;
     private TotalAccumulatedGrade mTotalAccumulatedGrade;
     private String[][] mExaminationTimeTable;
-    private Map<String, String> mCookies;
 
     private PortalManager() {
         mScholarshipArray = new ArrayList<Scholarship>();
@@ -48,69 +66,103 @@ public class PortalManager {
 
     public int getSession(Context context, String id, String password) {
         Resources resources = context.getResources();
-        Map<String, String> cookies = null;
-        try {
-            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_lms_check_page))
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .execute();
-            res = Jsoup.connect(resources.getString(R.string.portal_jsoup_act_login_page))
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .referrer(resources.getString(R.string.portal_jsoup_lms_check_page))
-                    .data("target_page", "act_Lms_Check.jsp@chk1-1")
-                    .data("refer_page", "")
-                    .data("SessionID", "")
-                    .data("SessionRequestData", "")
-                    .data("AlgID", "SEED")
-                    .data("ppage", "")
-                    .data("p_id", id)
-                    .data("p_pwd", password)
-                    .method(Connection.Method.POST)
-                    .cookies(res.cookies())
-                    .execute();
-            String string = new String(res.bodyAsBytes(), getMatchingCharSet(res.charset()));
-            if(string.contains(resources.getString(R.string.portal_login_failed))) return -1;
-            String[] strings = string.split("\'");
-            res = Jsoup.connect(resources.getString(R.string.portal_jsoup_portal_check_page))
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .data("chk1", "1")
-                    .cookies(res.cookies())
-                    .execute();
-            res = Jsoup.connect(resources.getString(R.string.portal_jsoup_portal_login_page))
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .referrer(resources.getString(R.string.portal_jsoup_portal_check_page))
-                    .data("seq_id", strings[3])
-                    .data("ppage", "")
-                    .cookies(res.cookies())
-                    .validateTLSCertificates(false)
-                    .execute();
-            cookies = res.cookies();
-            res = Jsoup.connect(resources.getString(R.string.portal_jsoup_my_portal_page))
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .referrer(resources.getString(R.string.portal_jsoup_portal_login_page) + "?seq_id=" + strings[3] + "&ppage=")
-                    .cookies(cookies)
-                    .validateTLSCertificates(false)
-                    .execute();
-        } catch (Exception e) {
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .build();
+        Request request = new Request.Builder()
+                .url(resources.getString(R.string.portal_jsoup_lms_check_page))
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+        }
+        catch (Exception e){
             e.printStackTrace();
-            mCookies = null;
             return -1;
         }
-        mCookies = cookies;
+        Log.e("MESSAGE", "첫번째 성공 테스트");
+        RequestBody body = new FormBody.Builder()
+                .add("target_page", "act_Lms_Check.jsp@chk1-1")
+                .add("refer_page", "")
+                .add("SessionID", "")
+                .add("SessionRequestData", "")
+                .add("AlgID", "SEED")
+                .add("ppage", "")
+                .add("p_id", id)
+                .add("p_pwd", password)
+                .build();
+        request = new Request.Builder()
+                .url(resources.getString(R.string.portal_jsoup_act_login_page))
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_jsoup_lms_check_page))
+                .post(body)
+                .build();
+        call = client.newCall(request);
+        String loginInfomation;
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            loginInfomation = res.body().string();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+        Log.e("MESSAGE", "두번째 성공 테스트");
+        Log.e("MESSAGE", loginInfomation);
+        if(loginInfomation.contains(resources.getString(R.string.portal_login_failed))) return -1;
+        Log.e("MESSAGE", "why???");
+        String[] seqId = loginInfomation.split("\'");
+        String url = HttpUrl.parse(resources.getString(R.string.portal_jsoup_portal_check_page)).newBuilder()
+                .addQueryParameter("chk1", "1")
+                .build().toString();
+        request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .build();
+        call = client.newCall(request);
+        try (Response res = call.execute()) {
+            Log.e("MESSAGE", res.code() + "");
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Log.e("MESSAGE", res.body().string());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+        Log.e("MESSAGE", "세번째 성공 테스트");
+        url = HttpUrl.parse(resources.getString(R.string.portal_jsoup_portal_login_page)).newBuilder()
+                .addQueryParameter("seq_id", seqId[3])
+                .addQueryParameter("ppage", "")
+                .build().toString();
+        request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_jsoup_portal_check_page))
+                .build();
+        call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+        Log.e("MESSAGE", "네번째 성공 테스트");
         return 0;
     }
 
@@ -120,17 +172,23 @@ public class PortalManager {
 
     public int getScholarshipInfomation(Context context) {
         Resources resources = context.getResources();
-        try {
-            Connection.Response res = Jsoup.connect(resources.getString(R.string.portal_jsoup_scholar_page))
-                    .header("Accept", resources.getString(R.string.portal_jsoup_header_accept))
-                    .header("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
-                    .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
-                    .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
-                    .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
-                    .cookies(mCookies)
-                    .validateTLSCertificates(false)
-                    .execute();
-            Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .build();
+        Request request = new Request.Builder()
+                .url(resources.getString(R.string.portal_jsoup_scholar_page))
+                .addHeader("Accept", resources.getString(R.string.portal_jsoup_header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.portal_jsoup_header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.portal_jsoup_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_jsoup_my_menu_b_page))
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("class", "table1").select("tr");
             mScholarshipArray.clear();
             int elementsSize = elements.size();
@@ -143,7 +201,8 @@ public class PortalManager {
                 insert.amount = Integer.valueOf(TextUtils.join("", infomation.get(3).text().split(",")));
                 mScholarshipArray.add(insert);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e){
             e.printStackTrace();
             return -1;
         }
@@ -159,7 +218,7 @@ public class PortalManager {
                     .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
                     .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
                     .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
-                    .cookies(mCookies)
+//                    .cookies(mCookies)
                     .validateTLSCertificates(false)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
@@ -209,7 +268,7 @@ public class PortalManager {
                     .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
                     .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
                     .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
-                    .cookies(mCookies)
+//                    .cookies(mCookies)
                     .validateTLSCertificates(false)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
@@ -248,7 +307,7 @@ public class PortalManager {
                     .header("Accept-Language", resources.getString(R.string.portal_jsoup_header_accpet_language))
                     .userAgent(resources.getString(R.string.portal_jsoup_user_agent))
                     .referrer(resources.getString(R.string.portal_jsoup_my_menu_b_page))
-                    .cookies(mCookies)
+//                    .cookies(mCookies)
                     .validateTLSCertificates(false)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));
@@ -295,7 +354,7 @@ public class PortalManager {
                     .data("hakgi", String.valueOf(semesterCode))
                     .data("junggi_gb", String.valueOf(examCode))
                     .method(Connection.Method.POST)
-                    .cookies(mCookies)
+//                    .cookies(mCookies)
                     .validateTLSCertificates(false)
                     .execute();
             Document doc = Jsoup.parse(new String(res.bodyAsBytes(), getMatchingCharSet(res.charset())));

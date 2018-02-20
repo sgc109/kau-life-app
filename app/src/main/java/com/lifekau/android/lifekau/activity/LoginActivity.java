@@ -3,6 +3,7 @@ package com.lifekau.android.lifekau.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Application;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -29,10 +30,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.PortalManager;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -57,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private PortalManager mPortalManager = PortalManager.getInstance();
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -187,14 +191,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(getApplication(), this, email, password);
             mAuthTask.execute((Void) null);
         }
     }
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return true;
     }
 
     private boolean isPasswordValid(String password) {
@@ -298,10 +302,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private WeakReference<LoginActivity> activityReference;
+        private WeakReference<Application> applicationWeakReference;
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(Application application, LoginActivity loginActivity, String email, String password) {
+            applicationWeakReference = new WeakReference<>(application);
+            activityReference = new WeakReference<>(loginActivity);
             mEmail = email;
             mPassword = password;
         }
@@ -309,23 +317,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
             try {
                 // Simulate network access.
+                if(mPortalManager.getSession(activityReference.get(), mEmail, mPassword) == -1) return false;
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
             return true;
         }
 
@@ -333,7 +331,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
             if (success) {
                 finish();
             } else {

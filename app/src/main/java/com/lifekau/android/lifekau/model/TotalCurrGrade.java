@@ -1,4 +1,4 @@
-package com.lifekau.android.lifekau;
+package com.lifekau.android.lifekau.model;
 
 public class TotalCurrGrade {
     public int registeredCredits;

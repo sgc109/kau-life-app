@@ -68,7 +68,7 @@
     <string name="portal_jsoup_user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36</string>
     <string name="portal_curr_grade_no_data">데이터 없음</string>
     <string name="portal_titme_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
-    <string name="portal_login_failed">아이디 또는 비밀번호 오류입니다.\n다시 로그인해 주십시오\n비밀번호를 잊어버리신 경우에는 아이디/비밀번호 찾기를 이용해주십시오.</string>
+    <string name="portal_login_failed">아이디 또는 비밀번호 오류입니다.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

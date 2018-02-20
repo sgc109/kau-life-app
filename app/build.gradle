@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.lifekau.android.lifekau"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -36,6 +36,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:3.2.1'
     compile 'devlight.io:navigationtabbar:1.2.5'
     compile 'org.jsoup:jsoup:1.11.2'
+    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 }
 
 
