@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lifekau.android.lifekau.R;
-import com.lifekau.android.lifekau.manager.PortalManager;
+import com.lifekau.android.lifekau.manager.LMSPortalManager;
 import com.lifekau.android.lifekau.model.Scholarship;
 
 import java.lang.ref.WeakReference;
@@ -28,7 +28,7 @@ public class ScholarshipActivity extends AppCompatActivity {
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_PROGRESS = 1;
 
-    private PortalManager mPortalManager = PortalManager.getInstance();
+    private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
@@ -73,7 +73,7 @@ public class ScholarshipActivity extends AppCompatActivity {
 
             @Override
             public int getItemViewType(int position) {
-                return mPortalManager.getScholarship(position) != null ? VIEW_ITEM : VIEW_PROGRESS;
+                return mLMSPortalManager.getScholarship(position) != null ? VIEW_ITEM : VIEW_PROGRESS;
             }
 
             @Override
@@ -85,7 +85,7 @@ public class ScholarshipActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                int size = mPortalManager.getScholarshipSize();
+                int size = mLMSPortalManager.getScholarshipSize();
                 return (size > 0) ? size : 1;
             }
         };
@@ -129,7 +129,7 @@ public class ScholarshipActivity extends AppCompatActivity {
         }
 
         public void bind(int position) {
-            Scholarship scholarship = mPortalManager.getScholarship(position);
+            Scholarship scholarship = mLMSPortalManager.getScholarship(position);
             mTypeTextView.setText(scholarship.type);
             mSemesterTextView.setText(scholarship.semester);
             mCategorizationTextView.setText(scholarship.categorization);
@@ -165,7 +165,7 @@ public class ScholarshipActivity extends AppCompatActivity {
             ScholarshipActivity scholarshipActivity = activityReference.get();
             int count = 0;
             while ((scholarshipActivity != null && !scholarshipActivity.isFinishing()) &&
-                    scholarshipActivity.mPortalManager.pullScholarship(activityReference.get()) == -1 && !isCancelled()) {
+                    scholarshipActivity.mLMSPortalManager.pullScholarship(activityReference.get()) == -1 && !isCancelled()) {
                 Log.e("ERROR", "페이지 불러오기 실패!");
                 sleep(3000);
                 count++;
@@ -180,7 +180,7 @@ public class ScholarshipActivity extends AppCompatActivity {
             final ScholarshipActivity scholarshipActivity = activityReference.get();
             if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return;
             if (result != -1) {
-                scholarshipActivity.mRecyclerAdapter.notifyItemRangeChanged(0, scholarshipActivity.mPortalManager.getScholarshipSize());
+                scholarshipActivity.mRecyclerAdapter.notifyItemRangeChanged(0, scholarshipActivity.mLMSPortalManager.getScholarshipSize());
             } else {
                 //예외 처리
                 scholarshipActivity.showErrorMessage();

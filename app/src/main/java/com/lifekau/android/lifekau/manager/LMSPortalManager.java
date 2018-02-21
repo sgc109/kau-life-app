@@ -33,10 +33,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class PortalManager {
+public class LMSPortalManager {
 
     private static final int EXAMIANATION_TIME_TABLE_ROW = 13;
     private static final int EXAMIANATION_TIME_TABLE_COL = 7;
+    private static final int MAX_SUBJECT_NUM = 21;
 
     private ArrayList<Scholarship> mScholarshipArray;
     private ArrayList<CurrGrade> mCurrGrade;
@@ -49,7 +50,7 @@ public class PortalManager {
     private String mSSOToken;
     private String mStudentId;
 
-    private PortalManager() {
+    private LMSPortalManager() {
         mScholarshipArray = new ArrayList<Scholarship>();
         mCurrGrade = new ArrayList<CurrGrade>();
         mTotalCurrGrade = new TotalCurrGrade();
@@ -60,10 +61,10 @@ public class PortalManager {
     }
 
     private static class LazyHolder {
-        public static final PortalManager INSTANCE = new PortalManager();
+        public static final LMSPortalManager INSTANCE = new LMSPortalManager();
     }
 
-    public static PortalManager getInstance() {
+    public static LMSPortalManager getInstance() {
         return LazyHolder.INSTANCE;
     }
 
@@ -83,10 +84,10 @@ public class PortalManager {
         OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
                 .url(resources.getString(R.string.portal_lms_check_page))
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -107,10 +108,10 @@ public class PortalManager {
                 .build();
         request = new Request.Builder()
                 .url(resources.getString(R.string.portal_act_login_page))
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_lms_check_page))
                 .post(body)
                 .build();
@@ -130,10 +131,10 @@ public class PortalManager {
                 .build().toString();
         request = new Request.Builder()
                 .url(url)
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -148,11 +149,68 @@ public class PortalManager {
                 .build().toString();
         request = new Request.Builder()
                 .url(url)
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_portal_check_page))
+                .build();
+        call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        url = HttpUrl.parse(resources.getString(R.string.lms_sso_page)).newBuilder()
+                .addQueryParameter("seq_id", mSSOToken)
+                .build().toString();
+        request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .build();
+        call = client.newCall(request);
+        String newId, newPassword;
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
+            newId = doc.select("input").get(0).attr("value");
+            newPassword = doc.select("input").get(1).attr("value");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        body = new FormBody.Builder()
+                .add("username", newId)
+                .add("password", newPassword)
+                .build();
+        request = new Request.Builder()
+                .url(resources.getString(R.string.lms_login_page))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .post(body)
+                .build();
+        call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        url = HttpUrl.parse(resources.getString(R.string.lms_login_index_page)).newBuilder()
+                .addQueryParameter("testsession", "4837")
+                .build().toString();
+        request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -164,7 +222,26 @@ public class PortalManager {
         return 0;
     }
 
-    public int checkSessionVaild() {
+    public int pullStudentId(Context context) {
+        Resources resources = context.getResources();
+        OkHttpClient client = getClient(context);
+        Request request = new Request.Builder()
+                .url(resources.getString(R.string.lms_my_page))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .addHeader("Referer", resources.getString(R.string.lms_my_page))
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) return -1;
+            Document doc = Jsoup.parse(res.body().string());
+            mStudentId = doc.select("#loggedin-user").get(0).getElementsByAttributeValue("class", "dropdown-toggle").text().replaceAll("[^0-9]", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
         return 0;
     }
 
@@ -173,11 +250,11 @@ public class PortalManager {
         OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
                 .url(resources.getString(R.string.portal_scholar_page))
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.
-                        getString(R.string.portal_user_agent))
+                        getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .build();
         Call call = client.newCall(request);
@@ -208,10 +285,10 @@ public class PortalManager {
         OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
                 .url(resources.getString(R.string.portal_curr_grade_page))
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .build();
         Call call = client.newCall(request);
@@ -265,10 +342,10 @@ public class PortalManager {
                 .build().toString();
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .build();
         Call call = client.newCall(request);
@@ -306,10 +383,10 @@ public class PortalManager {
         OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
                 .url(resources.getString(R.string.portal_accumulated_grade_summary_page))
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .build();
         Call call = client.newCall(request);
@@ -356,10 +433,10 @@ public class PortalManager {
                 .build();
         Request request = new Request.Builder()
                 .url(resources.getString(R.string.portal_examination_time_table_page) + "?" + year + "hakgi=" + examCode)
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
                 .post(body)
                 .build();
@@ -385,37 +462,9 @@ public class PortalManager {
         return 0;
     }
 
-    public int pullStudentId(Context context) {
-        Resources resources = context.getResources();
-        OkHttpClient client = getClient(context);
-        String url = HttpUrl.parse(resources.getString(R.string.portal_get_student_id_page)).newBuilder()
-                .addQueryParameter("sso_token", mSSOToken)
-                .addQueryParameter("sso_link", "portal")
-                .build().toString();
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("Accept", resources.getString(R.string.portal_header_accept))
-                .addHeader("Accept-Encoding", resources.getString(R.string.portal_header_accept_encoding_with_br))
-                .addHeader("Accept-Language", resources.getString(R.string.portal_header_accpet_language))
-                .addHeader("User-Agent", resources.getString(R.string.portal_user_agent))
-                .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
-                .build();
-        Call call = client.newCall(request);
-        try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return -1;
-            Document doc = Jsoup.parse(res.body().string());
-            mStudentId = doc.getElementsByAttributeValue("name", "USERID").get(0).attr("value");
-            return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
     public String getStudentId() {
         return mStudentId;
     }
-
 
     public int getScholarshipSize() {
         return mScholarshipArray.size();

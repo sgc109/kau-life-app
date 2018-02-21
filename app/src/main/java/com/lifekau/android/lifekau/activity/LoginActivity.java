@@ -37,13 +37,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LMSPortalManager;
 import com.lifekau.android.lifekau.manager.LoginManager;
-import com.lifekau.android.lifekau.manager.PortalManager;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via id/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
@@ -63,10 +63,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
-    private PortalManager mPortalManager = PortalManager.getInstance();
+    private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
+    private AutoCompleteTextView mIdView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mIdView = (AutoCompleteTextView) findViewById(R.id.id);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -91,8 +91,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button midSignInButton = (Button) findViewById(R.id.id_sign_in_button);
+        midSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(mIdView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -149,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /**
      * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
+     * If there are form errors (invalid id, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
@@ -158,11 +158,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         // Reset errors.
-        mEmailView.setError(null);
+        mIdView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        String id = mIdView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -175,14 +175,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+        // Check for a valid id address.
+        if (TextUtils.isEmpty(id)) {
+            mIdView.setError(getString(R.string.error_field_required));
+            focusView = mIdView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+        } else if (!isidValid(id)) {
+            mIdView.setError(getString(R.string.error_invalid_id));
+            focusView = mIdView;
             cancel = true;
         }
 
@@ -194,12 +194,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(getApplication(), this, email, password);
+            mAuthTask = new UserLoginTask(getApplication(), this, id, password);
             mAuthTask.execute((Void) null);
         }
     }
 
-    private boolean isEmailValid(String email) {
+    private boolean isidValid(String id) {
         //TODO: Replace this with your own logic
         return true;
     }
@@ -252,26 +252,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
                         ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
-                // Select only email addresses.
+                // Select only id addresses.
                 ContactsContract.Contacts.Data.MIMETYPE +
                         " = ?", new String[]{ContactsContract.CommonDataKinds.Email
                 .CONTENT_ITEM_TYPE},
 
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
+                // Show primary id addresses first. Note that there won't be
+                // a primary id address if the user hasn't specified one.
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+            ids.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
 
-        addEmailsToAutoComplete(emails);
+        addidsToAutoComplete(ids);
     }
 
     @Override
@@ -279,13 +279,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
+    private void addidsToAutoComplete(List<String> idAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+                        android.R.layout.simple_dropdown_item_1line, idAddressCollection);
 
-        mEmailView.setAdapter(adapter);
+        mIdView.setAdapter(adapter);
     }
 
 
@@ -307,13 +307,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private WeakReference<LoginActivity> activityReference;
         private WeakReference<Application> applicationWeakReference;
-        private final String mEmail;
+        private final String mid;
         private final String mPassword;
 
-        UserLoginTask(Application application, LoginActivity loginActivity, String email, String password) {
+        UserLoginTask(Application application, LoginActivity loginActivity, String id, String password) {
             applicationWeakReference = new WeakReference<>(application);
             activityReference = new WeakReference<>(loginActivity);
-            mEmail = email;
+            mid = id;
             mPassword = password;
         }
 
@@ -322,10 +322,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
             try {
                 // Simulate network access.
-                if (mPortalManager.pullSession(applicationWeakReference.get(), mEmail, mPassword) == -1)
+                if (mLMSPortalManager.pullSession(applicationWeakReference.get(), mid, mPassword) == -1)
                     return false;
-//                if (mPortalManager.pullStudentId(applicationWeakReference.get()) == -1)
-//                    return false;
+                if (mLMSPortalManager.pullStudentId(applicationWeakReference.get()) == -1)
+                    return false;
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
@@ -339,9 +339,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
             if (success) {
                 LoginManager loginManager = LoginManager.get(activityReference.get());
-                loginManager.setUserId(mEmail);
+                loginManager.setUserId(mid);
                 loginManager.setPassword(mPassword);
-//                loginManager.setStudentId(mPortalManager.getStudentId());
+                loginManager.setStudentId(mLMSPortalManager.getStudentId());
                 if (loginManager.getStudentId() == null) showErrorMessage();
                 else {
                     Intent intent = HomeActivity.newIntent(activityReference.get());

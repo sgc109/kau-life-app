@@ -11,8 +11,7 @@ public class LoginManager {
 
     private String userId;
     private String password;
-
-    private String studentId = "2012122327";
+    private String studentId;
     private Context mContext;
 
     private LoginManager(Context context) {
@@ -25,8 +24,6 @@ public class LoginManager {
         }
         return sLoginManager;
     }
-
-
 
     public String getStudentId() {
         return studentId;
