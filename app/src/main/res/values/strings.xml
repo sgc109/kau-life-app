@@ -92,4 +92,19 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <!-- LMS 관련 스트링 정의-->
+    <string name="lms_jsoup_lms_check_page">https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1</string>
+    <string name="lms_jsoup_act_login_page">https://www.kau.ac.kr/page/act_login.jsp</string>
+    <string name="lms_jsoup_portal_check_page">https://www.kau.ac.kr/page/act_Portal_Check.jsp</string>
+    <string name="lms_jsoup_lms_sso_page">http://lms.kau.ac.kr/local/ssotm/sso_chk.php</string>
+    <string name="lms_jsoup_lms_login_page">http://lms.kau.ac.kr/login/</string>
+    <string name="lms_jsoup_lms_login_index_page">http://lms.kau.ac.kr/login/index.php</string>
+    <string name="lms_jsoup_lms_my_page">http://lms.kau.ac.kr/my/</string>
+    <string name="lms_jsoup_header_accept">text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</string>
+    <string name="lms_jsoup_header_accept_encoding">gzip, deflate</string>
+    <string name="lms_jsoup_header_accept_encoding_with_br">gzip, deflate, br</string>
+    <string name="lms_jsoup_header_accept_language">ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7</string>
+    <string name="lms_jsoup_user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36</string>
+    <string name="lms_curr_grade_no_data">데이터 없음</string>
+    <string name="lms_titme_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
 </resources>

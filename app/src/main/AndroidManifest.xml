@@ -50,6 +50,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <activity android:name=".activity.PostDetailActivity"></activity>
         <activity android:name=".activity.PostWriteActivity"></activity>
         <activity android:name=".activity.ScholarshipActivity"></activity>
