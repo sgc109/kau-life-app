@@ -262,7 +262,6 @@ public class LMSPortalManager {
             if (res.code() <= 199 || res.code() >= 301) return -1;
             Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("class", "table1").select("tr");
-            mScholarshipArray.clear();
             int elementsSize = elements.size();
             for (int i = 1; i < elementsSize; i++) {
                 Elements infomation = elements.get(i).select("td");
@@ -393,7 +392,6 @@ public class LMSPortalManager {
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) return -1;
             Document doc = Jsoup.parse(res.body().string());
-            mAccumulatedGradeSummaryArray.clear();
             Elements elements = doc.getElementsByAttributeValue("class", "table1");
             Elements gradeSummary = elements.get(0).select("tr");
             int gradeSummarySize = gradeSummary.size();
@@ -473,4 +471,21 @@ public class LMSPortalManager {
     public Scholarship getScholarship(int index) {
         return index < getScholarshipSize() ? mScholarshipArray.get(index) : null;
     }
+
+    public void clearScholarship(){
+        mScholarshipArray.clear();
+    }
+
+    public int getAccumulatedGradeSummarySize(){
+        return mAccumulatedGradeSummaryArray.size();
+    }
+
+    public AccumulatedGradeSummary getAccumulatedGradeSummary(int index){
+        return index < getAccumulatedGradeSummarySize() ? mAccumulatedGradeSummaryArray.get(index) : null;
+    }
+
+    public void clearAccumulatedGradeSummary(){
+        mAccumulatedGradeSummaryArray.clear();
+    }
+
 }

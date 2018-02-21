@@ -10,11 +10,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.activity.AccumulatedGradeSummaryActivity;
 import com.lifekau.android.lifekau.activity.ScholarshipActivity;
 
-public class LmsAndInfoFragment extends PagerFragment implements View.OnClickListener{
+public class LmsAndInfoFragment extends PagerFragment implements View.OnClickListener {
 
-    public static LmsAndInfoFragment newInstance(){
+    public static LmsAndInfoFragment newInstance() {
         LmsAndInfoFragment fragment = new LmsAndInfoFragment();
         return fragment;
     }
@@ -26,6 +27,8 @@ public class LmsAndInfoFragment extends PagerFragment implements View.OnClickLis
         findFragmentContainer(view);
         FrameLayout showScholarshipButton = view.findViewById(R.id.fragment_portal_show_scholarship_button);
         showScholarshipButton.setOnClickListener(this);
+        FrameLayout showAccumulatedGradeSummaryButton = view.findViewById(R.id.fragment_portal_show_accumulated_grade_summary_button);
+        showAccumulatedGradeSummaryButton.setOnClickListener(this);
         setHasOptionsMenu(true);
         return view;
     }
@@ -49,9 +52,13 @@ public class LmsAndInfoFragment extends PagerFragment implements View.OnClickLis
     @Override
     public void onClick(View view) {
         Intent intent;
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.fragment_portal_show_scholarship_button:
                 intent = new Intent(view.getContext(), ScholarshipActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.fragment_portal_show_accumulated_grade_summary_button:
+                intent = new Intent(view.getContext(), AccumulatedGradeSummaryActivity.class);
                 startActivity(intent);
                 break;
         }

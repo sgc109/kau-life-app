@@ -18,12 +18,12 @@ import android.widget.Toast;
 
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
-import com.lifekau.android.lifekau.model.Scholarship;
+import com.lifekau.android.lifekau.model.AccumulatedGradeSummary;
 
 import java.lang.ref.WeakReference;
-import java.text.NumberFormat;
 
-public class ScholarshipActivity extends AppCompatActivity {
+
+public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_PROGRESS = 1;
@@ -32,16 +32,16 @@ public class ScholarshipActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
-    private GetScholarshipAsyncTask mGetScholarshipAsyncTask;
+    private PullAccumulatedGradeSummaryAsyncTask mPullAccumulatedGradeSummaryAsyncTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scholarship);
+        setContentView(R.layout.activity_accumulated_grade);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        mSwipeRefreshLayout = findViewById(R.id.portal_scholarship_swipe_refresh_layout);
+        mSwipeRefreshLayout = findViewById(R.id.portal_accumulated_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -62,8 +62,8 @@ public class ScholarshipActivity extends AppCompatActivity {
                 View view;
                 RecyclerView.ViewHolder viewHolder;
                 if (viewType == VIEW_ITEM) {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_scholarship, parent, false);
-                    viewHolder = new ScholarshipItemViewHolder(view);
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_accumulated_grade_summary, parent, false);
+                    viewHolder = new AccumulatedGradeSummaryItemViewHolder(view);
                 } else {
                     view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_progress, parent, false);
                     viewHolder = new ItemProgressViewHolder(view);
@@ -73,24 +73,24 @@ public class ScholarshipActivity extends AppCompatActivity {
 
             @Override
             public int getItemViewType(int position) {
-                return mLMSPortalManager.getScholarship(position) != null ? VIEW_ITEM : VIEW_PROGRESS;
+                return mLMSPortalManager.getAccumulatedGradeSummary(position) != null ? VIEW_ITEM : VIEW_PROGRESS;
             }
 
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                if (holder instanceof ScholarshipItemViewHolder)
-                    ((ScholarshipItemViewHolder) holder).bind(position);
+                if (holder instanceof AccumulatedGradeSummaryItemViewHolder)
+                    ((AccumulatedGradeSummaryItemViewHolder) holder).bind(position);
                 else ((ItemProgressViewHolder) holder).bind(position);
             }
 
             @Override
             public int getItemCount() {
-                int size = mLMSPortalManager.getScholarshipSize();
+                int size = mLMSPortalManager.getAccumulatedGradeSummarySize();
                 return (size > 0) ? size : 1;
             }
         };
-        mLMSPortalManager.clearScholarship();
-        mRecyclerView = findViewById(R.id.portal_scholarship_recycler_view);
+        mLMSPortalManager.clearAccumulatedGradeSummary();
+        mRecyclerView = findViewById(R.id.portal_accumulated_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
         executeAsyncTask();
@@ -107,34 +107,31 @@ public class ScholarshipActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        mGetScholarshipAsyncTask.cancel(true);
+        mPullAccumulatedGradeSummaryAsyncTask.cancel(true);
     }
 
     public void executeAsyncTask() {
-        mGetScholarshipAsyncTask = new GetScholarshipAsyncTask(getApplication(), this);
-        mGetScholarshipAsyncTask.execute();
+        mPullAccumulatedGradeSummaryAsyncTask = new PullAccumulatedGradeSummaryAsyncTask(getApplication(), this);
+        mPullAccumulatedGradeSummaryAsyncTask.execute();
     }
 
-    public class ScholarshipItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView mTypeTextView;
+    public class AccumulatedGradeSummaryItemViewHolder extends RecyclerView.ViewHolder {
         private TextView mSemesterTextView;
-        private TextView mCategorizationTextView;
-        private TextView mAmountTextView;
+        private TextView mGPAAndTotalGradesTextView;
+        private TextView mCreditsTextView;
 
-        public ScholarshipItemViewHolder(View itemView) {
+        public AccumulatedGradeSummaryItemViewHolder(View itemView) {
             super(itemView);
-            mTypeTextView = itemView.findViewById(R.id.list_item_scholarship_type);
-            mSemesterTextView = itemView.findViewById(R.id.list_item_scholarship_semester);
-            mCategorizationTextView = itemView.findViewById(R.id.list_item_scholarship_categorization);
-            mAmountTextView = itemView.findViewById(R.id.list_item_scholarship_amount);
+            mSemesterTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_semester);
+            mGPAAndTotalGradesTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_GPA_and_total_grades);
+            mCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_credits);
         }
 
         public void bind(int position) {
-            Scholarship scholarship = mLMSPortalManager.getScholarship(position);
-            mTypeTextView.setText(scholarship.type);
-            mSemesterTextView.setText(scholarship.semester);
-            mCategorizationTextView.setText(scholarship.categorization);
-            mAmountTextView.setText(NumberFormat.getInstance().format(scholarship.amount) + "원");
+            AccumulatedGradeSummary accumulatedGradeSummary = mLMSPortalManager.getAccumulatedGradeSummary(position);
+            mSemesterTextView.setText(String.valueOf(accumulatedGradeSummary.semester));
+            mGPAAndTotalGradesTextView.setText(accumulatedGradeSummary.GPA + " / " + accumulatedGradeSummary.totalGrades);
+            mCreditsTextView.setText(accumulatedGradeSummary.acquiredCredits + " / " + accumulatedGradeSummary.registeredCredits);
         }
     }
 
@@ -151,30 +148,31 @@ public class ScholarshipActivity extends AppCompatActivity {
         }
     }
 
-    private static class GetScholarshipAsyncTask extends AsyncTask<Integer, Void, Integer> {
+    private static class PullAccumulatedGradeSummaryAsyncTask extends AsyncTask<Integer, Void, Integer> {
 
-        private WeakReference<ScholarshipActivity> activityReference;
+        private WeakReference<AccumulatedGradeSummaryActivity> activityReference;
         private WeakReference<Application> applicationWeakReference;
 
-        GetScholarshipAsyncTask(Application application, ScholarshipActivity ScholarshipActivity) {
+        PullAccumulatedGradeSummaryAsyncTask(Application application, AccumulatedGradeSummaryActivity AccumulatedGradeSummaryActivity) {
             applicationWeakReference = new WeakReference<>(application);
-            activityReference = new WeakReference<>(ScholarshipActivity);
+            activityReference = new WeakReference<>(AccumulatedGradeSummaryActivity);
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ScholarshipActivity scholarshipActivity = activityReference.get();
-            if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return;
-            scholarshipActivity.mLMSPortalManager.clearScholarship();
+            AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
+            if (accumulatedGradeSummaryActivity == null || accumulatedGradeSummaryActivity.isFinishing())
+                return;
+            accumulatedGradeSummaryActivity.mLMSPortalManager.clearAccumulatedGradeSummary();
         }
 
         @Override
         protected Integer doInBackground(Integer... params) {
-            ScholarshipActivity scholarshipActivity = activityReference.get();
+            AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
             int count = 0;
-            while ((scholarshipActivity != null && !scholarshipActivity.isFinishing()) &&
-                    scholarshipActivity.mLMSPortalManager.pullScholarship(activityReference.get()) == -1 && !isCancelled()) {
+            while ((accumulatedGradeSummaryActivity != null && !accumulatedGradeSummaryActivity.isFinishing()) &&
+                    accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(activityReference.get()) == -1 && !isCancelled()) {
                 Log.e("ERROR", "페이지 불러오기 실패!");
                 sleep(3000);
                 count++;
@@ -186,17 +184,18 @@ public class ScholarshipActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            final ScholarshipActivity scholarshipActivity = activityReference.get();
-            if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return;
+            final AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
+            if (accumulatedGradeSummaryActivity == null || accumulatedGradeSummaryActivity.isFinishing())
+                return;
             if (result != -1) {
-                scholarshipActivity.mRecyclerAdapter.notifyItemRangeChanged(0, scholarshipActivity.mLMSPortalManager.getScholarshipSize());
+                accumulatedGradeSummaryActivity.mRecyclerAdapter.notifyDataSetChanged();
             } else {
                 //예외 처리
-                scholarshipActivity.showErrorMessage();
+                accumulatedGradeSummaryActivity.showErrorMessage();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        scholarshipActivity.mSwipeRefreshLayout.setRefreshing(false);
+                        accumulatedGradeSummaryActivity.mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 1000);
             }

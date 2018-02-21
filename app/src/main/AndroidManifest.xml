@@ -54,6 +54,7 @@
         <activity android:name=".activity.PostDetailActivity"></activity>
         <activity android:name=".activity.PostWriteActivity"></activity>
         <activity android:name=".activity.ScholarshipActivity"></activity>
+        <activity android:name=".activity.AccumulatedGradeSummaryActivity"></activity>
     </application>
 
 </manifest>
