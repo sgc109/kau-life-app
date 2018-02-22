@@ -47,6 +47,9 @@
         android:layout_margin="4dp"
         android:gravity="left|top"
         android:hint="@string/write_post_hint_message"
-        android:padding="4dp"/>
+        android:paddingBottom="12dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"/>
 
 </LinearLayout>
