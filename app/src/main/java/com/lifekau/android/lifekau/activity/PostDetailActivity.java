@@ -100,6 +100,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 .child(getString(R.string.firebase_database_post_comments))
                 .child(mPostKey);
 
+        mCommentEditText.requestFocus();
         mBottomMarginView.setVisibility(View.GONE);
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setItemAnimator(null);
@@ -191,6 +192,12 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                     }
                 });
                 mPostViewHolder.mTextView.setOnClickListener(null);
+                mPostViewHolder.mCommentCountTextView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mNestedScrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
             }
 
             @Override
@@ -202,9 +209,9 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 
     void focusCommentEditText() {
         mCommentEditText.requestFocus();
+        mNestedScrollView.fullScroll(View.FOCUS_DOWN);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(mCommentEditText, InputMethodManager.SHOW_IMPLICIT);
-        mNestedScrollView.fullScroll(View.FOCUS_DOWN);
     }
 
     private void initComments() {
