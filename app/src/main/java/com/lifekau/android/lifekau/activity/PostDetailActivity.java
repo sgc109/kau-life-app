@@ -68,6 +68,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private TextView mMoreCommentsTextView;
     private ProgressBar mMoreCommentsProgressBar;
     private LinearLayout mMoreCommentsLinearLayout;
+    private boolean mHasClickedComment;
     private boolean mJustWroteComment;
 
 
@@ -88,7 +89,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         }
 
         mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
-
+        mHasClickedComment = getIntent().getBooleanExtra(EXTRA_HAS_CLICKED_COMMENT, false);
         initializeViews();
 
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -156,6 +157,10 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                     mJustWroteComment = false;
                     mNestedScrollView.fullScroll(View.FOCUS_DOWN);
                 }
+
+                if (mHasClickedComment) {
+                    focusCommentEditText();
+                }
             }
 
             @Override
@@ -182,9 +187,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 mPostViewHolder.mCommentButtonContainer.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mCommentEditText.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(mCommentEditText, InputMethodManager.SHOW_IMPLICIT);
+                        focusCommentEditText();
                     }
                 });
                 mPostViewHolder.mTextView.setOnClickListener(null);
@@ -195,6 +198,13 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 Log.d("fuck", "PostDetailActivity:onCancelled");
             }
         });
+    }
+
+    void focusCommentEditText() {
+        mCommentEditText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mCommentEditText, InputMethodManager.SHOW_IMPLICIT);
+        mNestedScrollView.fullScroll(View.FOCUS_DOWN);
     }
 
     private void initComments() {
