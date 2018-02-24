@@ -50,6 +50,40 @@
     <string name="menu_4">자리</string>
     <string name="menu_5">LMS &amp; Info</string>
 
+    <!-- HTTP 헤더 관련 스트링 정의-->
+    <string name="header_accept">text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</string>
+    <string name="header_accpet_encoding">gzip, deflate</string>
+    <string name="header_accept_encoding_with_br">gzip, deflate, br</string>
+    <string name="header_accpet_language">ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7</string>
+    <string name="header_user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36</string>
+
+    <!-- Portal 관련 스트링 정의-->
+    <string name="portal_lms_check_page">https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1</string>
+    <string name="portal_act_login_page">https://www.kau.ac.kr/page/act_login.jsp</string>
+    <string name="portal_portal_check_page">https://www.kau.ac.kr/page/act_Portal_Check.jsp</string>
+    <string name="portal_portal_login_page">https://portal.kau.ac.kr/portal/PortalLoginSso</string>
+    <string name="portal_my_portal_page">https://portal.kau.ac.kr/portal/MyPortal_No.jsp</string>
+    <string name="portal_my_menu_b_page">https://portal.kau.ac.kr/admt/MyMenuB.jsp</string>
+    <string name="portal_scholar_page">https://portal.kau.ac.kr/sugang/PersScholarTakeList.jsp</string>
+    <string name="portal_curr_grade_page">https://portal.kau.ac.kr/sugang/GradHakList.jsp</string>
+    <string name="portal_accumulated_grade_page">https://portal.kau.ac.kr/sugang/GradTotList.jsp</string>
+    <string name="portal_accumulated_grade_summary_page">https://portal.kau.ac.kr/sugang/GradTermList.jsp</string>
+    <string name="portal_examination_time_table_page">https://portal.kau.ac.kr/sugang/SugangExamList.jsp</string>
+    <string name="portal_get_student_id_page">https://lib.kau.ac.kr/HAULMS/sso/LoginPortalSSO.csp</string>
+    <string name="portal_curr_grade_no_data">데이터 없음</string>
+    <string name="portal_titme_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
+    <string name="portal_login_failed">아이디 또는 비밀번호 오류입니다.</string>
+    <string name="portal_session_disconnect">세션이 끊겼습니다. 다시 로그인 하시기 바랍니다.</string>
+
+    <!--LMS 관련 스트링 정의-->
+    <string name="lms_sso_page">http://lms.kau.ac.kr/local/ssotm/sso_chk.php</string>
+    <string name="lms_login_page">http://lms.kau.ac.kr/login/</string>
+    <string name="lms_login_index_page">http://lms.kau.ac.kr/login/index.php</string>
+    <string name="lms_my_page">http://lms.kau.ac.kr/my/</string>
+    <string name="lms_curr_grade_no_data">데이터 없음</string>
+    <string name="lms_time_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
+    <string name="lms_session_disconnect">한국항공대학에 오신 것을 환영합니다</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tab_1">Label 1</string>
@@ -60,11 +94,10 @@
     <string name="title_activity_login">로그인</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="prompt_id">아이디</string>
+    <string name="error_invalid_id">잘못된 아이디 형식입니다.</string>
+    <string name="prompt_password">비밀번호</string>
+    <string name="action_sign_in">로그인</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
@@ -86,4 +119,5 @@
     <string name="library_study_room_name_05">스터디룸C2</string>
     <string name="library_study_room_name_06">스터디룸C3</string>
 
+    <string name="permission_rationale">권한 요청</string>
 </resources>

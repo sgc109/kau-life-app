@@ -20,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, String> params = new HashMap<>();
         params.put("regid", FirebaseInstanceId.getInstance().getToken());
 
-        Intent intent = HomeActivity.newIntent(this);
+//        Intent intent = HomeActivity.newIntent(this);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

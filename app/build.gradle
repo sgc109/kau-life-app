@@ -38,8 +38,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:3.2.1'
     compile 'devlight.io:navigationtabbar:1.2.5'
     compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 }
-
-
 
 apply plugin: 'com.google.gms.google-services'

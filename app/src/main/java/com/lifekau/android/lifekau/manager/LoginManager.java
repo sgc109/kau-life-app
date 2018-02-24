@@ -11,16 +11,15 @@ public class LoginManager {
 
     private String userId;
     private String password;
-
-    private String studentId = "2012122327";
+    private String studentId;
     private Context mContext;
 
-    private LoginManager(Context context){
+    private LoginManager(Context context) {
         mContext = context;
     }
 
-    public static synchronized LoginManager get(Context context){
-        if(sLoginManager == null){
+    public static synchronized LoginManager get(Context context) {
+        if (sLoginManager == null) {
             sLoginManager = new LoginManager(context);
         }
         return sLoginManager;
@@ -30,8 +29,16 @@ public class LoginManager {
         return studentId;
     }
 
+    public String getUserId() { return userId; }
+
+    public String getPassword() { return password; }
+
     public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
+
+    public void setUserId(String userId) { this.userId = userId; }
+
+    public void setPassword(String password) { this.password = password; }
 
 }

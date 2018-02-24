@@ -30,23 +30,23 @@
             android:theme="@style/DialogTheme"></activity>
         <activity
             android:name=".activity.FoodReviewListActivity"
-            android:parentActivityName=".activity.MainActivity"></activity>
+            android:parentActivityName=".activity.MainActivity">
+        </activity>
         <activity
             android:name=".activity.FoodReviewWriteActivity"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name=".activity.LectureReviewSearchActivity"></activity>
         <activity android:name=".activity.LectureReviewListActivity"></activity>
         <activity
             android:name=".activity.LectureReviewWriteActivity"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name=".activity.FoodReviewCornerListActivity"></activity>
         <activity android:name=".activity.HomeActivity"></activity>
         <activity android:name=".activity.AlarmsListActivity"></activity>
         <activity android:name=".activity.SettingsActivity"></activity>
         <activity
             android:name=".activity.LoginActivity"
+            android:label="@string/title_activity_login"></activity>
             android:label="@string/title_activity_login"></activity>
         <activity android:name=".activity.LibraryListActivity"></activity>
 
@@ -61,13 +61,10 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".activity.PostDetailActivity"
-            >
-        </activity>
-        <activity
-            android:name=".activity.PostWriteActivity">
-        </activity>
+        <activity android:name=".activity.PostDetailActivity"></activity>
+        <activity android:name=".activity.PostWriteActivity"></activity>
+        <activity android:name=".activity.ScholarshipActivity"></activity>
+        <activity android:name=".activity.AccumulatedGradeSummaryActivity"></activity>
         <activity android:name=".activity.NoticeListActivity">
         </activity>
         <activity android:name=".activity.NoticePageActivity">
