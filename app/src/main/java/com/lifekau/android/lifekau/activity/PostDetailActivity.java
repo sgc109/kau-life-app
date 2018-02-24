@@ -160,6 +160,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 }
 
                 if (mHasClickedComment) {
+                    showSoftKeyboard();
                     focusCommentEditText();
                 }
             }
@@ -189,13 +190,14 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                     @Override
                     public void onClick(View view) {
                         focusCommentEditText();
+                        showSoftKeyboard();
                     }
                 });
                 mPostViewHolder.mTextView.setOnClickListener(null);
                 mPostViewHolder.mCommentCountTextView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mNestedScrollView.fullScroll(View.FOCUS_DOWN);
+                        focusCommentEditText();
                     }
                 });
             }
@@ -210,6 +212,9 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     void focusCommentEditText() {
         mCommentEditText.requestFocus();
         mNestedScrollView.fullScroll(View.FOCUS_DOWN);
+    }
+
+    void showSoftKeyboard(){
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(mCommentEditText, InputMethodManager.SHOW_IMPLICIT);
     }
