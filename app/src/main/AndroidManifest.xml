@@ -68,6 +68,10 @@
         <activity
             android:name=".activity.PostWriteActivity">
         </activity>
+        <activity android:name=".activity.NoticeListActivity">
+        </activity>
+        <activity android:name=".activity.NoticePageActivity">
+        </activity>
     </application>
 
 </manifest>
