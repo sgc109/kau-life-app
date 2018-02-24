@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/study_room_detail_container">
+
+    <!--<ProgressBar-->
+        <!--android:id="@+id/study_room_detail_progress_bar"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center" />-->
+
+    <TextView
+        android:id="@+id/study_room_detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textAlignment="center" />
+
+    <TableLayout
+        android:id="@+id/study_room_detail_table_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/study_room_detail_title"
+        android:layout_marginTop="20dp"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_01"
+                android:text="06:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_10"
+                android:text="07:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_02"
+                android:text="08:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_11"
+                android:text="09:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_03"
+                android:text="10:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_12"
+                android:text="11:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_04"
+                android:text="12:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_13"
+                android:text="13:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_05"
+                android:text="14:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_14"
+                android:text="15:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_06"
+                android:text="16:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_15"
+                android:text="17:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_07"
+                android:text="18:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_16"
+                android:text="19:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_08"
+                android:text="20:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_17"
+                android:text="21:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_09"
+                android:text="22:00"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/study_room_detail_time_text_view_18"
+                android:text="23:00"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow>
+
+            <Button
+                android:id="@+id/study_room_detail_close_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_span="2"
+                android:text="닫기" />
+        </TableRow>
+    </TableLayout>
+
+</android.widget.RelativeLayout>

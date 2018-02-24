@@ -71,4 +71,19 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- 도서관 관련 스트링 -->
+    <string name="library_reading_room_name_01">제1열람실A</string>
+    <string name="library_reading_room_name_02">제1열람실B</string>
+    <string name="library_reading_room_name_03">제2열람실</string>
+    <string name="library_reading_room_name_04">제3열람실</string>
+    <string name="library_reading_room_name_05">제5열람실</string>
+
+    <string name="library_study_room_name_01">스터디룸A</string>
+    <string name="library_study_room_name_02">스터디룸B1</string>
+    <string name="library_study_room_name_03">스터디룸B2</string>
+    <string name="library_study_room_name_04">스터디룸C1</string>
+    <string name="library_study_room_name_05">스터디룸C2</string>
+    <string name="library_study_room_name_06">스터디룸C3</string>
+
 </resources>

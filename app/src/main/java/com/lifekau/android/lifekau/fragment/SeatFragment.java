@@ -1,16 +1,22 @@
 package com.lifekau.android.lifekau.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.activity.FoodReviewCornerListActivity;
+import com.lifekau.android.lifekau.activity.LectureReviewSearchActivity;
+import com.lifekau.android.lifekau.activity.LibraryListActivity;
 
-public class SeatFragment extends PagerFragment {
+public class SeatFragment extends PagerFragment implements View.OnClickListener{
 
     public static SeatFragment newInstance(){
         SeatFragment fragment = new SeatFragment();
@@ -22,6 +28,11 @@ public class SeatFragment extends PagerFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_seat, container, false);
         findFragmentContainer(view);
+        FrameLayout showReadingRoomButton = view.findViewById(R.id.fragment_seat_show_reading_room_button);
+        showReadingRoomButton.setOnClickListener(this);
+        FrameLayout showStudyRoomButton = view.findViewById(R.id.fragment_seat_show_study_room_button);
+        showStudyRoomButton.setOnClickListener(this);
+
         setHasOptionsMenu(true);
         return view;
     }
@@ -42,4 +53,20 @@ public class SeatFragment extends PagerFragment {
 
     }
 
+    @Override
+    public void onClick(View view) {
+        Intent intent;
+        switch (view.getId()){
+            case R.id.fragment_seat_show_reading_room_button:
+                intent = new Intent(view.getContext(), LibraryListActivity.class);
+                intent.putExtra("roomType", 0);
+                startActivity(intent);
+                break;
+            case R.id.fragment_seat_show_study_room_button:
+                intent = new Intent(view.getContext(), LibraryListActivity.class);
+                intent.putExtra("roomType", 1);
+                startActivity(intent);
+                break;
+        }
+    }
 }
