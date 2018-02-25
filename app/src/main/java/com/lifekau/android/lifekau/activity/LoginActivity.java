@@ -53,20 +53,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private UserLoginTask mAuthTask = null;
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
 
-    // UI references.
     private AutoCompleteTextView mIdView;
     private EditText mPasswordView;
     private ProgressDialog mProgressDialog;
@@ -76,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
+
         mIdView = findViewById(R.id.id);
         populateAutoComplete();
 
@@ -302,10 +291,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private WeakReference<LoginActivity> activityReference;
@@ -322,7 +307,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
             try {
                 // Simulate network access.
                 if (mLMSPortalManager.pullSession(applicationWeakReference.get(), mid, mPassword) == -1)
