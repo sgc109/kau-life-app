@@ -2,8 +2,6 @@ package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,9 +27,9 @@ public class ScholarshipActivity extends AppCompatActivity {
     private static final int VIEW_PROGRESS = 1;
 
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
     private GetScholarshipAsyncTask mGetScholarshipAsyncTask;
 
     @Override
@@ -41,46 +39,16 @@ public class ScholarshipActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        mSwipeRefreshLayout = findViewById(R.id.portal_scholarship_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRecyclerAdapter = new RecyclerView.Adapter<ScholarshipItemViewHolder>() {
             @Override
-            public void onRefresh() {
-                mRecyclerAdapter.notifyDataSetChanged();
-                executeAsyncTask();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 500);
-            }
-        });
-        mRecyclerAdapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view;
-                RecyclerView.ViewHolder viewHolder;
-                if (viewType == VIEW_ITEM) {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_scholarship, parent, false);
-                    viewHolder = new ScholarshipItemViewHolder(view);
-                } else {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_progress, parent, false);
-                    viewHolder = new ItemProgressViewHolder(view);
-                }
-                return viewHolder;
+            public ScholarshipItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_scholarship, parent, false);
+                return new ScholarshipItemViewHolder(view);
             }
 
             @Override
-            public int getItemViewType(int position) {
-                return mLMSPortalManager.getScholarship(position) != null ? VIEW_ITEM : VIEW_PROGRESS;
-            }
-
-            @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                if (holder instanceof ScholarshipItemViewHolder)
-                    ((ScholarshipItemViewHolder) holder).bind(position);
-                else ((ItemProgressViewHolder) holder).bind(position);
+            public void onBindViewHolder(ScholarshipItemViewHolder holder, int position) {
+                holder.bind(position);
             }
 
             @Override
@@ -89,10 +57,15 @@ public class ScholarshipActivity extends AppCompatActivity {
                 return (size > 0) ? size : 1;
             }
         };
+
         mLMSPortalManager.clearScholarship();
         mRecyclerView = findViewById(R.id.portal_scholarship_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerView.setVisibility(View.GONE);
+
+        mProgressBar = findViewById(R.id.scholarship_list_progress_bar);
+        mProgressBar.setVisibility(View.VISIBLE);
         executeAsyncTask();
     }
 
@@ -138,19 +111,6 @@ public class ScholarshipActivity extends AppCompatActivity {
         }
     }
 
-    public class ItemProgressViewHolder extends RecyclerView.ViewHolder {
-        private ProgressBar mProgressBar;
-
-        public ItemProgressViewHolder(View progressView) {
-            super(progressView);
-            mProgressBar = progressView.findViewById(R.id.list_item_progress_bar);
-        }
-
-        public void bind(int position) {
-
-        }
-    }
-
     private static class GetScholarshipAsyncTask extends AsyncTask<Integer, Void, Integer> {
 
         private WeakReference<ScholarshipActivity> activityReference;
@@ -189,16 +149,12 @@ public class ScholarshipActivity extends AppCompatActivity {
             final ScholarshipActivity scholarshipActivity = activityReference.get();
             if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return;
             if (result != -1) {
+                scholarshipActivity.mProgressBar.setVisibility(View.GONE);
+                scholarshipActivity.mRecyclerView.setVisibility(View.VISIBLE);
                 scholarshipActivity.mRecyclerAdapter.notifyItemRangeChanged(0, scholarshipActivity.mLMSPortalManager.getScholarshipSize());
             } else {
                 //예외 처리
                 scholarshipActivity.showErrorMessage();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        scholarshipActivity.mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
             }
         }
 

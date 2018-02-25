@@ -3,23 +3,23 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="6dp"
-    android:layout_marginLeft="12dp"
-    android:layout_marginRight="12dp"
-    android:layout_marginTop="6dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="5dp"
     android:gravity="center">
 
     <LinearLayout
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
+            android:textStyle="bold"
             android:id="@+id/list_item_scholarship_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
             android:layout_marginBottom="4dp"
             android:text="장학 종류"
             android:textSize="12pt" />
@@ -53,8 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_margin="4dp"
-                android:text="5,000,000"
+                android:text="5,000,000원"
                 android:textSize="8pt" />
         </RelativeLayout>
     </LinearLayout>

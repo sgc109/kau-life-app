@@ -37,7 +37,8 @@
                 android:hint="@string/prompt_id"
                 android:inputType="text"
                 android:maxLines="1"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:text="2012122327"/>
 
 
             <EditText
@@ -53,15 +54,16 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:text="todghkfgkdeo1!@"/>
 
 
             <Button
-                android:alpha="0.80"
                 android:id="@+id/id_sign_in_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="250dp"
                 android:layout_height="52dp"
+                android:alpha="0.80"
                 android:background="@drawable/rounded_corner_login_button"
                 android:text="@string/action_sign_in"
                 android:textStyle="bold"/>

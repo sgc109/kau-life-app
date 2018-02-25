@@ -110,7 +110,7 @@
     <string name="library_reading_room_name_03">제2열람실</string>
     <string name="library_reading_room_name_04">제3열람실</string>
     <string name="library_reading_room_name_05">제5열람실</string>
-    <string name="library_reading_room_detail_format">%d/%d</string>
+    <string name="library_reading_room_detail_format">사용중 : %d석 / 여석 : %d석</string>
 
     <string name="library_study_room_name_01">스터디룸A</string>
     <string name="library_study_room_name_02">스터디룸B1</string>
@@ -121,7 +121,7 @@
     <string name="library_study_room_detail_format">%s</string>
 
     <string name="available_now">이용 가능</string>
-    <string name="not_available_now">이용 불가</string>
+    <string name="not_available_now">사용중</string>
     <string name="no_seat_now">여석 없음</string>
 
     <string name="permission_rationale">권한 요청</string>
