@@ -11,6 +11,7 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -226,6 +227,16 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            // 정말 종료하시겠습니까? 다시 묻지 않기 체크
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
