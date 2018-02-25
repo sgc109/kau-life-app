@@ -25,6 +25,8 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -164,21 +166,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Check for a valid id/pw
         if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
+            mPasswordView.setError(getString(R.string.prompt_input_password));
             focusView = mPasswordView;
             cancel = true;
         } else if (!isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+            mPasswordView.setError("");
             focusView = mPasswordView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(id)) {
-            mIdView.setError(getString(R.string.error_field_required));
+            mIdView.setError(getString(R.string.prompt_input_id));
             focusView = mIdView;
             cancel = true;
-        } else if (!isidValid(id)) {
-            mIdView.setError(getString(R.string.error_invalid_id));
+        } else if (!isIdValid(id)) {
+            mIdView.setError("");
             focusView = mIdView;
             cancel = true;
         }
@@ -187,6 +189,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+            Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+            focusView.startAnimation(shake);
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
@@ -196,14 +200,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private boolean isidValid(String id) {
+    private boolean isIdValid(String id) {
         //TODO: Replace this with your own logic
         return true;
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return true;
+//        return password.length() > 4;
     }
 
     /**
@@ -333,6 +338,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
+                Animation shake = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.shake);
+                mPasswordView.startAnimation(shake);
             }
         }
 
