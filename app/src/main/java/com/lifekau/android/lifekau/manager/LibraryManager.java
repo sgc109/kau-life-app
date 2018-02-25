@@ -132,10 +132,6 @@ public class LibraryManager {
         return mReadingRoomTotalSeat[roomNum];
     }
 
-    public String getReadingRoomSummary(int roomNum) {
-        return "(" + String.valueOf(getReadingRoomAvailableSeat(roomNum)) + " / " + String.valueOf(getReadingRoomTotalSeat(roomNum)) + ")";
-    }
-
     public int getStudyRoomStatus(Context context) {
         try {
             Connection.Response res = Jsoup.connect("http://lib.kau.ac.kr/haulms/haulms/SRResv.csp")
@@ -197,11 +193,11 @@ public class LibraryManager {
         return mStudyRoomDetailStatus[roomNum][time];
     }
 
-    public String getStudyRoomSummary(int roomNum) {
+    public boolean isStudyRoomAvailableNow(int roomNum) {
         Calendar currTime = Calendar.getInstance();
         int currHour = currTime.get(Calendar.HOUR_OF_DAY);
         currHour = currHour < 0 ? 0 : currHour;
-        return "(" + (mStudyRoomDetailStatus[roomNum][currHour] ? "이용 가능" : "이용 불가") + ")";
+        return mStudyRoomDetailStatus[roomNum][currHour];
     }
 
     private String getMatchingCharset(String charset) {

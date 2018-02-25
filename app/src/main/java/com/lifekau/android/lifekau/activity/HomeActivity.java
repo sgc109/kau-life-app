@@ -233,7 +233,8 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             // 정말 종료하시겠습니까? 다시 묻지 않기 체크
-            return true;
+            return super.onKeyDown(keyCode, event);
+//            return true;
         }
 
         return super.onKeyDown(keyCode, event);

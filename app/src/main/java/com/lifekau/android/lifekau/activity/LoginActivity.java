@@ -97,6 +97,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("로그인 중입니다");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setCanceledOnTouchOutside(false);
     }
 
     private void populateAutoComplete() {

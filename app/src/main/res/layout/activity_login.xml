@@ -24,28 +24,28 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginBottom="30dp"
+                android:alpha=".80"
                 android:src="@drawable/kau_bold2"/>
 
 
             <AutoCompleteTextView
-                android:text="2012122327"
                 android:id="@+id/id"
                 android:layout_width="250dp"
-                android:layout_height="45dp"
+                android:layout_height="40dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_corner_login_edit_text"
                 android:gravity="center"
                 android:hint="@string/prompt_id"
                 android:inputType="text"
                 android:maxLines="1"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:text="2012122327"/>
 
 
             <EditText
-                android:text="todghkfgkdeo1!@"
                 android:id="@+id/password"
                 android:layout_width="250dp"
-                android:layout_height="45dp"
+                android:layout_height="40dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_corner_login_edit_text"
                 android:gravity="center"
@@ -55,7 +55,8 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:text="todghkfgkdeo1!@"/>
 
 
             <Button
