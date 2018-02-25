@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            focusView.requestFocus();
+//            focusView.requestFocus();
             Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
             focusView.startAnimation(shake);
         } else {
@@ -331,6 +331,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 loginManager.setStudentId(mLMSPortalManager.getStudentId());
                 if (loginManager.getStudentId() == null) showErrorMessage();
                 else {
+                    mProgressDialog.dismiss();
                     Intent intent = HomeActivity.newIntent(activityReference.get());
                     startActivity(intent);
                     finish();

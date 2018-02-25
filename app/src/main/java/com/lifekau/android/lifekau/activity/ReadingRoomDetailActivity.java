@@ -45,7 +45,7 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reading_room_detail);
         mReadingRoomTitleTextView = findViewById(R.id.reading_room_detail_title);
         mReadingRoomDetailSeatLayout = findViewById(R.id.reading_room_detail_seat_layout);
-        Button closeButton = (Button)findViewById(R.id.reading_room_detail_close_button);
+        Button closeButton = (Button) findViewById(R.id.reading_room_detail_close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,7 +75,8 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Integer... params) {
             publishProgress();
-            if (mLibraryManager.getReadingRoomDetailStatus(applicationWeakReference.get(), params[0]) != -1) return params[0];
+            if (mLibraryManager.getReadingRoomDetailStatus(applicationWeakReference.get(), params[0]) != -1)
+                return params[0];
             return -1;
         }
 
@@ -88,7 +89,8 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             ReadingRoomDetailActivity readingRoomDetailActivity = activityReference.get();
-            if(readingRoomDetailActivity == null || readingRoomDetailActivity.isFinishing()) return;
+            if (readingRoomDetailActivity == null || readingRoomDetailActivity.isFinishing())
+                return;
             TextView readingRoomTitleTextView = readingRoomDetailActivity.findViewById(R.id.reading_room_detail_title);
             if (result != -1) {
                 if (result == 0) {

@@ -21,7 +21,7 @@ import com.lifekau.android.lifekau.manager.LibraryManager;
 
 import java.lang.ref.WeakReference;
 
-public class ReadingRoomListActivity extends AppCompatActivity {
+public class LibraryListActivity extends AppCompatActivity {
 
     private static final int TOTAL_READING_ROOM_NUM = 5;
     private static final int TOTAL_STUDY_ROOM_NUM = 6;
@@ -37,7 +37,7 @@ public class ReadingRoomListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activitiy_reading_room_list);
+        setContentView(R.layout.activitiy_library_list);
         if(getSupportActionBar() != null ) {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
@@ -109,13 +109,13 @@ public class ReadingRoomListActivity extends AppCompatActivity {
 
     private static class LibraryManagerAsyncTask extends AsyncTask<Void, Void, Integer> {
 
-        private WeakReference<ReadingRoomListActivity> activityReference;
+        private WeakReference<LibraryListActivity> activityReference;
         private WeakReference<Application> applicationWeakReference;
 
         // only retain a weak reference to the activity
-        LibraryManagerAsyncTask(Application application, ReadingRoomListActivity readingRoomListActivity) {
+        LibraryManagerAsyncTask(Application application, LibraryListActivity libraryListActivity) {
             applicationWeakReference = new WeakReference<>(application);
-            activityReference = new WeakReference<>(readingRoomListActivity);
+            activityReference = new WeakReference<>(libraryListActivity);
         }
 
         @Override
@@ -131,15 +131,15 @@ public class ReadingRoomListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            ReadingRoomListActivity readingRoomListActivity = activityReference.get();
-            if(readingRoomListActivity == null || readingRoomListActivity.isFinishing()) return;
+            LibraryListActivity libraryListActivity = activityReference.get();
+            if(libraryListActivity == null || libraryListActivity.isFinishing()) return;
             if (result != -1) {
             } else {
                 //예외 처리
-                readingRoomListActivity.showErrorMessage();
+                libraryListActivity.showErrorMessage();
             }
-            ProgressBar progressBar = readingRoomListActivity.findViewById(R.id.library_list_progress_bar);
-            RecyclerView recyclerView = readingRoomListActivity.findViewById(R.id.library_list_recycler_view);
+            ProgressBar progressBar = libraryListActivity.findViewById(R.id.library_list_progress_bar);
+            RecyclerView recyclerView = libraryListActivity.findViewById(R.id.library_list_recycler_view);
             progressBar.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }

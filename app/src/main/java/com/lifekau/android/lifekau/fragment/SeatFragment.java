@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.lifekau.android.lifekau.R;
-import com.lifekau.android.lifekau.activity.ReadingRoomListActivity;
+import com.lifekau.android.lifekau.activity.LibraryListActivity;
 
 public class SeatFragment extends PagerFragment implements View.OnClickListener{
 
@@ -55,12 +55,12 @@ public class SeatFragment extends PagerFragment implements View.OnClickListener{
         Intent intent;
         switch (view.getId()){
             case R.id.fragment_seat_show_reading_room_button:
-                intent = new Intent(view.getContext(), ReadingRoomListActivity.class);
+                intent = new Intent(view.getContext(), LibraryListActivity.class);
                 intent.putExtra("roomType", 0);
                 startActivity(intent);
                 break;
             case R.id.fragment_seat_show_study_room_button:
-                intent = new Intent(view.getContext(), ReadingRoomListActivity.class);
+                intent = new Intent(view.getContext(), LibraryListActivity.class);
                 intent.putExtra("roomType", 1);
                 startActivity(intent);
                 break;
