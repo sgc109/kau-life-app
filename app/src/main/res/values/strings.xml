@@ -100,7 +100,7 @@
     <string name="action_sign_in">로그인</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_field_required">이 곳을 입력해주세요</string>
 
     <!-- 도서관 관련 스트링 -->
     <string name="library_reading_room_name_01">제1열람실A</string>

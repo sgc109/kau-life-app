@@ -76,10 +76,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mIdView = (AutoCompleteTextView) findViewById(R.id.id);
+        mIdView = findViewById(R.id.id);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -91,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button midSignInButton = (Button) findViewById(R.id.id_sign_in_button);
+        Button midSignInButton = findViewById(R.id.id_sign_in_button);
         midSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -346,6 +350,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 else {
                     Intent intent = HomeActivity.newIntent(activityReference.get());
                     startActivity(intent);
+                    finish();
                 }
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
