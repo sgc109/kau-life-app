@@ -27,7 +27,6 @@
                 android:alpha=".80"
                 android:src="@drawable/kau_bold2"/>
 
-
             <AutoCompleteTextView
                 android:id="@+id/id"
                 android:layout_width="250dp"
