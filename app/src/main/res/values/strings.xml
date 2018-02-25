@@ -98,8 +98,8 @@
     <string name="error_invalid_id">잘못된 아이디 형식입니다.</string>
     <string name="prompt_password">비밀번호</string>
     <string name="action_sign_in">로그인</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_invalid_password">비밀번호가 너무 짧습니다</string>
+    <string name="error_incorrect_password">비밀번호가 다릅니다</string>
     <string name="error_field_required">이 곳을 입력해주세요</string>
 
     <!-- 도서관 관련 스트링 -->

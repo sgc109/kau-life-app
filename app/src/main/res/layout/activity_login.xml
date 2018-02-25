@@ -7,15 +7,6 @@
                 android:orientation="vertical"
                 tools:context="com.lifekau.android.lifekau.activity.LoginActivity">
 
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
-
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
@@ -42,7 +33,6 @@
                 android:layout_height="45dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_corner_login_edit_text"
-                android:ellipsize="end"
                 android:gravity="center"
                 android:hint="@string/prompt_id"
                 android:inputType="text"
@@ -56,7 +46,6 @@
                 android:layout_height="45dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_corner_login_edit_text"
-                android:ellipsize="end"
                 android:gravity="center"
                 android:hint="@string/prompt_password"
                 android:imeActionId="6"
