@@ -45,7 +45,7 @@
                     android:layout_marginLeft="8dp"
                     android:gravity="center"
                     android:text="장학금수혜내역"
-                    android:textSize="24dp"/>
+                    android:textSize="28dp"/>
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -81,8 +81,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
                     android:gravity="center"
-                    android:text="학기성적"
-                    android:textSize="24dp"/>
+                    android:text="학&#160;기&#160;성&#160;적"
+                    android:textSize="28dp"/>
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -118,8 +118,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
                     android:gravity="center"
-                    android:text="누적성적"
-                    android:textSize="24dp"/>
+                    android:text="누&#160;적&#160;성&#160;적"
+                    android:textSize="28dp"/>
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -156,7 +156,7 @@
                     android:layout_marginLeft="8dp"
                     android:gravity="center"
                     android:text="시험시간표"
-                    android:textSize="24dp"/>
+                    android:textSize="28dp"/>
 
             </LinearLayout>
         </android.support.v7.widget.CardView>

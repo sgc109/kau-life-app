@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -61,6 +62,7 @@
         </RelativeLayout>
 
         <TextView
+            android:layout_margin="8dp"
             android:id="@+id/list_item_post_content_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
