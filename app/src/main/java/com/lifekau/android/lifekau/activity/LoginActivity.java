@@ -162,14 +162,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        // Check for a valid id/pw
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
-        // Check for a valid id address.
         if (TextUtils.isEmpty(id)) {
             mIdView.setError(getString(R.string.error_field_required));
             focusView = mIdView;
@@ -220,10 +223,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
 
-            if(show) mProgressDialog.show();
+            if (show) mProgressDialog.show();
             else mProgressDialog.dismiss();
         } else {
-            if(show) mProgressDialog.show();
+            if (show) mProgressDialog.show();
             else mProgressDialog.dismiss();
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }

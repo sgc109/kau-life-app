@@ -1,6 +1,5 @@
 package com.lifekau.android.lifekau.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -9,30 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LibraryManager;
-import com.lifekau.android.lifekau.model.FoodReview;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
-public class LibraryListActivity extends AppCompatActivity {
+public class ReadingRoomListActivity extends AppCompatActivity {
 
     private static final int TOTAL_READING_ROOM_NUM = 5;
     private static final int TOTAL_STUDY_ROOM_NUM = 6;
@@ -48,7 +37,7 @@ public class LibraryListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activitiy_library_list);
+        setContentView(R.layout.activitiy_reading_room_list);
         if(getSupportActionBar() != null ) {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
@@ -60,7 +49,7 @@ public class LibraryListActivity extends AppCompatActivity {
         mRecyclerAdapter = new RecyclerView.Adapter<LibraryListViewHolder>() {
             @Override
             public LibraryListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_library, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_reading_room, parent, false);
                 return new LibraryListViewHolder(view);
             }
 
@@ -120,13 +109,13 @@ public class LibraryListActivity extends AppCompatActivity {
 
     private static class LibraryManagerAsyncTask extends AsyncTask<Void, Void, Integer> {
 
-        private WeakReference<LibraryListActivity> activityReference;
+        private WeakReference<ReadingRoomListActivity> activityReference;
         private WeakReference<Application> applicationWeakReference;
 
         // only retain a weak reference to the activity
-        LibraryManagerAsyncTask(Application application, LibraryListActivity libraryListActivity) {
+        LibraryManagerAsyncTask(Application application, ReadingRoomListActivity readingRoomListActivity) {
             applicationWeakReference = new WeakReference<>(application);
-            activityReference = new WeakReference<>(libraryListActivity);
+            activityReference = new WeakReference<>(readingRoomListActivity);
         }
 
         @Override
@@ -142,15 +131,15 @@ public class LibraryListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            LibraryListActivity libraryListActivity = activityReference.get();
-            if(libraryListActivity == null || libraryListActivity.isFinishing()) return;
+            ReadingRoomListActivity readingRoomListActivity = activityReference.get();
+            if(readingRoomListActivity == null || readingRoomListActivity.isFinishing()) return;
             if (result != -1) {
             } else {
                 //예외 처리
-                libraryListActivity.showErrorMessage();
+                readingRoomListActivity.showErrorMessage();
             }
-            ProgressBar progressBar = libraryListActivity.findViewById(R.id.library_list_progress_bar);
-            RecyclerView recyclerView = libraryListActivity.findViewById(R.id.library_list_recycler_view);
+            ProgressBar progressBar = readingRoomListActivity.findViewById(R.id.library_list_progress_bar);
+            RecyclerView recyclerView = readingRoomListActivity.findViewById(R.id.library_list_recycler_view);
             progressBar.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }

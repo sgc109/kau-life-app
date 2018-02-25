@@ -65,7 +65,7 @@
             android:label="@string/title_activity_login">
         </activity>
         <activity
-            android:name=".activity.LibraryListActivity">
+            android:name=".activity.ReadingRoomListActivity">
         </activity>
 
         <service android:name=".PushAlarmService">
