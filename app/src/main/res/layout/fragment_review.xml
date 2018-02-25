@@ -90,8 +90,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@color/color_tab_1">
-
-        </ImageView>
+            android:background="@color/color_tab_1"/>
     </LinearLayout>
 </FrameLayout>
