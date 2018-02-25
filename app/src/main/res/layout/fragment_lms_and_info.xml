@@ -16,7 +16,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/fragment_portal_show_scholarship_button"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -32,11 +32,11 @@
                 android:layout_margin="16dp"
                 android:orientation="horizontal">
 
-                <!--<ImageView-->
-                <!--android:layout_width="80dp"-->
-                <!--android:layout_height="80dp"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:src="@drawable/reading" />-->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/scholarship1"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -53,7 +53,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/fragment_portal_show_curr_grade_button"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -69,11 +69,11 @@
                 android:layout_margin="16dp"
                 android:orientation="horizontal">
 
-                <!--<ImageView-->
-                <!--android:layout_width="80dp"-->
-                <!--android:layout_height="80dp"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:src="@drawable/study" />-->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/grade"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -90,7 +90,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/fragment_portal_show_accumulated_grade_summary_button"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -106,11 +106,11 @@
                 android:layout_margin="16dp"
                 android:orientation="horizontal">
 
-                <!--<ImageView-->
-                <!--android:layout_width="80dp"-->
-                <!--android:layout_height="80dp"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:src="@drawable/empty" />-->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/grades"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -127,7 +127,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/fragment_portal_show_examination_time_table_button"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -143,11 +143,11 @@
                 android:layout_margin="16dp"
                 android:orientation="horizontal">
 
-                <!--<ImageView-->
-                <!--android:layout_width="80dp"-->
-                <!--android:layout_height="80dp"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:src="@drawable/empty" />-->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/exam_time1"/>
 
                 <TextView
                     android:layout_width="match_parent"

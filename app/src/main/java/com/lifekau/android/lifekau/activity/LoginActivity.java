@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -90,6 +92,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         midSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
                 attemptLogin();
             }
         });
@@ -218,25 +223,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            if (show) mProgressDialog.show();
-            else mProgressDialog.dismiss();
-        } else {
-            if (show) mProgressDialog.show();
-            else mProgressDialog.dismiss();
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+//
+//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//                }
+//            });
+//
+//            if (show) mProgressDialog.show();
+//            else mProgressDialog.dismiss();
+//        } else {
+        if (show) mProgressDialog.show();
+        else mProgressDialog.dismiss();
+        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//        }
     }
 
     @Override
@@ -325,20 +330,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
             if (success) {
                 LoginManager loginManager = LoginManager.get(activityReference.get());
                 loginManager.setUserId(mid);
                 loginManager.setPassword(mPassword);
                 loginManager.setStudentId(mLMSPortalManager.getStudentId());
-                if (loginManager.getStudentId() == null) showErrorMessage();
-                else {
-                    mProgressDialog.dismiss();
+                if (loginManager.getStudentId() == null) {
+                    showProgress(false);
+                    showErrorMessage();
+                } else {
                     Intent intent = HomeActivity.newIntent(activityReference.get());
                     startActivity(intent);
-                    finish();
+                    mProgressDialog.dismiss();
+//                    finish();
                 }
             } else {
+                showProgress(false);
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
                 Animation shake = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.shake);
@@ -356,6 +363,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void showErrorMessage() {
         Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        showProgress(false);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mProgressDialog.dismiss();
     }
 }
 

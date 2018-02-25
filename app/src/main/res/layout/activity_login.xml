@@ -60,6 +60,7 @@
 
 
             <Button
+                android:alpha="0.80"
                 android:id="@+id/id_sign_in_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="250dp"
