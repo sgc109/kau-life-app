@@ -5,7 +5,8 @@
     android:id="@+id/fragment_community_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme">
+    android:theme="@style/AppTheme"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <ProgressBar
         android:id="@+id/post_list_progress_bar"
@@ -23,7 +24,6 @@
             android:id="@+id/community_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@android:layout/simple_list_item_checked"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

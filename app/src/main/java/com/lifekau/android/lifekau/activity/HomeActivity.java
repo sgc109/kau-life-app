@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.lifekau.android.lifekau.FABHideOnScrollBehavior;
 import com.lifekau.android.lifekau.adapter.HomeViewPagerAdapter;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.fragment.PagerFragment;
@@ -85,6 +87,11 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         currentFragment = adapter.getCurrentFragment();
 
         updateBottomNavigationItems();
+
+        CoordinatorLayout.LayoutParams params =
+                (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
+        params.setBehavior(new FABHideOnScrollBehavior());
+        mFab.requestLayout();
     }
 
     public void updateBottomNavigationColor(boolean isColored) {
