@@ -1,8 +1,12 @@
 package com.lifekau.android.lifekau.manager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
+
+import com.lifekau.android.lifekau.activity.LibraryListActivity;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -17,7 +21,7 @@ public class LibraryManager {
     private static final int TOTAL_READING_ROOM_NUM = 5;
     private static final int TOTAL_READING_ROOM_SEAT_NUM = 300;
     private static final int TOTAL_STDUYING_ROOM_NUM = 6;
-    private static final int TOTAL_STDUYING_ROOM_STATUS_NUM = 50;
+    private static final int TOTAL_STDUYING_ROOM_STATUS_NUM = 100;
 
     private int[] mReadingRoomAvailableSeat;
     private int[] mReadingRoomTotalSeat;
@@ -193,11 +197,30 @@ public class LibraryManager {
         return mStudyRoomDetailStatus[roomNum][time];
     }
 
+    public boolean[] getStudyRoomDetailStatusArray(int roomNum){
+        return mStudyRoomDetailStatus[roomNum];
+    }
+
     public boolean isStudyRoomAvailableNow(int roomNum) {
         Calendar currTime = Calendar.getInstance();
         int currHour = currTime.get(Calendar.HOUR_OF_DAY);
         currHour = currHour < 0 ? 0 : currHour;
         return mStudyRoomDetailStatus[roomNum][currHour];
+    }
+
+    public void showStudyRoomStatus(Context context, int roomNum){
+        Activity activity = (Activity)context;
+        TimePickerDialog timePickerDialog = new TimePickerDialog();
+        Calendar now = Calendar.getInstance();
+        timePickerDialog.initialize(
+                null,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                now.get(Calendar.SECOND),
+                true,
+                getStudyRoomDetailStatusArray(roomNum)
+        );
+        timePickerDialog.show(activity.getFragmentManager(), "study_room_dialog");
     }
 
     private String getMatchingCharset(String charset) {

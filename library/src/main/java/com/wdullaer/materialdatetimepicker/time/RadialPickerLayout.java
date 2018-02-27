@@ -72,8 +72,8 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private Timepoint mCurrentTime;
     private boolean mIs24HourMode;
     private int mCurrentItemShowing;
-
     private CircleView mCircleView;
+
     private AmPmCirclesView mAmPmCirclesView;
     private RadialTextsView mHourRadialTextsView;
     private RadialTextsView mMinuteRadialTextsView;
@@ -82,8 +82,8 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private RadialSelectorView mMinuteRadialSelectorView;
     private RadialSelectorView mSecondRadialSelectorView;
     private View mGrayBox;
-
     private int[] mSnapPrefer30sMap;
+
     private boolean mInputEnabled;
     private int mIsTouchingAmOrPm = -1;
     private boolean mDoingMove;
@@ -92,9 +92,11 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private float mDownX;
     private float mDownY;
     private AccessibilityManager mAccessibilityManager;
-
     private AnimatorSet mTransition;
+
     private Handler mHandler = new Handler();
+
+    private boolean[] mEmptyTimes;
 
     public interface OnValueSelectedListener {
         void onValueSelected(Timepoint newTime);
@@ -229,13 +231,13 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
 
         mHourRadialTextsView.initialize(context,
-                hoursTexts, (is24HourMode ? innerHoursTexts : null), mController, hourValidator, true);
+                hoursTexts, (is24HourMode ? innerHoursTexts : null), mController, hourValidator, true, mEmptyTimes);
         mHourRadialTextsView.setSelection(is24HourMode ? initialTime.getHour() : hours[initialTime.getHour() % 12]);
         mHourRadialTextsView.invalidate();
-        mMinuteRadialTextsView.initialize(context, minutesTexts, null, mController, minuteValidator, false);
+        mMinuteRadialTextsView.initialize(context, minutesTexts, null, mController, minuteValidator, false, mEmptyTimes);
         mMinuteRadialTextsView.setSelection(initialTime.getMinute());
         mMinuteRadialTextsView.invalidate();
-        mSecondRadialTextsView.initialize(context, secondsTexts, null, mController, secondValidator, false);
+        mSecondRadialTextsView.initialize(context, secondsTexts, null, mController, secondValidator, false, mEmptyTimes);
         mSecondRadialTextsView.setSelection(initialTime.getSecond());
         mSecondRadialTextsView.invalidate();
 
@@ -252,6 +254,12 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 secondDegrees, false);
 
         mTimeInitialized = true;
+    }
+
+    public void initialize(Context context, Locale locale, TimePickerController timePickerController,
+                           Timepoint initialTime, boolean is24HourMode, boolean[] emptyTimes) {
+        mEmptyTimes = emptyTimes;
+        initialize(context, locale, timePickerController, initialTime, is24HourMode);
     }
 
     public void setTime(Timepoint time) {
@@ -718,173 +726,174 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        final float eventX = event.getX();
-        final float eventY = event.getY();
-        int degrees;
-        Timepoint value;
-        final Boolean[] isInnerCircle = new Boolean[1];
-        isInnerCircle[0] = false;
-
-        switch(event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (!mInputEnabled) {
-                    return true;
-                }
-
-                mDownX = eventX;
-                mDownY = eventY;
-
-                mLastValueSelected = null;
-                mDoingMove = false;
-                mDoingTouch = true;
-                // If we're showing the AM/PM, check to see if the user is touching it.
-                if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.Version.VERSION_1) {
-                    mIsTouchingAmOrPm = mAmPmCirclesView.getIsTouchingAmOrPm(eventX, eventY);
-                } else {
-                    mIsTouchingAmOrPm = -1;
-                }
-                if (mIsTouchingAmOrPm == AM || mIsTouchingAmOrPm == PM) {
-                    // If the touch is on AM or PM, set it as "touched" after the TAP_TIMEOUT
-                    // in case the user moves their finger quickly.
-                    mController.tryVibrate();
-                    mDownDegrees = -1;
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAmPmCirclesView.setAmOrPmPressed(mIsTouchingAmOrPm);
-                            mAmPmCirclesView.invalidate();
-                        }
-                    }, TAP_TIMEOUT);
-                } else {
-                    // If we're in accessibility mode, force the touch to be legal. Otherwise,
-                    // it will only register within the given touch target zone.
-                    boolean forceLegal = mAccessibilityManager.isTouchExplorationEnabled();
-                    // Calculate the degrees that is currently being touched.
-                    mDownDegrees = getDegreesFromCoords(eventX, eventY, forceLegal, isInnerCircle);
-                    Timepoint selectedTime = getTimeFromDegrees(mDownDegrees, isInnerCircle[0], false);
-                    if(mController.isOutOfRange(selectedTime, getCurrentItemShowing())) mDownDegrees = -1;
-                    if (mDownDegrees != -1) {
-                        // If it's a legal touch, set that number as "selected" after the
-                        // TAP_TIMEOUT in case the user moves their finger quickly.
-                        mController.tryVibrate();
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mDoingMove = true;
-                                mLastValueSelected = getTimeFromDegrees(mDownDegrees, isInnerCircle[0],
-                                        false);
-                                mLastValueSelected = roundToValidTime(mLastValueSelected, getCurrentItemShowing());
-                                // Redraw
-                                reselectSelector(mLastValueSelected, true, getCurrentItemShowing());
-                                mListener.onValueSelected(mLastValueSelected);
-                            }
-                        }, TAP_TIMEOUT);
-                    }
-                }
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                if (!mInputEnabled) {
-                    // We shouldn't be in this state, because input is disabled.
-                    Log.e(TAG, "Input was disabled, but received ACTION_MOVE.");
-                    return true;
-                }
-
-                float dY = Math.abs(eventY - mDownY);
-                float dX = Math.abs(eventX - mDownX);
-
-                if (!mDoingMove && dX <= TOUCH_SLOP && dY <= TOUCH_SLOP) {
-                    // Hasn't registered down yet, just slight, accidental movement of finger.
-                    break;
-                }
-
-                // If we're in the middle of touching down on AM or PM, check if we still are.
-                // If so, no-op. If not, remove its pressed state. Either way, no need to check
-                // for touches on the other circle.
-                if (mIsTouchingAmOrPm == AM || mIsTouchingAmOrPm == PM) {
-                    mHandler.removeCallbacksAndMessages(null);
-                    int isTouchingAmOrPm = mAmPmCirclesView.getIsTouchingAmOrPm(eventX, eventY);
-                    if (isTouchingAmOrPm != mIsTouchingAmOrPm) {
-                        mAmPmCirclesView.setAmOrPmPressed(-1);
-                        mAmPmCirclesView.invalidate();
-                        mIsTouchingAmOrPm = -1;
-                    }
-                    break;
-                }
-
-                if (mDownDegrees == -1) {
-                    // Original down was illegal, so no movement will register.
-                    break;
-                }
-
-                // We're doing a move along the circle, so move the selection as appropriate.
-                mDoingMove = true;
-                mHandler.removeCallbacksAndMessages(null);
-                degrees = getDegreesFromCoords(eventX, eventY, true, isInnerCircle);
-                if (degrees != -1) {
-                    value = roundToValidTime(
-                            getTimeFromDegrees(degrees, isInnerCircle[0], false),
-                            getCurrentItemShowing()
-                    );
-                    reselectSelector(value, true, getCurrentItemShowing());
-                    if (value != null && (mLastValueSelected == null || !mLastValueSelected.equals(value))) {
-                        mController.tryVibrate();
-                        mLastValueSelected = value;
-                        mListener.onValueSelected(value);
-                    }
-                }
-                return true;
-            case MotionEvent.ACTION_UP:
-                if (!mInputEnabled) {
-                    // If our touch input was disabled, tell the listener to re-enable us.
-                    Log.d(TAG, "Input was disabled, but received ACTION_UP.");
-                    mListener.enablePicker();
-                    return true;
-                }
-
-                mHandler.removeCallbacksAndMessages(null);
-                mDoingTouch = false;
-
-                // If we're touching AM or PM, set it as selected, and tell the listener.
-                if (mIsTouchingAmOrPm == AM || mIsTouchingAmOrPm == PM) {
-                    int isTouchingAmOrPm = mAmPmCirclesView.getIsTouchingAmOrPm(eventX, eventY);
-                    mAmPmCirclesView.setAmOrPmPressed(-1);
-                    mAmPmCirclesView.invalidate();
-
-                    if (isTouchingAmOrPm == mIsTouchingAmOrPm) {
-                        mAmPmCirclesView.setAmOrPm(isTouchingAmOrPm);
-                        if (getIsCurrentlyAmOrPm() != isTouchingAmOrPm) {
-                            Timepoint newSelection = new Timepoint(mCurrentTime);
-                            if(mIsTouchingAmOrPm == AM) newSelection.setAM();
-                            else if(mIsTouchingAmOrPm == PM) newSelection.setPM();
-                            newSelection = roundToValidTime(newSelection, HOUR_INDEX);
-                            reselectSelector(newSelection, false, HOUR_INDEX);
-                            mCurrentTime = newSelection;
-                            mListener.onValueSelected(newSelection);
-
-                        }
-                    }
-                    mIsTouchingAmOrPm = -1;
-                    break;
-                }
-
-                // If we have a legal degrees selected, set the value and tell the listener.
-                if (mDownDegrees != -1) {
-                    degrees = getDegreesFromCoords(eventX, eventY, mDoingMove, isInnerCircle);
-                    if (degrees != -1) {
-                        value = getTimeFromDegrees(degrees, isInnerCircle[0], !mDoingMove);
-                        value = roundToValidTime(value, getCurrentItemShowing());
-                        reselectSelector(value, false, getCurrentItemShowing());
-                        mCurrentTime = value;
-                        mListener.onValueSelected(value);
-                        mListener.advancePicker(getCurrentItemShowing());
-                    }
-                }
-                mDoingMove = false;
-                return true;
-            default:
-                break;
-        }
-        return false;
+//        final float eventX = event.getX();
+//        final float eventY = event.getY();
+//        int degrees;
+//        Timepoint value;
+//        final Boolean[] isInnerCircle = new Boolean[1];
+//        isInnerCircle[0] = false;
+//
+//        switch(event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                if (!mInputEnabled) {
+//                    return true;
+//                }
+//
+//                mDownX = eventX;
+//                mDownY = eventY;
+//
+//                mLastValueSelected = null;
+//                mDoingMove = false;
+//                mDoingTouch = true;
+//                // If we're showing the AM/PM, check to see if the user is touching it.
+//                if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.Version.VERSION_1) {
+//                    mIsTouchingAmOrPm = mAmPmCirclesView.getIsTouchingAmOrPm(eventX, eventY);
+//                } else {
+//                    mIsTouchingAmOrPm = -1;
+//                }
+//                if (mIsTouchingAmOrPm == AM || mIsTouchingAmOrPm == PM) {
+//                    // If the touch is on AM or PM, set it as "touched" after the TAP_TIMEOUT
+//                    // in case the user moves their finger quickly.
+//                    mController.tryVibrate();
+//                    mDownDegrees = -1;
+//                    mHandler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            mAmPmCirclesView.setAmOrPmPressed(mIsTouchingAmOrPm);
+//                            mAmPmCirclesView.invalidate();
+//                        }
+//                    }, TAP_TIMEOUT);
+//                } else {
+//                    // If we're in accessibility mode, force the touch to be legal. Otherwise,
+//                    // it will only register within the given touch target zone.
+//                    boolean forceLegal = mAccessibilityManager.isTouchExplorationEnabled();
+//                    // Calculate the degrees that is currently being touched.
+//                    mDownDegrees = getDegreesFromCoords(eventX, eventY, forceLegal, isInnerCircle);
+//                    Timepoint selectedTime = getTimeFromDegrees(mDownDegrees, isInnerCircle[0], false);
+//                    if(mController.isOutOfRange(selectedTime, getCurrentItemShowing())) mDownDegrees = -1;
+//                    if (mDownDegrees != -1) {
+//                        // If it's a legal touch, set that number as "selected" after the
+//                        // TAP_TIMEOUT in case the user moves their finger quickly.
+//                        mController.tryVibrate();
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mDoingMove = true;
+//                                mLastValueSelected = getTimeFromDegrees(mDownDegrees, isInnerCircle[0],
+//                                        false);
+//                                mLastValueSelected = roundToValidTime(mLastValueSelected, getCurrentItemShowing());
+//                                // Redraw
+//                                reselectSelector(mLastValueSelected, true, getCurrentItemShowing());
+//                                mListener.onValueSelected(mLastValueSelected);
+//                            }
+//                        }, TAP_TIMEOUT);
+//                    }
+//                }
+//                return true;
+//            case MotionEvent.ACTION_MOVE:
+//                if (!mInputEnabled) {
+//                    // We shouldn't be in this state, because input is disabled.
+//                    Log.e(TAG, "Input was disabled, but received ACTION_MOVE.");
+//                    return true;
+//                }
+//
+//                float dY = Math.abs(eventY - mDownY);
+//                float dX = Math.abs(eventX - mDownX);
+//
+//                if (!mDoingMove && dX <= TOUCH_SLOP && dY <= TOUCH_SLOP) {
+//                    // Hasn't registered down yet, just slight, accidental movement of finger.
+//                    break;
+//                }
+//
+//                // If we're in the middle of touching down on AM or PM, check if we still are.
+//                // If so, no-op. If not, remove its pressed state. Either way, no need to check
+//                // for touches on the other circle.
+//                if (mIsTouchingAmOrPm == AM || mIsTouchingAmOrPm == PM) {
+//                    mHandler.removeCallbacksAndMessages(null);
+//                    int isTouchingAmOrPm = mAmPmCirclesView.getIsTouchingAmOrPm(eventX, eventY);
+//                    if (isTouchingAmOrPm != mIsTouchingAmOrPm) {
+//                        mAmPmCirclesView.setAmOrPmPressed(-1);
+//                        mAmPmCirclesView.invalidate();
+//                        mIsTouchingAmOrPm = -1;
+//                    }
+//                    break;
+//                }
+//
+//                if (mDownDegrees == -1) {
+//                    // Original down was illegal, so no movement will register.
+//                    break;
+//                }
+//
+//                // We're doing a move along the circle, so move the selection as appropriate.
+//                mDoingMove = true;
+//                mHandler.removeCallbacksAndMessages(null);
+//                degrees = getDegreesFromCoords(eventX, eventY, true, isInnerCircle);
+//                if (degrees != -1) {
+//                    value = roundToValidTime(
+//                            getTimeFromDegrees(degrees, isInnerCircle[0], false),
+//                            getCurrentItemShowing()
+//                    );
+//                    reselectSelector(value, true, getCurrentItemShowing());
+//                    if (value != null && (mLastValueSelected == null || !mLastValueSelected.equals(value))) {
+//                        mController.tryVibrate();
+//                        mLastValueSelected = value;
+//                        mListener.onValueSelected(value);
+//                    }
+//                }
+//                return true;
+//            case MotionEvent.ACTION_UP:
+//                if (!mInputEnabled) {
+//                    // If our touch input was disabled, tell the listener to re-enable us.
+//                    Log.d(TAG, "Input was disabled, but received ACTION_UP.");
+//                    mListener.enablePicker();
+//                    return true;
+//                }
+//
+//                mHandler.removeCallbacksAndMessages(null);
+//                mDoingTouch = false;
+//
+//                // If we're touching AM or PM, set it as selected, and tell the listener.
+//                if (mIsTouchingAmOrPm == AM || mIsTouchingAmOrPm == PM) {
+//                    int isTouchingAmOrPm = mAmPmCirclesView.getIsTouchingAmOrPm(eventX, eventY);
+//                    mAmPmCirclesView.setAmOrPmPressed(-1);
+//                    mAmPmCirclesView.invalidate();
+//
+//                    if (isTouchingAmOrPm == mIsTouchingAmOrPm) {
+//                        mAmPmCirclesView.setAmOrPm(isTouchingAmOrPm);
+//                        if (getIsCurrentlyAmOrPm() != isTouchingAmOrPm) {
+//                            Timepoint newSelection = new Timepoint(mCurrentTime);
+//                            if(mIsTouchingAmOrPm == AM) newSelection.setAM();
+//                            else if(mIsTouchingAmOrPm == PM) newSelection.setPM();
+//                            newSelection = roundToValidTime(newSelection, HOUR_INDEX);
+//                            reselectSelector(newSelection, false, HOUR_INDEX);
+//                            mCurrentTime = newSelection;
+//                            mListener.onValueSelected(newSelection);
+//
+//                        }
+//                    }
+//                    mIsTouchingAmOrPm = -1;
+//                    break;
+//                }
+//
+//                // If we have a legal degrees selected, set the value and tell the listener.
+//                if (mDownDegrees != -1) {
+//                    degrees = getDegreesFromCoords(eventX, eventY, mDoingMove, isInnerCircle);
+//                    if (degrees != -1) {
+//                        value = getTimeFromDegrees(degrees, isInnerCircle[0], !mDoingMove);
+//                        value = roundToValidTime(value, getCurrentItemShowing());
+//                        reselectSelector(value, false, getCurrentItemShowing());
+//                        mCurrentTime = value;
+//                        mListener.onValueSelected(value);
+//                        mListener.advancePicker(getCurrentItemShowing());
+//                    }
+//                }
+//                mDoingMove = false;
+//                return true;
+//            default:
+//                break;
+//        }
+//        return false;
+        return true;
     }
 
     /**

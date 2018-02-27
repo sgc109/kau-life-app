@@ -166,6 +166,8 @@ public class TimePickerDialog extends DialogFragment implements
     private String mSecondPickerDescription;
     private String mSelectSeconds;
 
+    private boolean[] mEmptyTimes;
+
     /**
      * The callback interface used to indicate the user is done filling in
      * the time (they clicked on the 'Set' button).
@@ -226,6 +228,12 @@ public class TimePickerDialog extends DialogFragment implements
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
         // Throw away the current TimePicker, which might contain old state if the dialog instance is reused
         mTimePicker = null;
+    }
+
+    public void initialize(OnTimeSetListener callback,
+                           int hourOfDay, int minute, int second, boolean is24HourMode, boolean[] emptyTimes){
+        mEmptyTimes = emptyTimes;
+        initialize(callback, hourOfDay, minute, second, is24HourMode);
     }
 
     /**
@@ -703,7 +711,7 @@ public class TimePickerDialog extends DialogFragment implements
         mTimePicker = view.findViewById(R.id.mdtp_time_picker);
         mTimePicker.setOnValueSelectedListener(this);
         mTimePicker.setOnKeyListener(keyboardListener);
-        mTimePicker.initialize(getActivity(), mLocale, this, mInitialTime, mIs24HourMode);
+        mTimePicker.initialize(getActivity(), mLocale, this, mInitialTime, mIs24HourMode, mEmptyTimes);
 
         int currentItemShowing = HOUR_INDEX;
         if (savedInstanceState != null &&
@@ -713,27 +721,27 @@ public class TimePickerDialog extends DialogFragment implements
         setCurrentItemShowing(currentItemShowing, false, true, true);
         mTimePicker.invalidate();
 
-        mHourView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCurrentItemShowing(HOUR_INDEX, true, false, true);
-                tryVibrate();
-            }
-        });
-        mMinuteView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCurrentItemShowing(MINUTE_INDEX, true, false, true);
-                tryVibrate();
-            }
-        });
-        mSecondView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setCurrentItemShowing(SECOND_INDEX, true, false, true);
-                tryVibrate();
-            }
-        });
+//        mHourView.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setCurrentItemShowing(HOUR_INDEX, true, false, true);
+//                tryVibrate();
+//            }
+//        });
+//        mMinuteView.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setCurrentItemShowing(MINUTE_INDEX, true, false, true);
+//                tryVibrate();
+//            }
+//        });
+//        mSecondView.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                setCurrentItemShowing(SECOND_INDEX, true, false, true);
+//                tryVibrate();
+//            }
+//        });
 
         String buttonTypeface = context.getResources().getString(R.string.mdtp_button_typeface);
         mOkButton = view.findViewById(R.id.mdtp_ok);

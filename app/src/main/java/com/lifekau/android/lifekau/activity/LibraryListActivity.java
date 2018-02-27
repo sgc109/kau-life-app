@@ -18,13 +18,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LibraryManager;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
 
-public class LibraryListActivity extends AppCompatActivity {
+public class LibraryListActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     private static final String EXTRA_ROOM_TYPE = "extra_room_type";
     public static final int TYPE_READING_ROOM = 0;
     public static final int TYPE_STUDY_ROOM = 1;
@@ -145,12 +146,14 @@ public class LibraryListActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-//            if(mRoomType == TYPE_READING_ROOM){
+            if(mRoomType == TYPE_READING_ROOM){
                 Intent intent = ReadingRoomDetailActivity.newIntent(view.getContext());
                 intent.putExtra("roomNum", getAdapterPosition());
                 startActivity(intent);
-//            }
-
+            }
+            else{
+                mLibraryManager.showStudyRoomStatus(view.getContext(), getAdapterPosition());
+            }
         }
     }
 
@@ -206,5 +209,10 @@ public class LibraryListActivity extends AppCompatActivity {
     public void showErrorMessage() {
         Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+
     }
 }

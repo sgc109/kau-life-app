@@ -22,11 +22,18 @@
     android:gravity="end|right"
     android:layout_gravity="center_vertical"
     android:paddingBottom="8dp">
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="검정색 : 이용 가능 / 회색 : 이용 불가"/>
 
     <Button
         android:id="@+id/mdtp_cancel"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
         style="@style/mdtp_ActionButton.Text"
@@ -34,10 +41,11 @@
 
     <Button
         android:id="@+id/mdtp_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         style="@style/mdtp_ActionButton.Text"
         android:text="@string/mdtp_ok" />
+        />
 </LinearLayout>

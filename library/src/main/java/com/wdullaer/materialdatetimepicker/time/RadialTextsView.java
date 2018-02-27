@@ -81,6 +81,8 @@ public class RadialTextsView extends View {
     ObjectAnimator mReappearAnimator;
     private InvalidateUpdateListener mInvalidateUpdateListener;
 
+    private boolean[] mEmptyTimes;
+
     public RadialTextsView(Context context) {
         super(context);
         mIsInitialized = false;
@@ -173,6 +175,12 @@ public class RadialTextsView extends View {
 
         mTextGridValuesDirty = true;
         mIsInitialized = true;
+    }
+
+    public void initialize(Context context, String[] texts, String[] innerTexts,
+                           TimePickerController controller, SelectionValidator validator, boolean disappearsOut, boolean[] emptyTimes) {
+        mEmptyTimes = emptyTimes;
+        initialize(context, texts, innerTexts, controller, validator, disappearsOut);
     }
 
     /**
@@ -298,8 +306,7 @@ public class RadialTextsView extends View {
         Paint[] paints = new Paint[texts.length];
         for(int i=0;i<texts.length;i++) {
             int text = Integer.parseInt(texts[i]);
-            if(text == selection) paints[i] = mSelectedPaint;
-            else if(mValidator.isValidSelection(text)) paints[i] = mPaint;
+            if(mEmptyTimes[text]) paints[i] = mPaint;
             else paints[i] = mInactivePaint;
         }
         return paints;
