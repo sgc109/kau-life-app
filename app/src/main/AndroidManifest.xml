@@ -24,8 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ReadingRoomDetailActivity"
-            android:theme="@style/DialogTheme">
+            android:name=".activity.ReadingRoomDetailActivity">
         </activity>
         <activity
             android:name=".activity.FoodReviewListActivity"
