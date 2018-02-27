@@ -2,6 +2,7 @@ package com.lifekau.android.lifekau.activity;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,6 +39,11 @@ public class ReadingRoomDetailActivity extends AppCompatActivity {
 
     private TextView mReadingRoomTitleTextView;
     private ConstraintLayout mReadingRoomDetailSeatLayout;
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, ReadingRoomDetailActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

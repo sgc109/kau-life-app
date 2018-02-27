@@ -28,10 +28,6 @@
             android:theme="@style/DialogTheme">
         </activity>
         <activity
-            android:name=".activity.StudyRoomDetailActivity"
-            android:theme="@style/DialogTheme">
-        </activity>
-        <activity
             android:name=".activity.FoodReviewListActivity"
             android:parentActivityName=".activity.MainActivity">
         </activity>
