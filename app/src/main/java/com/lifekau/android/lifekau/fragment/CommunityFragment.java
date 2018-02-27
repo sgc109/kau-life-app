@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,6 +45,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     private PostRecyclerAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView mEmptyMessageTextView;
     private int mCurrentY = 0;
 
     public CommunityFragment() {
@@ -61,34 +63,22 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         View view = inflater.inflate(R.layout.fragment_community, container, false);
 
         mPostsRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.firebase_database_posts));
-        mRecyclerView = view.findViewById(R.id.community_recycler_view);
-        mProgressBar = view.findViewById(R.id.post_list_progress_bar);
-        mSwipeRefreshLayout = view.findViewById(R.id.post_list_swipe_refresh_layout);
+        initializeViews(view);
 
         mLayoutManager = new LinearLayoutManager(getContext());
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setProgressViewOffset(true, PxDpConverter.convertDpToPx(72), PxDpConverter.convertDpToPx(100));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mEmptyMessageTextView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
+
         RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
-                // 맨위에 빈공간 안보이도록 좀 내려가고나서 툴바올라가도록 설정하기
-//                final AppCompatActivity act = (AppCompatActivity) getActivity();
-//                Toolbar toolbar = (Toolbar) act.getSupportActionBar().getCustomView();
-//                AppBarLayout.LayoutParams params =
-//                        (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-//
-//                mCurrentY += dy;
-//                if (mCurrentY >= 100) {
-//                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-//                    | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-//                } else {
-//                    params.setScrollFlags(0);
-//                }
-//                toolbar.setLayoutParams(params);
 
                 mTotalItemCount = mLayoutManager.getItemCount();
                 mLastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
@@ -111,9 +101,11 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    private void initializeViews(View view) {
+        mRecyclerView = view.findViewById(R.id.community_recycler_view);
+        mProgressBar = view.findViewById(R.id.post_list_progress_bar);
+        mSwipeRefreshLayout = view.findViewById(R.id.post_list_swipe_refresh_layout);
+        mEmptyMessageTextView = view.findViewById(R.id.post_list_empty_message_text_view);
     }
 
     private void initPostList() {
@@ -153,7 +145,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
                 mAdapter.addAll(newPosts, newPostKeys);
                 mIsLoading = false;
 
-                mRecyclerView.setVisibility(View.VISIBLE);
+                setVisibilities();
                 mProgressBar.setVisibility(View.GONE);
             }
 
@@ -162,6 +154,16 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
                 mIsLoading = false;
             }
         });
+    }
+
+    private void setVisibilities() {
+        if(mAdapter.getItemCount() == 0){
+            mEmptyMessageTextView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mEmptyMessageTextView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -193,6 +195,11 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     @Override
     public void findFragmentContainer(View view) {
         mFragmentContainer = view.findViewById(R.id.fragment_community_container);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
