@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="5dp"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/list_item_accumulated_grade_summary_GPA_and_total_grades"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="4.3 / 90"
+            android:textSize="12pt" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/list_item_accumulated_grade_summary_semester"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:text="2013년 1학기"
+                android:textSize="5pt" />
+
+            <TextView
+                android:id="@+id/list_item_accumulated_grade_summary_credits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="4dp"
+                android:text="21 / 21(신청 / 취득 학점)"
+                android:textSize="5pt" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

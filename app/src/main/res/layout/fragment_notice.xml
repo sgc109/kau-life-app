@@ -1,14 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/fragment_seat_container"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:id="@+id/fragment_notice_container"
-             tools:context="com.lifekau.android.lifekau.fragment.NoticeFragment">
+             android:orientation="vertical"
+             tools:context="com.lifekau.android.lifekau.fragment.SeatFragment">
 
-
-    <TextView
-        android:background="#555555"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/toolbar_height"
+        android:orientation="vertical">
 
+        <android.support.v7.widget.CardView
+            android:id="@+id/fragment_notice_show_general_list_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/bullhorn1" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="center"
+                    android:text="일반공지"
+                    android:textSize="28dp"/>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/fragment_notice_show_academic_list_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/gradcap1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="center"
+                    android:text="학사공지"
+                    android:textSize="28dp"/>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/fragment_notice_show_scholarship_list_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/money1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="center"
+                    android:text="장학/대출"
+                    android:textSize="28dp"/>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/fragment_notice_show_career_list_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/tie1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="center"
+                    android:text="취업공지"
+                    android:textSize="28dp"/>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/fragment_notice_show_event_list_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="#eeeeee"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/event1" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="center"
+                    android:text="행사공지"
+                    android:textSize="28dp"/>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/color_tab_1"/>
+    </LinearLayout>
 </FrameLayout>

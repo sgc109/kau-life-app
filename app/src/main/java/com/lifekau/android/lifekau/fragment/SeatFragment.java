@@ -8,12 +8,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.lifekau.android.lifekau.R;
-import com.lifekau.android.lifekau.activity.FoodReviewCornerListActivity;
-import com.lifekau.android.lifekau.activity.LectureReviewSearchActivity;
 import com.lifekau.android.lifekau.activity.LibraryListActivity;
 
 public class SeatFragment extends PagerFragment implements View.OnClickListener{
@@ -58,13 +55,11 @@ public class SeatFragment extends PagerFragment implements View.OnClickListener{
         Intent intent;
         switch (view.getId()){
             case R.id.fragment_seat_show_reading_room_button:
-                intent = new Intent(view.getContext(), LibraryListActivity.class);
-                intent.putExtra("roomType", 0);
+                intent = LibraryListActivity.newIntent(getActivity(), LibraryListActivity.TYPE_READING_ROOM);
                 startActivity(intent);
                 break;
             case R.id.fragment_seat_show_study_room_button:
-                intent = new Intent(view.getContext(), LibraryListActivity.class);
-                intent.putExtra("roomType", 1);
+                intent = LibraryListActivity.newIntent(getActivity(), LibraryListActivity.TYPE_STUDY_ROOM);
                 startActivity(intent);
                 break;
         }

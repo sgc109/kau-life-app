@@ -17,20 +17,72 @@
     <string name="lecture_review_text_limit_message">최대 %1$d자 까지 입력할 수 있습니다</string>
     <string name="lecture_review_search_bar_hint">"강의명(교수)으로 검색하세요(초성으로도 가능)"</string>
     <string name="review_number_of_review_string"> 개의 평가</string>
-    <string name="firebase_database_food_reviews">Food_reviews</string>
-    <string name="firebase_database_lecture_reviews">Lecture_reviews</string>
-    <string name="firebase_database_food_review_corner_id">Corner %1$d</string>
+    <string name="firebase_database_food_reviews">food_reviews</string>
+    <string name="firebase_database_lecture_reviews">lecture_reviews</string>
+    <string name="firebase_database_food_review_corner_id">corner %1$d</string>
+    <string name="firebase_database_lectures">Lectures</string>
+    <string name="firebase_database_posts">posts</string>
+    <string name="firebase_database_post_comments">post-comments</string>
     <string name="review_write_success_message">리뷰가 성공적으로 게시되었습니다!</string>
+    <string name="post_write_success_message">이야기가 성공적으로 게시되었습니다!</string>
     <string name="new_review_message">새로운 리뷰가 올라왔습니다!</string>
-    <string name="please_write_something_alert_message">리뷰를 입력해 주세요!</string>
+    <string name="please_write_review_alert_message">리뷰를 입력해 주세요!</string>
+    <string name="please_write_post_text_alert_message">내용을 작성해주세요!</string>
     <string name="empty_alarm_list_message">알람이 없습니다.</string>
     <string name="empty_review_list_message">평가가 없습니다.</string>
+    <string name="write_post_hint_message">하고 싶은 이야기를 자유롭게 써주세요.</string>
+    <string name="submit_post_button">게시하기</string>
+    <string name="write_new_post">새 글 쓰기</string>
+    <string name="text_gone_warning_message">작성 중인 글이 사라집니다.\n계속 하시겠습니까?</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
+    <string name="post_comment_count">댓글 %1$s개</string>
+    <string name="see_previous_comments">이전 댓글 보기</string>
+    <string name="reading_more_comments">댓글을 읽어들이는 중...</string>
+    <string name="type_the_comment">댓글을 입력하세요...</string>
+    <string name="successfully_comment_registered">댓글이 성공적으로 등록되었습니다!</string>
+    <string name="post_deleted_by_author">보고 계신 글이 작성자에 의해 삭제 되었습니다.</string>
+
 
     <string name="menu_1">커뮤니티</string>
     <string name="menu_2">리뷰</string>
     <string name="menu_3">공지</string>
     <string name="menu_4">자리</string>
     <string name="menu_5">LMS &amp; Info</string>
+
+    <!-- HTTP 헤더 관련 스트링 정의-->
+    <string name="header_accept">text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</string>
+    <string name="header_accpet_encoding">gzip, deflate</string>
+    <string name="header_accept_encoding_with_br">gzip, deflate, br</string>
+    <string name="header_accpet_language">ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7</string>
+    <string name="header_user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36</string>
+
+    <!-- Portal 관련 스트링 정의-->
+    <string name="portal_lms_check_page">https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1</string>
+    <string name="portal_act_login_page">https://www.kau.ac.kr/page/act_login.jsp</string>
+    <string name="portal_portal_check_page">https://www.kau.ac.kr/page/act_Portal_Check.jsp</string>
+    <string name="portal_portal_login_page">https://portal.kau.ac.kr/portal/PortalLoginSso</string>
+    <string name="portal_my_portal_page">https://portal.kau.ac.kr/portal/MyPortal_No.jsp</string>
+    <string name="portal_my_menu_b_page">https://portal.kau.ac.kr/admt/MyMenuB.jsp</string>
+    <string name="portal_scholar_page">https://portal.kau.ac.kr/sugang/PersScholarTakeList.jsp</string>
+    <string name="portal_curr_grade_page">https://portal.kau.ac.kr/sugang/GradHakList.jsp</string>
+    <string name="portal_accumulated_grade_page">https://portal.kau.ac.kr/sugang/GradTotList.jsp</string>
+    <string name="portal_accumulated_grade_summary_page">https://portal.kau.ac.kr/sugang/GradTermList.jsp</string>
+    <string name="portal_examination_time_table_page">https://portal.kau.ac.kr/sugang/SugangExamList.jsp</string>
+    <string name="portal_get_student_id_page">https://lib.kau.ac.kr/HAULMS/sso/LoginPortalSSO.csp</string>
+    <string name="portal_curr_grade_no_data">데이터 없음</string>
+    <string name="portal_titme_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
+    <string name="portal_login_failed">아이디 또는 비밀번호 오류입니다.</string>
+    <string name="portal_session_disconnect">세션이 끊겼습니다. 다시 로그인 하시기 바랍니다.</string>
+
+    <!--LMS 관련 스트링 정의-->
+    <string name="lms_sso_page">http://lms.kau.ac.kr/local/ssotm/sso_chk.php</string>
+    <string name="lms_login_page">http://lms.kau.ac.kr/login/</string>
+    <string name="lms_login_index_page">http://lms.kau.ac.kr/login/index.php</string>
+    <string name="lms_my_page">http://lms.kau.ac.kr/my/</string>
+    <string name="lms_curr_grade_no_data">데이터 없음</string>
+    <string name="lms_time_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
+    <string name="lms_session_disconnect">한국항공대학에 오신 것을 환영합니다</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -42,17 +94,15 @@
     <string name="title_activity_login">로그인</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="prompt_id">아이디</string>
+    <string name="error_invalid_id">잘못된 아이디 형식입니다.</string>
+    <string name="prompt_password">비밀번호</string>
+    <string name="action_sign_in">로그인</string>
+    <string name="error_invalid_password">비밀번호가 너무 짧습니다</string>
+    <string name="prompt_input_id">아이디를 입력해주세요</string>
+    <string name="prompt_input_password">비밀번호를 입력해주세요</string>
+    <string name="error_incorrect_password">비밀번호가 다릅니다</string>
+    <string name="error_field_required">이 곳을 입력해주세요</string>
 
     <!-- 도서관 관련 스트링 -->
     <string name="library_reading_room_name_01">제1열람실A</string>
@@ -60,6 +110,7 @@
     <string name="library_reading_room_name_03">제2열람실</string>
     <string name="library_reading_room_name_04">제3열람실</string>
     <string name="library_reading_room_name_05">제5열람실</string>
+    <string name="library_reading_room_detail_format">사용중 : %d석 / 여석 : %d석</string>
 
     <string name="library_study_room_name_01">스터디룸A</string>
     <string name="library_study_room_name_02">스터디룸B1</string>
@@ -67,5 +118,11 @@
     <string name="library_study_room_name_04">스터디룸C1</string>
     <string name="library_study_room_name_05">스터디룸C2</string>
     <string name="library_study_room_name_06">스터디룸C3</string>
+    <string name="library_study_room_detail_format">%s</string>
 
+    <string name="available_now">이용 가능</string>
+    <string name="not_available_now">사용중</string>
+    <string name="no_seat_now">여석 없음</string>
+
+    <string name="permission_rationale">권한 요청</string>
 </resources>

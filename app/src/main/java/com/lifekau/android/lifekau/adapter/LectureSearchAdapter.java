@@ -1,4 +1,4 @@
-package com.lifekau.android.lifekau;
+package com.lifekau.android.lifekau.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

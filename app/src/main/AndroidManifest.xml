@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:largeHeap="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -24,25 +25,49 @@
         </activity>
         <activity
             android:name=".activity.ReadingRoomDetailActivity"
-            android:theme="@style/DialogTheme"></activity>
+            android:theme="@style/DialogTheme">
+        </activity>
         <activity
             android:name=".activity.StudyRoomDetailActivity"
-            android:theme="@style/DialogTheme"></activity>
+            android:theme="@style/DialogTheme">
+        </activity>
         <activity
             android:name=".activity.FoodReviewListActivity"
-            android:parentActivityName=".activity.MainActivity"></activity>
-        <activity android:name=".activity.FoodReviewWriteActivity"></activity>
-        <activity android:name=".activity.LectureReviewSearchActivity"></activity>
-        <activity android:name=".activity.LectureReviewListActivity"></activity>
-        <activity android:name=".activity.LectureReviewWriteActivity"></activity>
-        <activity android:name=".activity.FoodReviewCornerListActivity"></activity>
-        <activity android:name=".activity.HomeActivity"></activity>
-        <activity android:name=".activity.AlarmsListActivity"></activity>
-        <activity android:name=".activity.SettingsActivity"></activity>
+            android:parentActivityName=".activity.MainActivity">
+        </activity>
+        <activity
+            android:name=".activity.FoodReviewWriteActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".activity.LectureReviewSearchActivity">
+        </activity>
+        <activity
+            android:name=".activity.LectureReviewListActivity">
+        </activity>
+        <activity
+            android:name=".activity.LectureReviewWriteActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".activity.FoodReviewCornerListActivity">
+        </activity>
+        <activity
+            android:name=".activity.HomeActivity">
+        </activity>
+        <activity
+            android:name=".activity.AlarmsListActivity">
+        </activity>
+        <activity
+            android:name=".activity.SettingsActivity">
+        </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login"></activity>
-        <activity android:name=".activity.LibraryListActivity"></activity>
+            android:label="@string/title_activity_login">
+        </activity>
+        <activity
+            android:name=".activity.LibraryListActivity">
+        </activity>
 
         <service android:name=".PushAlarmService">
             <intent-filter>
@@ -54,6 +79,23 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".activity.PostDetailActivity">
+        </activity>
+        <activity
+            android:name=".activity.PostWriteActivity">
+        </activity>
+        <activity
+            android:name=".activity.ScholarshipActivity">
+        </activity>
+        <activity
+            android:name=".activity.AccumulatedGradeSummaryActivity">
+        </activity>
+        <activity android:name=".activity.NoticeListActivity">
+        </activity>
+        <activity android:name=".activity.NoticePageActivity">
+        </activity>
     </application>
 
 </manifest>

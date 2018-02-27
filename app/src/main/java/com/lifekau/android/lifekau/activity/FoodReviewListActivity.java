@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +54,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private Button mOrderByRatingButton;
     private RecyclerView mRecyclerView;
     private TextView mEmptyListMessage;
-    private LinearLayout mProgressBar;
+    private ProgressBar mProgressBar;
     private ActionBar mActionBar;
     private TextView mToolbarTextView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -94,16 +95,16 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
             mOrderedByTimeAsc = -1;
         }
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.food_review_list_swipe_refresh_layout);
+        mSwipeRefreshLayout = findViewById(R.id.food_review_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mProgressBar = (LinearLayout) findViewById(R.id.indeterminateBar);
-        mEmptyListMessage = (TextView) findViewById(R.id.food_review_list_empty_list_text_view);
-        mOrderByRatingButton = (Button) findViewById(R.id.order_by_rating_button);
-        mOrderByRatingButton.setOnClickListener(this);
-        mOrderByTimeButton = (Button) findViewById(R.id.order_by_time_button);
-        mOrderByTimeButton.setOnClickListener(this);
+        mProgressBar = findViewById(R.id.food_review_list_progress_bar);
+        mEmptyListMessage = findViewById(R.id.food_review_list_empty_list_text_view);
+//        mOrderByRatingButton = findViewById(R.id.order_by_rating_button);
+//        mOrderByRatingButton.setOnClickListener(this);
+//        mOrderByTimeButton = findViewById(R.id.order_by_time_button);
+//        mOrderByTimeButton.setOnClickListener(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.food_review_recycler_view);
+        mRecyclerView = findViewById(R.id.food_review_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setVisibility(View.GONE);
@@ -253,29 +254,29 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.order_by_time_button:
-                if (mOrderedByTimeAsc != 0) {
-                    mOrderedByTimeAsc = -mOrderedByTimeAsc;
-                } else {
-                    mOrderedByTimeAsc = -1;
-                }
-                mOrderedByRatingAsc = 0;
-                rearrangeReviews();
-//                mRecyclerView.smoothScrollToPosition(0);
-                break;
-            default:
-            case R.id.order_by_rating_button:
-                if (mOrderedByRatingAsc != 0) {
-                    mOrderedByRatingAsc = -mOrderedByRatingAsc;
-                } else {
-                    mOrderedByRatingAsc = -1;
-                }
-                mOrderedByTimeAsc = 0;
-                rearrangeReviews();
-//                mRecyclerView.smoothScrollToPosition(0);
-                break;
-        }
+//        switch (view.getId()) {
+//            case R.id.order_by_time_button:
+//                if (mOrderedByTimeAsc != 0) {
+//                    mOrderedByTimeAsc = -mOrderedByTimeAsc;
+//                } else {
+//                    mOrderedByTimeAsc = -1;
+//                }
+//                mOrderedByRatingAsc = 0;
+//                rearrangeReviews();
+////                mRecyclerView.smoothScrollToPosition(0);
+//                break;
+//            default:
+//            case R.id.order_by_rating_button:
+//                if (mOrderedByRatingAsc != 0) {
+//                    mOrderedByRatingAsc = -mOrderedByRatingAsc;
+//                } else {
+//                    mOrderedByRatingAsc = -1;
+//                }
+//                mOrderedByTimeAsc = 0;
+//                rearrangeReviews();
+////                mRecyclerView.smoothScrollToPosition(0);
+//                break;
+//        }
     }
 
     @Override

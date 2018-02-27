@@ -1,71 +1,169 @@
 package com.lifekau.android.lifekau.fragment;
 
-
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.lifekau.android.lifekau.PxDpConverter;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
+import com.lifekau.android.lifekau.model.Post;
 
-public class CommunityFragment extends PagerFragment {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+public class CommunityFragment extends PagerFragment implements SwipeRefreshLayout.OnRefreshListener {
+
+    private final int NUM_OF_POST_PER_PAGE = 20;
+    private int mTotalItemCount = 0;
+    private int mLastVisibleItemPosition;
+    private boolean mIsLoading;
+    private DatabaseReference mPostsRef;
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
+    private PostRecyclerAdapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private int mCurrentY = 0;
+
+    public CommunityFragment() {
+    }
+
     public static CommunityFragment newInstance() {
         CommunityFragment fragment = new CommunityFragment();
         return fragment;
     }
+
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_community, container, false);
+
+        mPostsRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.firebase_database_posts));
         mRecyclerView = view.findViewById(R.id.community_recycler_view);
-        mRecyclerView.setAdapter(new RecyclerView.Adapter<PostViewHolder>() {
+        mProgressBar = view.findViewById(R.id.post_list_progress_bar);
+        mSwipeRefreshLayout = view.findViewById(R.id.post_list_swipe_refresh_layout);
+
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setProgressViewOffset(true, PxDpConverter.convertDpToPx(72), PxDpConverter.convertDpToPx(100));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
             @Override
-            public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view;
-                if(viewType == 1) {
-                    LinearLayout.LayoutParams params = new
-                            LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT);
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_upper_blank, parent, false);
-//                    params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics());
-//                    view.findViewById(R.id.card_view).setLayoutParams(params);
-                } else {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_post, parent, false);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // 맨위에 빈공간 안보이도록 좀 내려가고나서 툴바올라가도록 설정하기
+//                final AppCompatActivity act = (AppCompatActivity) getActivity();
+//                Toolbar toolbar = (Toolbar) act.getSupportActionBar().getCustomView();
+//                AppBarLayout.LayoutParams params =
+//                        (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+//
+//                mCurrentY += dy;
+//                if (mCurrentY >= 100) {
+//                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+//                    | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+//                } else {
+//                    params.setScrollFlags(0);
+//                }
+//                toolbar.setLayoutParams(params);
+
+                mTotalItemCount = mLayoutManager.getItemCount();
+                mLastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
+
+                if (!mIsLoading && mTotalItemCount <= (mLastVisibleItemPosition + NUM_OF_POST_PER_PAGE)) {
+                    mIsLoading = true;
+                    getPosts();
                 }
-                return new PostViewHolder(view);
-            }
 
-            @Override
-            public int getItemViewType(int position) {
-                if(position == 0) return 1;
-                return 2;
-            }
+                if (mLayoutManager.findFirstVisibleItemPosition() != 0) {
 
-            @Override
-            public void onBindViewHolder(PostViewHolder holder, int position) {
-                holder.bind(position);
+                }
             }
+        };
 
-            @Override
-            public int getItemCount() {
-                return 50;
-            }
-        });
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        mRecyclerView.addOnScrollListener(scrollListener);
         setHasOptionsMenu(true);
+
+        initPostList();
         return view;
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    private void initPostList() {
+        Log.d("fuck", "initPostList");
+        mProgressBar.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+
+        mAdapter = new PostRecyclerAdapter(getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+        mIsLoading = true;
+        getPosts();
+    }
+
+    private void getPosts() {
+        Query query = mPostsRef
+                .orderByKey();
+        if (mAdapter.getItemCount() != 0) {
+            query = query.endAt(mAdapter.getLastKey());
+        }
+        query = query.limitToLast(NUM_OF_POST_PER_PAGE);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Post> newPosts = new ArrayList<>();
+                List<String> newPostKeys = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    newPosts.add(snapshot.getValue(Post.class));
+                    newPostKeys.add(snapshot.getKey());
+                }
+                if (mAdapter.getItemCount() != 0) {
+                    newPosts.remove(newPosts.size() - 1);
+                    newPostKeys.remove(newPostKeys.size() - 1);
+                }
+                Collections.reverse(newPosts);
+                Collections.reverse(newPostKeys);
+
+                mAdapter.addAll(newPosts, newPostKeys);
+                mIsLoading = false;
+
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                mIsLoading = false;
+            }
+        });
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -73,16 +171,23 @@ public class CommunityFragment extends PagerFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    class PostViewHolder extends RecyclerView.ViewHolder{
-        CardView mCardView;
-        TextView mTextView;
-        public PostViewHolder(View itemView) {
-            super(itemView);
-            mCardView = itemView.findViewById(R.id.card_view);
-            mTextView = itemView.findViewById(R.id.layout_item_demo_title);
-        }
-        public void bind(int position){
-        }
+
+    @Override
+    public void onRefresh() {
+        if (mIsLoading) return;
+        initPostList();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, 500);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initPostList();
     }
 
     @Override

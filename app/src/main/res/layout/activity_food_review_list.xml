@@ -18,47 +18,71 @@
             app:contentInsetLeft="0dp"
             app:contentInsetRight="0dp"
             app:contentInsetStart="0dp"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlways|snap">
 
-            <LinearLayout
-                android:orientation="vertical"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <LinearLayout
-                    android:id="@+id/food_review_list_button_bar_linear_layout"
-                    android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary">
+
+                <ImageButton
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="60dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="4dp"
-                    android:orientation="horizontal"
-                    >
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_back_arrow"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="정렬"
+                    android:textColor="@android:color/white"
+                    android:textSize="7pt"/>
+            </RelativeLayout>
+            <!--<LinearLayout-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
 
-                        <Button
-                            android:id="@+id/order_by_time_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/food_review_order_by_time_string"/>
-                    </LinearLayout>
+            <!--<LinearLayout-->
+            <!--android:id="@+id/food_review_list_button_bar_linear_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_margin="4dp"-->
+            <!--android:orientation="horizontal"-->
+            <!--&gt;-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:gravity="center">
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="3"-->
+            <!--android:gravity="center">-->
 
-                        <Button
-                            android:id="@+id/order_by_rating_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/food_review_order_by_rating_string"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
+            <!--<Button-->
+            <!--android:id="@+id/order_by_time_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/food_review_order_by_time_string"/>-->
+            <!--</LinearLayout>-->
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="3"-->
+            <!--android:gravity="center">-->
+
+            <!--<Button-->
+            <!--android:id="@+id/order_by_rating_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/food_review_order_by_rating_string"/>-->
+            <!--</LinearLayout>-->
+            <!--</LinearLayout>-->
+            <!--</LinearLayout>-->
 
 
         </android.support.v7.widget.Toolbar>
@@ -86,49 +110,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/food_review_list_empty_list_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/empty_review_list_message"
+                    android:textAlignment="center"/>
 
-                <LinearLayout
+                <ProgressBar
+                    android:id="@+id/food_review_list_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/food_review_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@id/food_review_list_button_bar_linear_layout"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/food_review_list_empty_list_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="@string/empty_review_list_message"
-                        android:textAlignment="center"
-                        android:visibility="gone"/>
-
-                    <LinearLayout
-                        android:id="@+id/indeterminateBar"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:visibility="gone">
-
-                        <ProgressBar
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            />
-                    </LinearLayout>
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/food_review_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        tools:listitem="@android:layout/simple_list_item_checked"/>
-                </LinearLayout>
-            </LinearLayout>
+                    android:clipToPadding="false"
+                    tools:listitem="@android:layout/simple_list_item_checked"/>
+            </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
 

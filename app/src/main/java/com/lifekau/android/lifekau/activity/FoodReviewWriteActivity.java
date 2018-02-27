@@ -107,7 +107,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
                     finish();
                 } else {
                     Snackbar.make(findViewById(R.id.food_review_write_linear_layout),
-                            getString(R.string.please_write_something_alert_message),
+                            getString(R.string.please_write_review_alert_message),
                             Snackbar.LENGTH_SHORT).
                             show();
                 }

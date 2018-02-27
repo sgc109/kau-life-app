@@ -55,9 +55,6 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnC
             case Alarm.TYPE_COMMENT:
 
                 break;
-            case Alarm.TYPE_LIKE:
-
-                break;
             case Alarm.TYPE_NOTICE:
 
                 break;
