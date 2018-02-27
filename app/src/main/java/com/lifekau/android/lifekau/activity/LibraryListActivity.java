@@ -39,16 +39,17 @@ public class LibraryListActivity extends AppCompatActivity {
     private int mRoomType;
     private int mSelectedArray;
 
-    public static Intent newIntent(Context context, int roomType){
+    public static Intent newIntent(Context context, int roomType) {
         Intent intent = new Intent(context, LibraryListActivity.class);
         intent.putExtra(EXTRA_ROOM_TYPE, roomType);
         return intent;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activitiy_library_list);
-        if(getSupportActionBar() != null ) {
+        if (getSupportActionBar() != null) {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
         }
@@ -59,7 +60,7 @@ public class LibraryListActivity extends AppCompatActivity {
         mRecyclerAdapter = new RecyclerView.Adapter<LibraryListViewHolder>() {
             @Override
             public LibraryListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_reading_room, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_library, parent, false);
                 return new LibraryListViewHolder(view);
             }
 
@@ -99,43 +100,45 @@ public class LibraryListActivity extends AppCompatActivity {
         }
 
         public void bind(int position) {
-            if(mRoomType == 0){
+            if (mRoomType == TYPE_READING_ROOM) {
                 mNameTextView.setText(mLibraryManager.getReadingRoomName(position));
-                if(mLibraryManager.getReadingRoomAvailableSeat(position) > 0){
-                    mItemView.setBackgroundColor(changeAlpha(Color.GREEN, 0.15f));
-                } else {
-                    mItemView.setBackgroundColor(changeAlpha(Color.RED, 0.15f));
-                }
                 int cntAvailableSeat = mLibraryManager.getReadingRoomAvailableSeat(position);
+                if(position % 3 == 1) cntAvailableSeat = 0;
+                else if(position % 3 == 2) cntAvailableSeat = 5;
                 int cntTotalSeat = mLibraryManager.getReadingRoomTotalSeat(position);
                 String statusString;
-                if(cntAvailableSeat > 0) {
-                    String format = getString(R.string.library_reading_room_detail_format);
-                    statusString = String.format(format, cntAvailableSeat, cntTotalSeat);
-                    mDetailTextView.setTextColor(getResources().getColor(R.color.room_available_color));
-                } else {
-                    statusString = getString(R.string.no_seat_now);
+                String format = getString(R.string.library_reading_room_detail_format);
+                statusString = String.format(format, cntTotalSeat - cntAvailableSeat, cntAvailableSeat);
+                if (cntAvailableSeat == 0) {
+                    mItemView.setBackgroundColor(changeAlpha(Color.RED, 0.15f));
                     mDetailTextView.setTextColor(getResources().getColor(R.color.room_not_available_color));
                 }
+//                else if(cntAvailableSeat < cntTotalSeat / 2){
+//                    mDetailTextView.setTextColor(getResources().getColor(R.color.orange));
+//                }
+                else {
+//                    mItemView.setBackgroundColor(changeAlpha(Color.GREEN, 0.15f));
+                    mDetailTextView.setTextColor(getResources().getColor(R.color.room_available_color));
+                }
                 mDetailTextView.setText(statusString);
-            } else {
+            } else if(mRoomType == TYPE_STUDY_ROOM) {
                 mNameTextView.setText(mLibraryManager.getStudyRoomName(position));
                 boolean isAvailableNow = mLibraryManager.isStudyRoomAvailableNow(position);
                 String format = getString(R.string.library_study_room_detail_format);
-                if(isAvailableNow){
-                    mDetailTextView.setText(String.format(format, getString(R.string.available_now)));
-                    mItemView.setBackgroundColor(changeAlpha(Color.GREEN, 0.15f));
-                    mDetailTextView.setTextColor(getResources().getColor(R.color.room_available_color));
-                } else {
+                if (!isAvailableNow) {
                     mDetailTextView.setText(String.format(format, getString(R.string.not_available_now)));
                     mItemView.setBackgroundColor(changeAlpha(Color.RED, 0.15f));
                     mDetailTextView.setTextColor(getResources().getColor(R.color.room_not_available_color));
+                } else {
+                    mDetailTextView.setText(String.format(format, getString(R.string.available_now)));
+//                    mItemView.setBackgroundColor(changeAlpha(Color.GREEN, 0.15f));
+                    mDetailTextView.setTextColor(getResources().getColor(R.color.room_available_color));
                 }
             }
         }
 
-        private int changeAlpha(int color, float percent){
-            return ColorUtils.setAlphaComponent(color, (int)(255 * percent));
+        private int changeAlpha(int color, float percent) {
+            return ColorUtils.setAlphaComponent(color, (int) (255 * percent));
         }
 
         @Override
@@ -167,11 +170,13 @@ public class LibraryListActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            for(int i = 0; i < TOTAL_STUDY_ROOM_NUM; i++) {
-                if (mLibraryManager.getStudyRoomDetailStatus(applicationWeakReference.get(), i) == -1) return -1;
+            for (int i = 0; i < TOTAL_STUDY_ROOM_NUM; i++) {
+                if (mLibraryManager.getStudyRoomDetailStatus(applicationWeakReference.get(), i) == -1)
+                    return -1;
             }
             if (mLibraryManager.getStudyRoomStatus(applicationWeakReference.get()) == -1) return -1;
-            if (mLibraryManager.getReadingRoomStatus(applicationWeakReference.get()) == -1) return -1;
+            if (mLibraryManager.getReadingRoomStatus(applicationWeakReference.get()) == -1)
+                return -1;
             return 0;
         }
 
@@ -179,7 +184,7 @@ public class LibraryListActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             LibraryListActivity libraryListActivity = activityReference.get();
-            if(libraryListActivity == null || libraryListActivity.isFinishing()) return;
+            if (libraryListActivity == null || libraryListActivity.isFinishing()) return;
             if (result != -1) {
             } else {
                 //예외 처리

@@ -7,13 +7,11 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical">
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/portal_scholarship_swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
-
+        <ProgressBar
+            android:id="@+id/scholarship_list_progress_bar"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/portal_scholarship_recycler_view"
             android:layout_width="match_parent"
@@ -21,5 +19,4 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@android:layout/simple_list_item_1" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

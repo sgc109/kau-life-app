@@ -119,7 +119,7 @@ public class NoticeListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(!mNoticeManager.getAllPageFetched(mNoticeType)) mLoading = false;
+        if (!mNoticeManager.getAllPageFetched(mNoticeType)) mLoading = false;
         if (mRecyclerAdapter != null) {
             mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
         }
@@ -131,7 +131,7 @@ public class NoticeListActivity extends AppCompatActivity {
         mNoticeManagerAsyncTask.cancel(true);
     }
 
-    public void executeAsyncTask(){
+    public void executeAsyncTask() {
         mNoticeManagerAsyncTask = new NoticeManagerAsyncTask(getApplication(), this);
         mNoticeManagerAsyncTask.execute();
     }
@@ -160,9 +160,9 @@ public class NoticeListActivity extends AppCompatActivity {
         public void onClick(View view) {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                Intent intent = new Intent(view.getContext(), NoticePageActivity.class);
-                intent.putExtra("URL", mNoticeManager.getURL(mNoticeType));
-                intent.putExtra("POST", mNoticeManager.getPOST(mNoticeType, position));
+                Intent intent = NoticePageActivity.newIntent(NoticeListActivity.this,
+                        mNoticeManager.getURL(mNoticeType),
+                        mNoticeManager.getPOST(mNoticeType, position));
                 startActivity(intent);
             }
         }
@@ -209,7 +209,7 @@ public class NoticeListActivity extends AppCompatActivity {
                 Log.e("ERROR", "페이지 불러오기 실패!");
                 sleep(3000);
                 count++;
-                if(count == 5) return -1;
+                if (count == 5) return -1;
             }
             return 0;
         }
@@ -229,7 +229,8 @@ public class NoticeListActivity extends AppCompatActivity {
                 }
             } else {
                 //예외 처리
-                if(!mNoticeManager.getAllPageFetched(noticeType)) noticeListActivity.mLoading = false;
+                if (!mNoticeManager.getAllPageFetched(noticeType))
+                    noticeListActivity.mLoading = false;
                 noticeListActivity.showErrorMessage();
                 new Handler().postDelayed(new Runnable() {
                     @Override

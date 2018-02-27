@@ -26,7 +26,7 @@ import com.lifekau.android.lifekau.fragment.PagerFragment;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity implements AHBottomNavigation.OnTabSelectedListener{
+public class HomeActivity extends AppCompatActivity implements AHBottomNavigation.OnTabSelectedListener {
 
     private PagerFragment currentFragment;
     private HomeViewPagerAdapter adapter;
@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     private AHBottomNavigation bottomNavigation;
     private FloatingActionButton mFab;
 
-    public static Intent newIntent(Context context){
+    public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, HomeActivity.class);
         return intent;
     }
@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null ) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         initUI();
@@ -84,7 +84,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
         currentFragment = adapter.getCurrentFragment();
 
-            updateBottomNavigationItems();
+        updateBottomNavigationItems();
     }
 
     public void updateBottomNavigationColor(boolean isColored) {
@@ -132,7 +132,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         return bottomNavigation.getItemsCount();
     }
 
-    private void setFabOnClickListenerToWritePost(){
+    private void setFabOnClickListenerToWritePost() {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,6 +141,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             }
         });
     }
+
     @Override
     public boolean onTabSelected(int position, boolean wasSelected) {
         if (currentFragment == null) {
@@ -162,7 +163,6 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         currentFragment.willBeDisplayed();
 
         if (position == 0) {
-            setFabOnClickListenerToWritePost();
             bottomNavigation.setNotification("", 1);
 
             mFab.setVisibility(View.VISIBLE);
@@ -173,23 +173,26 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                     .alpha(1)
                     .scaleX(1)
                     .scaleY(1)
-                    .setDuration(300)
+                    .setDuration(150)
                     .setInterpolator(new OvershootInterpolator())
                     .setListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {
 
                         }
+
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             mFab.animate()
                                     .setInterpolator(new LinearOutSlowInInterpolator())
                                     .start();
                         }
+
                         @Override
                         public void onAnimationCancel(Animator animation) {
 
                         }
+
                         @Override
                         public void onAnimationRepeat(Animator animation) {
 
@@ -199,31 +202,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
         } else {
             if (mFab.getVisibility() == View.VISIBLE) {
-                mFab.animate()
-                        .alpha(0)
-                        .scaleX(0)
-                        .scaleY(0)
-                        .setDuration(300)
-                        .setInterpolator(new LinearOutSlowInInterpolator())
-                        .setListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-
-                            }
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mFab.setVisibility(View.INVISIBLE);
-                            }
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-                                mFab.setVisibility(View.INVISIBLE);
-                            }
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
-                            }
-                        })
-                        .start();
+                mFab.setVisibility(View.INVISIBLE);
             }
         }
         return true;

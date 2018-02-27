@@ -19,8 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="4dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="#eeeeee"
@@ -30,9 +30,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/bullhorn1" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -50,8 +56,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="4dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:background="#eeeeee"
@@ -61,14 +67,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:orientation="horizontal">
 
-                <!--<ImageView-->
-                <!--android:layout_width="80dp"-->
-                <!--android:layout_height="80dp"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:src="@drawable/study" />-->
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/gradcap1" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -87,8 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="4dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:background="#eeeeee"
@@ -98,14 +105,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:orientation="horizontal">
 
-                <!--<ImageView-->
-                <!--android:layout_width="80dp"-->
-                <!--android:layout_height="80dp"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:src="@drawable/empty" />-->
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/money1" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -124,8 +132,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="4dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:background="#eeeeee"
@@ -135,14 +143,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:orientation="horizontal">
 
-                <!--<ImageView-->
-                <!--android:layout_width="80dp"-->
-                <!--android:layout_height="80dp"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:src="@drawable/empty" />-->
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/tie1" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -161,8 +170,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:background="#eeeeee"
@@ -172,9 +181,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/event1" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
