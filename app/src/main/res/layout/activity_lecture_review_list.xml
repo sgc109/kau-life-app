@@ -95,4 +95,17 @@
         android:src="@drawable/ic_new_review"
         android:tint="@color/white"
         app:layout_behavior=".FABHideOnScrollBehavior"/>
+
+    <TextView
+        android:id="@+id/lecture_review_list_empty_list_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/empty_review_list_message"/>
+
+    <ProgressBar
+        android:id="@+id/lecture_review_list_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 </android.support.design.widget.CoordinatorLayout>
