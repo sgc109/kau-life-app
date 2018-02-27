@@ -55,7 +55,7 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="qqqqqqqqq"/>
+                android:text="qqqqqqqqqqq"/>
 
 
             <Button

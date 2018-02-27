@@ -1,43 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:id="@+id/reading_room_detail_container">
 
-    <!--<ProgressBar-->
-        <!--android:id="@+id/reading_room_detail_progress_bar"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center" />-->
-
-    <TextView
-        android:id="@+id/reading_room_detail_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:padding="3dp"
-        android:text=""
-        android:textAlignment="center" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/reading_room_detail_seat_layout"
+    <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/reading_room_detail_title"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true">
-
-        <Button
-            android:id="@+id/reading_room_detail_close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="닫기"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-    </android.support.constraint.ConstraintLayout>
-</RelativeLayout>
+        android:layout_weight="0.7"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" >
+    </WebView>
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableRow
+            android:gravity="center">
+            <Button
+                android:id="@+id/activity_reading_room_detail_show_room_01"
+                android:layout_width="120dp"
+                android:layout_height="36dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="14sp"
+                android:text="제1열람실A"/>
+            <Button
+                android:id="@+id/activity_reading_room_detail_show_room_02"
+                android:layout_width="120dp"
+                android:layout_height="36dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="14sp"
+                android:text="제1열람실B"/>
+        </TableRow>
+        <TableRow
+            android:gravity="center">
+            <Button
+                android:id="@+id/activity_reading_room_detail_show_room_03"
+                android:layout_width="120dp"
+                android:layout_height="36dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="14sp"
+                android:text="제2열람실"/>
+            <Button
+                android:id="@+id/activity_reading_room_detail_show_room_04"
+                android:layout_width="120dp"
+                android:layout_height="36dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="14sp"
+                android:text="제3열람실"/>
+        </TableRow>
+        <TableRow
+            android:gravity="center">
+            <Button
+                android:id="@+id/activity_reading_room_detail_show_room_05"
+                android:layout_width="120dp"
+                android:layout_height="36dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="14sp"
+                android:text="제5열람실"/>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
