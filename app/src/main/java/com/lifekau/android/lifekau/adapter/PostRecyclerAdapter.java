@@ -50,7 +50,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostViewHolder> {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(0, PxDpConverter.convertDpToPx(72), 0, 0);
+            params.setMargins(0, (int)mContext.getResources().getDimension(R.dimen.toolbar_height), 0, 0);
             view.setLayoutParams(params);
         }
         return new PostViewHolder(view, mContext);
