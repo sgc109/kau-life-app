@@ -1,0 +1,60 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values-hu\\values-hu.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\taemin\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-27.0.2.aar\\41d8f093aba371ef4251d33f0402f230\\res\\values-hu\\values-hu.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "33",
+                        "startColumns": "4",
+                        "startOffsets": "3299",
+                        "endColumns": "100",
+                        "endOffsets": "3395"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\bundles\\debug\\res\\values-hu\\values-hu.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,167,234,343,466,545,656,778,892,999,1092,1188,1283",
+                        "endColumns": "61,66,108,122,78,110,121,113,106,92,95,94,99",
+                        "endOffsets": "162,229,338,461,540,651,773,887,994,1087,1183,1278,1378"
+                    },
+                    "to": {
+                        "startLines": "19,20,21,22,23,24,25,26,27,28,29,30,31",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "1938,2000,2067,2176,2299,2378,2489,2611,2725,2832,2925,3021,3116",
+                        "endColumns": "61,66,108,122,78,110,121,113,106,92,95,94,99",
+                        "endOffsets": "1995,2062,2171,2294,2373,2484,2606,2720,2827,2920,3016,3111,3211"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\taemin\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.0.2.aar\\805f596dcbe8ecc4859edc72eec88ede\\res\\values-hu\\values-hu.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,213,318,433,517,629,759,835,911,994,1104,1215,1315,1426,1534,1653,1835,1938",
+                        "endColumns": "107,104,114,83,111,129,75,75,82,109,110,99,110,107,118,181,102,82",
+                        "endOffsets": "208,313,428,512,624,754,830,906,989,1099,1210,1310,1421,1529,1648,1830,1933,2016"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,32",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,213,318,433,517,629,759,835,911,994,1104,1215,1315,1426,1534,1653,1835,3216",
+                        "endColumns": "107,104,114,83,111,129,75,75,82,109,110,99,110,107,118,181,102,82",
+                        "endOffsets": "208,313,428,512,624,754,830,906,989,1099,1210,1310,1421,1529,1648,1830,1933,3294"
+                    }
+                }
+            ]
+        }
+    ]
+}

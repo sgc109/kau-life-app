@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values-eu-rES\\values-eu-rES.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\bundles\\debug\\res\\values-eu-rES\\values-eu-rES.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,138,212,278,409,524,605,730,851,981,1083,1174,1269,1358",
+                        "endColumns": "32,73,65,130,114,80,124,120,129,101,90,94,88,102",
+                        "endOffsets": "133,207,273,404,519,600,725,846,976,1078,1169,1264,1353,1456"
+                    }
+                }
+            ]
+        }
+    ]
+}

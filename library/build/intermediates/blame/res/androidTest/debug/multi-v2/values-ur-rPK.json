@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values-ur-rPK\\values-ur-rPK.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\bundles\\debug\\res\\values-ur-rPK\\values-ur-rPK.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,166,232,337,451,531,642,764,874,972,1065,1158,1248",
+                        "endColumns": "60,65,104,113,79,110,121,109,97,92,92,89,99",
+                        "endOffsets": "161,227,332,446,526,637,759,869,967,1060,1153,1243,1343"
+                    }
+                }
+            ]
+        }
+    ]
+}

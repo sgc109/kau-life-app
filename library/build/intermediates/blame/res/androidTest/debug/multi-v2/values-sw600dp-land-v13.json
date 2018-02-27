@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values-sw600dp-land-v13\\values-sw600dp-land-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\bundles\\debug\\res\\values-sw600dp-land-v13\\values-sw600dp-land-v13.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,107,161,224,286,347,409,460,511,565,619,680,732",
+                        "endColumns": "51,53,62,61,60,61,50,50,53,53,60,51,61",
+                        "endOffsets": "102,156,219,281,342,404,455,506,560,614,675,727,789"
+                    }
+                }
+            ]
+        }
+    ]
+}

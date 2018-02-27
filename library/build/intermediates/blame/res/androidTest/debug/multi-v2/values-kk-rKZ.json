@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values-kk-rKZ\\values-kk-rKZ.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\bundles\\debug\\res\\values-kk-rKZ\\values-kk-rKZ.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,166,232,339,451,535,654,773,894,988,1077,1168,1254",
+                        "endColumns": "60,65,106,111,83,118,118,120,93,88,90,85,100",
+                        "endOffsets": "161,227,334,446,530,649,768,889,983,1072,1163,1249,1350"
+                    }
+                }
+            ]
+        }
+    ]
+}

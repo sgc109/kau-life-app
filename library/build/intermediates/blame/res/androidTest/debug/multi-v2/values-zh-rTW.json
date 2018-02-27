@@ -1,0 +1,60 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values-zh-rTW\\values-zh-rTW.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\taemin\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-27.0.2.aar\\41d8f093aba371ef4251d33f0402f230\\res\\values-zh-rTW\\values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "33",
+                        "startColumns": "4",
+                        "startOffsets": "2942",
+                        "endColumns": "100",
+                        "endOffsets": "3038"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\bundles\\debug\\res\\values-zh-rTW\\values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,164,227,325,433,510,605,719,816,898,980,1064,1144",
+                        "endColumns": "58,62,97,107,76,94,113,96,81,81,83,79,91",
+                        "endOffsets": "159,222,320,428,505,600,714,811,893,975,1059,1139,1231"
+                    },
+                    "to": {
+                        "startLines": "19,20,21,22,23,24,25,26,27,28,29,30,31",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "1733,1792,1855,1953,2061,2138,2233,2347,2444,2526,2608,2692,2772",
+                        "endColumns": "58,62,97,107,76,94,113,96,81,81,83,79,91",
+                        "endOffsets": "1787,1850,1948,2056,2133,2228,2342,2439,2521,2603,2687,2767,2859"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\taemin\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.0.2.aar\\805f596dcbe8ecc4859edc72eec88ede\\res\\values-zh-rTW\\values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,200,293,393,475,572,680,756,832,910,1006,1102,1197,1294,1389,1489,1639,1733",
+                        "endColumns": "94,92,99,81,96,107,75,75,77,95,95,94,96,94,99,149,93,77",
+                        "endOffsets": "195,288,388,470,567,675,751,827,905,1001,1097,1192,1289,1384,1484,1634,1728,1806"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,32",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,200,293,393,475,572,680,756,832,910,1006,1102,1197,1294,1389,1489,1639,2864",
+                        "endColumns": "94,92,99,81,96,107,75,75,77,95,95,94,96,94,99,149,93,77",
+                        "endOffsets": "195,288,388,470,567,675,751,827,905,1001,1097,1192,1289,1384,1484,1634,1728,2937"
+                    }
+                }
+            ]
+        }
+    ]
+}

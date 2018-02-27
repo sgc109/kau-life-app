@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values-mn-rMN\\values-mn-rMN.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\taemin\\Documents\\LifeKAU\\library\\build\\intermediates\\bundles\\debug\\res\\values-mn-rMN\\values-mn-rMN.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,166,231,334,445,527,627,748,852,954,1045,1140,1233",
+                        "endColumns": "60,64,102,110,81,99,120,103,101,90,94,92,102",
+                        "endOffsets": "161,226,329,440,522,622,743,847,949,1040,1135,1228,1331"
+                    }
+                }
+            ]
+        }
+    ]
+}
