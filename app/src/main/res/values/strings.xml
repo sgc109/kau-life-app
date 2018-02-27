@@ -30,6 +30,7 @@
     <string name="please_write_post_text_alert_message">내용을 작성해주세요!</string>
     <string name="empty_alarm_list_message">알람이 없습니다.</string>
     <string name="empty_review_list_message">평가가 없습니다.</string>
+    <string name="empty_post_list_message">이야기가 없습니다.</string>
     <string name="write_post_hint_message">하고 싶은 이야기를 자유롭게 써주세요.</string>
     <string name="submit_post_button">게시하기</string>
     <string name="write_new_post">새 글 쓰기</string>
@@ -42,7 +43,11 @@
     <string name="type_the_comment">댓글을 입력하세요...</string>
     <string name="successfully_comment_registered">댓글이 성공적으로 등록되었습니다!</string>
     <string name="post_deleted_by_author">보고 계신 글이 작성자에 의해 삭제 되었습니다.</string>
-
+    <string name="order_by_dialog_title">리뷰 정렬하기</string>
+    <string name="order_by_time_desc">최근 날짜순</string>
+    <string name="order_by_time_asc">오래된 날짜순</string>
+    <string name="order_by_rating_desc">높은 평점순</string>
+    <string name="order_by_rating_asc">낮은 평점순</string>
 
     <string name="menu_1">커뮤니티</string>
     <string name="menu_2">리뷰</string>
