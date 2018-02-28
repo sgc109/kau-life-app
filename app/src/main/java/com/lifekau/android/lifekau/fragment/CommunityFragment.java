@@ -110,10 +110,10 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         mRecyclerView.setVisibility(View.GONE);
         mEmptyMessageTextView.setVisibility(View.GONE);
 
-        mAdapter = new PostRecyclerAdapter(getActivity());
-        mRecyclerView.setAdapter(mAdapter);
         if (!mIsLoading) {
             mIsLoading = true;
+            mAdapter = new PostRecyclerAdapter(getActivity());
+            mRecyclerView.setAdapter(mAdapter);
             getPosts();
         }
     }
@@ -175,14 +175,13 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
     @Override
     public void onRefresh() {
-        if (mIsLoading) return;
-        initPostList();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }, 500);
+        initPostList();
     }
 
     @Override
