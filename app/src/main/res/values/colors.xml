@@ -35,4 +35,11 @@
         <item name="tab_4">#5C6D7B</item>
         <item name="tab_5">#5C6D7B</item>
     </array>
+
+    <color name="activity_default_color">#eeeeee</color>
+
+    <color name="grade_list_header_border">#bdbdbd</color>
+    <color name="grade_list_border">#d8d8d8</color>
+    <color name="grade_list_text">#6e6e6e</color>
+    <color name="grade_list_grade">#FF4000</color>
 </resources>

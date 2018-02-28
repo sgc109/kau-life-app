@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -87,8 +88,7 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                int size = mLMSPortalManager.getAccumulatedGradeSummarySize();
-                return (size > 0) ? size : 1;
+                return mLMSPortalManager.getAccumulatedGradeSummarySize();
             }
         };
         mLMSPortalManager.clearAccumulatedGradeSummary();
@@ -117,7 +117,7 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
         mPullAccumulatedGradeSummaryAsyncTask.execute();
     }
 
-    public class AccumulatedGradeSummaryItemViewHolder extends RecyclerView.ViewHolder {
+    public class AccumulatedGradeSummaryItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSemesterTextView;
         private TextView mGPAAndTotalGradesTextView;
         private TextView mCreditsTextView;
@@ -127,6 +127,7 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
             mSemesterTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_semester);
             mGPAAndTotalGradesTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_GPA_and_total_grades);
             mCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_credits);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(int position) {
@@ -134,6 +135,16 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
             mSemesterTextView.setText(String.valueOf(accumulatedGradeSummary.semester));
             mGPAAndTotalGradesTextView.setText(accumulatedGradeSummary.GPA + " / " + accumulatedGradeSummary.totalGrades);
             mCreditsTextView.setText(accumulatedGradeSummary.acquiredCredits + " / " + accumulatedGradeSummary.registeredCredits);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            if(position != RecyclerView.NO_POSITION) {
+                AccumulatedGradeSummary accumulatedGradeSummary = mLMSPortalManager.getAccumulatedGradeSummary(position);
+                Intent intent = AccumulatedGradeActivity.newIntent(AccumulatedGradeSummaryActivity.this, accumulatedGradeSummary.year, accumulatedGradeSummary.semesterCode);
+                startActivity(intent);
+            }
         }
     }
 

@@ -17,13 +17,11 @@ import com.lifekau.android.lifekau.model.Scholarship;
 import com.lifekau.android.lifekau.model.TotalAccumulatedGrade;
 import com.lifekau.android.lifekau.model.TotalCurrGrade;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
@@ -94,9 +92,9 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(resources.getInteger(R.integer.server_error));
-        }
-        catch (Exception e) {
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(resources.getInteger(R.integer.server_error));
+        } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
@@ -122,13 +120,15 @@ public class LMSPortalManager {
         call = client.newCall(request);
         String loginInfomation;
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
             loginInfomation = res.body().string();
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
-        if (loginInfomation.contains(resources.getString(R.string.portal_login_failed))) return resources.getInteger(R.integer.session_error);
+        if (loginInfomation.contains(resources.getString(R.string.portal_login_failed)))
+            return resources.getInteger(R.integer.session_error);
         mSSOToken = loginInfomation.split("\'")[3];
         String url = HttpUrl.parse(resources.getString(R.string.portal_portal_check_page)).newBuilder()
                 .addQueryParameter("chk1", "1")
@@ -142,7 +142,8 @@ public class LMSPortalManager {
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -161,7 +162,8 @@ public class LMSPortalManager {
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -179,7 +181,8 @@ public class LMSPortalManager {
         call = client.newCall(request);
         String newId, newPassword;
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             newId = doc.select("input").get(0).attr("value");
             newPassword = doc.select("input").get(1).attr("value");
@@ -201,7 +204,8 @@ public class LMSPortalManager {
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -218,7 +222,8 @@ public class LMSPortalManager {
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -239,15 +244,14 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             mStudentId = doc.select("#loggedin-user").get(0).getElementsByAttributeValue("class", "dropdown-toggle").text().replaceAll("[^0-9]", "");
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
@@ -268,7 +272,8 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("class", "table1").select("tr");
             int elementsSize = elements.size();
@@ -281,11 +286,10 @@ public class LMSPortalManager {
                 insert.amount = Integer.valueOf(TextUtils.join("", infomation.get(3).text().split(",")));
                 mScholarshipArray.add(insert);
             }
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
@@ -305,7 +309,8 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("cellspacing", "1");
             mCurrGrade.clear();
@@ -337,12 +342,10 @@ public class LMSPortalManager {
             mTotalCurrGrade.GPA = Double.valueOf(totalGradeSummary.get(3).text());
             mTotalCurrGrade.semesterRanking = totalGradeSummary.get(4).text();
             mTotalCurrGrade.remarks = totalGradeSummary.get(5).text();
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
@@ -366,8 +369,11 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301) {
+                return resources.getInteger(R.integer.server_error);
+            }
             Document doc = Jsoup.parse(res.body().string());
+            Log.e("eeee", doc.text());
             mAccumulatedGradeArray.clear();
             Elements elements = doc.getElementsByAttributeValue("class", "table1");
             Elements gradeSummary = elements.get(1).select("tr");
@@ -386,13 +392,12 @@ public class LMSPortalManager {
                 accumulatedGrade.grade = data.get(5 + adjustVal).text();
                 accumulatedGrade.retake = data.get(6 + adjustVal).text();
                 accumulatedGrade.remarks = data.get(7 + adjustVal).text();
+                mAccumulatedGradeArray.add(accumulatedGrade);
             }
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
@@ -412,7 +417,8 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("class", "table1");
             Elements gradeSummary = elements.get(0).select("tr");
@@ -436,12 +442,10 @@ public class LMSPortalManager {
             mTotalAccumulatedGrade.acquiredCredits = Integer.valueOf(totalGradeSummary.get(4).text());
             mTotalAccumulatedGrade.totalGrades = Double.valueOf(totalGradeSummary.get(6).text());
             mTotalAccumulatedGrade.GPA = Double.valueOf(totalGradeSummary.get(8).text());
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
@@ -467,7 +471,8 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
             if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_titme_table_no_data)))
@@ -480,12 +485,10 @@ public class LMSPortalManager {
                     mExaminationTimeTable[i][j] = dataElements.get(j).text();
                 }
             }
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
@@ -504,19 +507,31 @@ public class LMSPortalManager {
         return index < getScholarshipSize() ? mScholarshipArray.get(index) : null;
     }
 
-    public void clearScholarship(){
+    public void clearScholarship() {
         mScholarshipArray.clear();
     }
 
-    public int getAccumulatedGradeSummarySize(){
+    public int getAccumulatedGradeSize() {
+        return mAccumulatedGradeArray.size();
+    }
+
+    public AccumulatedGrade getAccumulatedGrade(int index) {
+        return index < getAccumulatedGradeSize() ? mAccumulatedGradeArray.get(index) : null;
+    }
+
+    public void clearAccumulatedGrade() {
+        mAccumulatedGradeArray.clear();
+    }
+
+    public int getAccumulatedGradeSummarySize() {
         return mAccumulatedGradeSummaryArray.size();
     }
 
-    public AccumulatedGradeSummary getAccumulatedGradeSummary(int index){
+    public AccumulatedGradeSummary getAccumulatedGradeSummary(int index) {
         return index < getAccumulatedGradeSummarySize() ? mAccumulatedGradeSummaryArray.get(index) : null;
     }
 
-    public void clearAccumulatedGradeSummary(){
+    public void clearAccumulatedGradeSummary() {
         mAccumulatedGradeSummaryArray.clear();
     }
 
