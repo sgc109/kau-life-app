@@ -3,13 +3,9 @@ package com.lifekau.android.lifekau.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -105,7 +101,6 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     }
 
     private void initPostList() {
-        Log.d("fuck", "initPostList");
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
         mEmptyMessageTextView.setVisibility(View.GONE);

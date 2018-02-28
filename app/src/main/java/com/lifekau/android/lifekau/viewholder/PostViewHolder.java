@@ -2,11 +2,11 @@ package com.lifekau.android.lifekau.viewholder;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.CardView;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,34 +23,31 @@ import com.lifekau.android.lifekau.activity.PostDetailActivity;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Post;
 
-import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
-
-import com.lifekau.android.lifekau.R;
 
 /**
  * Created by sgc109 on 2018-02-11.
  */
 
-public class PostViewHolder extends RecyclerView.ViewHolder {
+public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public TextView mTextView;
-    public ImageView mLikeButtonImageView;
-    public TextView mLikeButtonTextView;
-    public ImageView mCommentButtonImageView;
-    public TextView mCommentButtonTextView;
-    public TextView mCommentCountTextView;
-    public TextView mLikeCountTextView;
-    public ImageView mCircleHeartImageView;
-    public TextView mDateTextView;
-    public LinearLayout mLikeButtonContainer;
     public LinearLayout mCommentButtonContainer;
-    public Context mContext;
-    public Post mPost;
-    public String mPostKey;
+    public TextView mCommentCountTextView;
+    private ImageView mLikeButtonImageView;
+    private TextView mLikeButtonTextView;
+    private ImageView mCommentButtonImageView;
+    private TextView mCommentButtonTextView;
+    private TextView mLikeCountTextView;
+    private ImageView mCircleHeartImageView;
+    private TextView mDateTextView;
+    private LinearLayout mLikeButtonContainer;
+    private ImageView mMoreButtonImageView;
+    private Context mContext;
+    private Post mPost;
+    private String mPostKey;
+    private BottomSheetDialog mBottomSheetDialog;
 
     public PostViewHolder(View itemView, Context context) {
         super(itemView);
@@ -66,51 +63,19 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         mLikeButtonContainer = itemView.findViewById(R.id.list_item_post_like_button_container);
         mCommentButtonContainer = itemView.findViewById(R.id.list_item_post_comment_button_container);
         mDateTextView = itemView.findViewById(R.id.post_list_date_text_view);
+        mMoreButtonImageView = itemView.findViewById(R.id.list_item_post_more_button);
     }
 
     public void bind(Post post, String postKey) {
         mPost = post;
         mPostKey = postKey;
 
-        mCommentButtonContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDetailActivity(true);
-            }
-        });
-        mTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDetailActivity(false);
-            }
-        });
-        mCommentCountTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDetailActivity(false);
-            }
-        });
-
+        mCommentButtonContainer.setOnClickListener(this);
+        mTextView.setOnClickListener(this);
+        mCommentCountTextView.setOnClickListener(this);
+        mLikeButtonContainer.setOnClickListener(this);
+        mMoreButtonImageView.setOnClickListener(this);
         updateUI();
-
-        mLikeButtonContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String studentId = LoginManager.get(mContext).getStudentId();
-                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
-                        .child(mContext.getString(R.string.firebase_database_posts))
-                        .child(mPostKey);
-                if (mPost.likes.containsKey(studentId)) {
-                    mPost.likes.remove(studentId);
-                    mPost.likeCount--;
-                } else {
-                    mPost.likes.put(studentId, true);
-                    mPost.likeCount++;
-                }
-                onLikeClicked(postRef);
-                updateUI();
-            }
-        });
     }
 
     public void updateUI() {
@@ -178,5 +143,51 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     private void startDetailActivity(boolean hasClickedComment) {
         Intent intent = PostDetailActivity.newIntent(mContext, mPostKey, hasClickedComment);
         mContext.startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.list_item_post_comment_button_container:
+                startDetailActivity(true);
+                break;
+            case R.id.list_item_post_content_text_view:
+                startDetailActivity(false);
+                break;
+            case R.id.list_item_post_comment_count_text_view:
+                startDetailActivity(false);
+                break;
+            case R.id.list_item_post_like_button_container:
+                String studentId = LoginManager.get(mContext).getStudentId();
+                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
+                        .child(mContext.getString(R.string.firebase_database_posts))
+                        .child(mPostKey);
+                if (mPost.likes.containsKey(studentId)) {
+                    mPost.likes.remove(studentId);
+                    mPost.likeCount--;
+                } else {
+                    mPost.likes.put(studentId, true);
+                    mPost.likeCount++;
+                }
+                onLikeClicked(postRef);
+                updateUI();
+                break;
+            case R.id.list_item_post_more_button:
+                mBottomSheetDialog = new BottomSheetDialog(mContext);
+                View sheetView = LayoutInflater.from(mContext).inflate(R.layout.bottom_sheet_dialog_edit_and_delete, null);
+                LinearLayout deleteContainer = sheetView.findViewById(R.id.fragment_history_bottom_sheet_delete);
+                LinearLayout editContainer = sheetView.findViewById(R.id.fragment_history_bottom_sheet_edit);
+                deleteContainer.setOnClickListener(this);
+                editContainer.setOnClickListener(this);
+                mBottomSheetDialog.setContentView(sheetView);
+                mBottomSheetDialog.show();
+                break;
+            case R.id.fragment_history_bottom_sheet_delete:
+                mBottomSheetDialog.dismiss();
+                break;
+            case R.id.fragment_history_bottom_sheet_edit:
+                mBottomSheetDialog.dismiss();
+                break;
+        }
     }
 }
