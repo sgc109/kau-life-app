@@ -80,8 +80,10 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
                 mLastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
 
                 if (!mIsLoading && mTotalItemCount <= (mLastVisibleItemPosition + NUM_OF_POST_PER_PAGE)) {
-                    mIsLoading = true;
-                    getPosts();
+                    if (!mIsLoading) {
+                        mIsLoading = true;
+                        getPosts();
+                    }
                 }
 
                 if (mLayoutManager.findFirstVisibleItemPosition() != 0) {
@@ -110,8 +112,10 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
         mAdapter = new PostRecyclerAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
-        mIsLoading = true;
-        getPosts();
+        if (!mIsLoading) {
+            mIsLoading = true;
+            getPosts();
+        }
     }
 
     private void getPosts() {
@@ -138,10 +142,10 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
                 Collections.reverse(newPostKeys);
 
                 mAdapter.addAll(newPosts, newPostKeys);
-                mIsLoading = false;
 
                 setVisibilities();
                 mProgressBar.setVisibility(View.GONE);
+                mIsLoading = false;
             }
 
             @Override
@@ -152,7 +156,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     }
 
     private void setVisibilities() {
-        if(mAdapter.getItemCount() == 0){
+        if (mAdapter.getItemCount() == 0) {
             mEmptyMessageTextView.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         } else {
