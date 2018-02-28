@@ -103,8 +103,6 @@ public class LibraryListActivity extends AppCompatActivity {
             if (mRoomType == TYPE_READING_ROOM) {
                 mNameTextView.setText(mLibraryManager.getReadingRoomName(position));
                 int cntAvailableSeat = mLibraryManager.getReadingRoomAvailableSeat(position);
-                if(position % 3 == 1) cntAvailableSeat = 0;
-                else if(position % 3 == 2) cntAvailableSeat = 5;
                 int cntTotalSeat = mLibraryManager.getReadingRoomTotalSeat(position);
                 String statusString;
                 String format = getString(R.string.library_reading_room_detail_format);
