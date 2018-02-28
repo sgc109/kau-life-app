@@ -71,10 +71,6 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mEmptyMessageTextView.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
-
         RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -96,8 +92,6 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
         mRecyclerView.addOnScrollListener(scrollListener);
         setHasOptionsMenu(true);
-
-        initPostList();
         return view;
     }
 
@@ -112,6 +106,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         Log.d("fuck", "initPostList");
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
+        mEmptyMessageTextView.setVisibility(View.GONE);
 
         mAdapter = new PostRecyclerAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
