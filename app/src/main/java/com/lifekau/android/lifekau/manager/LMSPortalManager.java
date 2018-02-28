@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import okhttp3.Call;
+import okhttp3.ConnectionPool;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -72,7 +73,9 @@ public class LMSPortalManager {
         if (mClient == null) {
             ClearableCookieJar cookieJar =
                     new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+            ConnectionPool connectionPool = new ConnectionPool();
             mClient = new OkHttpClient.Builder()
+                    .connectionPool(connectionPool)
                     .cookieJar(cookieJar)
                     .build();
         }
