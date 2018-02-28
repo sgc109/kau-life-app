@@ -17,7 +17,6 @@ import com.lifekau.android.lifekau.DateDisplayer;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Comment;
-import com.lifekau.android.lifekau.model.Post;
 
 import java.util.Date;
 
@@ -117,7 +116,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder{
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Log.d("fuck", "commentTransaction:onComplete:" + databaseError);
+                Log.d("sgc109_debug", "commentTransaction:onComplete:" + databaseError);
             }
         });
     }

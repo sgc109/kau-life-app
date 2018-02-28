@@ -1,12 +1,12 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
-import android.os.Handler;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +27,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.FoodReview;
@@ -207,7 +205,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
             }
         }
         if (comparator == null) {
-            Log.e("fuck", "comparator is not initialized!! It's null.. check this right now");
+            Log.e("sgc109_debug", "comparator is not initialized!! It's null.. check this right now");
         }
         Collections.sort(mFoodReviews, comparator);
         mRecyclerAdapter.notifyDataSetChanged();

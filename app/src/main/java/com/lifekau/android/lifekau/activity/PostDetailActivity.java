@@ -2,12 +2,12 @@ package com.lifekau.android.lifekau.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -167,7 +167,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("fuck", "PostDetailActivity:onCancelled");
+                Log.d("sgc109_debug", "PostDetailActivity:onCancelled");
                 mJustWroteComment = false;
             }
         });
@@ -177,7 +177,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mPostRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("fuck", "PostDetailActivity:onDataChange");
+                Log.d("sgc109_debug", "PostDetailActivity:onDataChange");
                 Post post = dataSnapshot.getValue(Post.class);
                 if (post == null) {
                     Toast.makeText(PostDetailActivity.this, getString(R.string.post_deleted_by_author), Toast.LENGTH_SHORT).show();
@@ -204,7 +204,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("fuck", "PostDetailActivity:onCancelled");
+                Log.d("sgc109_debug", "PostDetailActivity:onCancelled");
             }
         });
     }
@@ -315,7 +315,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             @Override
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
-                Log.d("fuck", "commentTransaction:onComplete:" + databaseError);
+                Log.d("sgc109_debug", "commentTransaction:onComplete:" + databaseError);
 //                updatePost();
             }
         });
@@ -332,8 +332,4 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             }
         }, 500);
     }
-//    private void getMoreComments() {
-//        mIsLoading = true;
-//        getComments();
-//    }
 }

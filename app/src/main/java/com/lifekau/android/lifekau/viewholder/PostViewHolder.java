@@ -107,6 +107,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(android.R.color.tab_indicator_text));
             mLikeButtonTextView.setTextColor(mContext.getResources().getColor(android.R.color.tab_indicator_text));
         }
+
+        if (!LoginManager.get(mContext).getStudentId().equals(mPost.author)) {
+            mMoreButtonImageView.setVisibility(View.GONE);
+        }
     }
 
     private void onLikeClicked(DatabaseReference postRef) {
@@ -135,7 +139,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Log.d("fuck", "postTransaction:onComplete:" + databaseError);
+                Log.d("sgc109_debug", "postTransaction:onComplete:" + databaseError);
             }
         });
     }
