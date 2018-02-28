@@ -1,6 +1,8 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -169,35 +171,38 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Integer... params) {
+            Resources res = applicationWeakReference.get().getResources();
             AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
+            if (accumulatedGradeSummaryActivity == null || accumulatedGradeSummaryActivity.isFinishing()) return res.getInteger(R.integer.unexpected_error);
             int count = 0;
-            while ((accumulatedGradeSummaryActivity != null && !accumulatedGradeSummaryActivity.isFinishing()) &&
-                    accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(activityReference.get()) == -1 && !isCancelled()) {
-                Log.e("ERROR", "페이지 불러오기 실패!");
+            int result = accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(activityReference.get());
+            while (!accumulatedGradeSummaryActivity.isFinishing() && result != res.getInteger(R.integer.no_error) && !isCancelled()) {
                 sleep(3000);
-                count++;
-                if (count == 5) return -1;
+                if(result == res.getInteger(R.integer.session_error)) return result;
+                else count++;
+                if(count == res.getInteger(R.integer.maximum_retry_num)) return res.getInteger(R.integer.network_error);
             }
-            return 0;
+            return res.getInteger(R.integer.no_error);
         }
 
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            final AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
+            AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
+            Resources resources = applicationWeakReference.get().getResources();
             if (accumulatedGradeSummaryActivity == null || accumulatedGradeSummaryActivity.isFinishing())
                 return;
-            if (result != -1) {
+            if (result == resources.getInteger(R.integer.no_error)) {
                 accumulatedGradeSummaryActivity.mRecyclerAdapter.notifyDataSetChanged();
-            } else {
-                //예외 처리
+            } else if(result == resources.getInteger(R.integer.network_error)){
+                //네트워크 관련 예외 처리
                 accumulatedGradeSummaryActivity.showErrorMessage();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        accumulatedGradeSummaryActivity.mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
+            }
+            else if(result == resources.getInteger(R.integer.session_error)){
+                //세션 관련 예외 처리
+                Intent intent = LoginActivity.newIntent(accumulatedGradeSummaryActivity);
+                accumulatedGradeSummaryActivity.startActivity(intent);
+                accumulatedGradeSummaryActivity.finish();
             }
         }
 

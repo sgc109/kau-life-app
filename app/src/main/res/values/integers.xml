@@ -4,10 +4,14 @@
     <integer name="lecture_review_write_text_limit">300</integer>
     <integer name="lecture_search_text_limit">50</integer>
 
-    <!-- HTTP 통신 에러 관련 상수 정의-->
+    <!-- 에러 관련 상수 정의-->
+    <integer name="unexpected_error">-100</integer>
+
+    <!-- HTTP 통신 관련 상수 정의-->
     <integer name="server_error">-3</integer>
     <integer name="network_error">-2</integer>
     <integer name="session_error">-1</integer>
     <integer name="no_error">0</integer>
+    <integer name="maximum_retry_num">5</integer>
 
 </resources>

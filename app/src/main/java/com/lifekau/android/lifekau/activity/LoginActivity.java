@@ -64,6 +64,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private ProgressDialog mProgressDialog;
     private View mLoginFormView;
 
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
