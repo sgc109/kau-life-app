@@ -46,11 +46,12 @@
         <ImageView
             android:layout_width="28dp"
             android:layout_height="match_parent"
-            android:tint="@android:color/darker_gray"
+            android:tint="@android:color/holo_red_light"
             app:srcCompat="@drawable/ic_trash_can"
             />
 
         <TextView
+            android:textColor="@android:color/holo_red_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
