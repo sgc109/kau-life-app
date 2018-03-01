@@ -1,7 +1,6 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -28,8 +27,6 @@ import java.lang.ref.WeakReference;
 
 public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
-    private static final int VIEW_ITEM = 0;
-    private static final int VIEW_PROGRESS = 1;
 
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -59,31 +56,19 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
                 }, 500);
             }
         });
-        mRecyclerAdapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        mRecyclerAdapter = new RecyclerView.Adapter<AccumulatedGradeSummaryItemViewHolder>() {
             @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public AccumulatedGradeSummaryItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view;
-                RecyclerView.ViewHolder viewHolder;
-                if (viewType == VIEW_ITEM) {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_accumulated_grade_summary, parent, false);
-                    viewHolder = new AccumulatedGradeSummaryItemViewHolder(view);
-                } else {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_progress, parent, false);
-                    viewHolder = new ItemProgressViewHolder(view);
-                }
+                AccumulatedGradeSummaryItemViewHolder viewHolder;
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_accumulated_grade_summary, parent, false);
+                viewHolder = new AccumulatedGradeSummaryItemViewHolder(view);
                 return viewHolder;
             }
 
             @Override
-            public int getItemViewType(int position) {
-                return mLMSPortalManager.getAccumulatedGradeSummary(position) != null ? VIEW_ITEM : VIEW_PROGRESS;
-            }
-
-            @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                if (holder instanceof AccumulatedGradeSummaryItemViewHolder)
-                    ((AccumulatedGradeSummaryItemViewHolder) holder).bind(position);
-                else ((ItemProgressViewHolder) holder).bind(position);
+            public void onBindViewHolder(AccumulatedGradeSummaryItemViewHolder holder, int position) {
+                holder.bind(position);
             }
 
             @Override
@@ -122,7 +107,7 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
         private TextView mGPAAndTotalGradesTextView;
         private TextView mCreditsTextView;
 
-        public AccumulatedGradeSummaryItemViewHolder(View itemView) {
+        private AccumulatedGradeSummaryItemViewHolder(View itemView) {
             super(itemView);
             mSemesterTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_semester);
             mGPAAndTotalGradesTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_GPA_and_total_grades);
@@ -145,19 +130,6 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
                 Intent intent = AccumulatedGradeActivity.newIntent(AccumulatedGradeSummaryActivity.this, accumulatedGradeSummary.year, accumulatedGradeSummary.semesterCode);
                 startActivity(intent);
             }
-        }
-    }
-
-    public class ItemProgressViewHolder extends RecyclerView.ViewHolder {
-        private ProgressBar mProgressBar;
-
-        public ItemProgressViewHolder(View progressView) {
-            super(progressView);
-            mProgressBar = progressView.findViewById(R.id.list_item_progress_bar);
-        }
-
-        public void bind(int position) {
-
         }
     }
 

@@ -20,13 +20,18 @@ import android.widget.Toast;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
 import com.lifekau.android.lifekau.model.AccumulatedGrade;
-import com.lifekau.android.lifekau.model.Scholarship;
 
 import java.lang.ref.WeakReference;
-import java.text.NumberFormat;
 import java.util.Calendar;
 
 public class AccumulatedGradeActivity extends AppCompatActivity {
+
+    private static final String SEMESTER_STRING[] = {
+            "1학기",
+            "여름학기",
+            "2학기",
+            "겨울학기"
+    };
 
     private static final String EXTRA_YEAR = "extra_year";
     private static final String EXTRA_SEMESTER_CODE = "extra_semester_code";
@@ -39,7 +44,6 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
-    private ProgressBar mProgressBar;
     private GetAccumulatedGradeAsyncTask mGetAccumulatedGradeAsyncTask;
     private int mYear;
     private int mSemesterCode;
@@ -84,9 +88,8 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.grade_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
-//        mRecyclerView.setVisibility(View.GONE);
-        mProgressBar = findViewById(R.id.grade_list_progress_bar);
-        mProgressBar.setVisibility(View.GONE);
+        TextView gradeTitleTextView = findViewById(R.id.grade_title);
+        gradeTitleTextView.setText(mYear + "년 " + getSemesterString(mSemesterCode));
         executeAsyncTask();
     }
 
@@ -116,7 +119,7 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
         private TextView mCreditsTextView;
         private TextView mGradeTextView;
 
-        public AccumulatedGradeItemViewHolder(View itemView) {
+        private AccumulatedGradeItemViewHolder(View itemView) {
             super(itemView);
             mSubjectTitleTextView = itemView.findViewById(R.id.list_item_grade_subject_title);
             mProfessorNameTextView = itemView.findViewById(R.id.list_item_grade_professor_name);
@@ -200,6 +203,10 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public String getSemesterString(int semesterCode){
+        return SEMESTER_STRING[mSemesterCode / 5 - 2];
     }
 
     public void showErrorMessage() {

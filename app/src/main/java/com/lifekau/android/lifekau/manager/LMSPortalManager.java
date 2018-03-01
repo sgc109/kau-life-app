@@ -373,7 +373,6 @@ public class LMSPortalManager {
                 return resources.getInteger(R.integer.server_error);
             }
             Document doc = Jsoup.parse(res.body().string());
-            Log.e("eeee", doc.text());
             mAccumulatedGradeArray.clear();
             Elements elements = doc.getElementsByAttributeValue("class", "table1");
             Elements gradeSummary = elements.get(1).select("tr");

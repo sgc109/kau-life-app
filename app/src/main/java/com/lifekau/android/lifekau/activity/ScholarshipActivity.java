@@ -25,9 +25,6 @@ import java.text.NumberFormat;
 
 public class ScholarshipActivity extends AppCompatActivity {
 
-    private static final int VIEW_ITEM = 0;
-    private static final int VIEW_PROGRESS = 1;
-
     private static final int UNEXPECTED_ERROR = -100;
     private static final int MAXIMUM_RETRY_NUM = 5;
 
@@ -58,8 +55,7 @@ public class ScholarshipActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                int size = mLMSPortalManager.getScholarshipSize();
-                return (size > 0) ? size : 1;
+                return mLMSPortalManager.getScholarshipSize();
             }
         };
 
@@ -99,7 +95,7 @@ public class ScholarshipActivity extends AppCompatActivity {
         private TextView mCategorizationTextView;
         private TextView mAmountTextView;
 
-        public ScholarshipItemViewHolder(View itemView) {
+        private ScholarshipItemViewHolder(View itemView) {
             super(itemView);
             mTypeTextView = itemView.findViewById(R.id.list_item_scholarship_type);
             mSemesterTextView = itemView.findViewById(R.id.list_item_scholarship_semester);
