@@ -182,8 +182,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             case R.id.list_item_post_more_button:
                 mBottomSheetDialog = new BottomSheetDialog(mContext);
                 View sheetView = LayoutInflater.from(mContext).inflate(R.layout.bottom_sheet_dialog_edit_and_delete, null);
-                LinearLayout deleteContainer = sheetView.findViewById(R.id.fragment_history_bottom_sheet_delete);
-                LinearLayout editContainer = sheetView.findViewById(R.id.fragment_history_bottom_sheet_edit);
+                LinearLayout deleteContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_delete);
+                LinearLayout editContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_edit);
                 deleteContainer.setOnClickListener(this);
                 editContainer.setOnClickListener(this);
                 mBottomSheetDialog.setContentView(sheetView);
@@ -205,7 +205,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         mAdapter.mPostKeys.remove(position);
         mAdapter.notifyItemRemoved(position);
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         DatabaseReference postRef = ref
                 .child(mContext.getString(R.string.firebase_database_posts))
                 .child(mPostKey);
