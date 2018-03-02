@@ -241,7 +241,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mCommentEditText = findViewById(R.id.post_detail_comment_edit_text);
         mRecyclerView = findViewById(R.id.post_detail_recycler_view);
         mPostContainer = findViewById(R.id.post_detail_post_container);
-        mPostViewHolder = new PostViewHolder(mPostContainer, this);
+        mPostViewHolder = new PostViewHolder(mPostContainer, this, null);
         mBottomMarginView = mPostContainer.findViewById(R.id.list_item_post_bottom_margin_view);
         mSwipeRefreshLayout = findViewById(R.id.post_detail_swipe_refresh_layout);
     }

@@ -201,9 +201,11 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     private void deletePost() {
         int position = getAdapterPosition();
-        mAdapter.mPosts.remove(position);
-        mAdapter.mPostKeys.remove(position);
-        mAdapter.notifyItemRemoved(position);
+        if (mAdapter != null) {
+            mAdapter.mPosts.remove(position);
+            mAdapter.mPostKeys.remove(position);
+            mAdapter.notifyItemRemoved(position);
+        }
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         DatabaseReference postRef = ref
