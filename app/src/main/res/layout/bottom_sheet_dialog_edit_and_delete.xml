@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:id="@+id/fragment_history_menu_bottom"
+              android:id="@+id/fragment_community_menu_bottom"
               android:layout_width="match_parent"
               android:layout_height="180dp"
               android:background="#ffffff"
@@ -9,7 +9,7 @@
               app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <LinearLayout
-        android:id="@+id/fragment_history_bottom_sheet_edit"
+        android:id="@+id/fragment_community_bottom_sheet_edit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:clickable="true"
@@ -34,7 +34,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/fragment_history_bottom_sheet_delete"
+        android:id="@+id/fragment_community_bottom_sheet_delete"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:clickable="true"

@@ -20,6 +20,7 @@ import com.google.firebase.database.Transaction;
 import com.lifekau.android.lifekau.DateDisplayer;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.activity.PostDetailActivity;
+import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Post;
 
@@ -48,8 +49,9 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     private Post mPost;
     private String mPostKey;
     private BottomSheetDialog mBottomSheetDialog;
+    private PostRecyclerAdapter mAdapter;
 
-    public PostViewHolder(View itemView, Context context) {
+    public PostViewHolder(View itemView, Context context, PostRecyclerAdapter adapter) {
         super(itemView);
         mContext = context;
         mTextView = itemView.findViewById(R.id.list_item_post_content_text_view);
@@ -64,6 +66,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         mCommentButtonContainer = itemView.findViewById(R.id.list_item_post_comment_button_container);
         mDateTextView = itemView.findViewById(R.id.post_list_date_text_view);
         mMoreButtonImageView = itemView.findViewById(R.id.list_item_post_more_button);
+        mAdapter = adapter;
     }
 
     public void bind(Post post, String postKey) {
@@ -186,12 +189,30 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                 mBottomSheetDialog.setContentView(sheetView);
                 mBottomSheetDialog.show();
                 break;
-            case R.id.fragment_history_bottom_sheet_delete:
+            case R.id.fragment_community_bottom_sheet_delete:
                 mBottomSheetDialog.dismiss();
+                deletePost();
                 break;
-            case R.id.fragment_history_bottom_sheet_edit:
+            case R.id.fragment_community_bottom_sheet_edit:
                 mBottomSheetDialog.dismiss();
                 break;
         }
+    }
+
+    private void deletePost() {
+        int position = getAdapterPosition();
+        mAdapter.mPosts.remove(position);
+        mAdapter.mPostKeys.remove(position);
+        mAdapter.notifyItemRemoved(position);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+        DatabaseReference postRef = ref
+                .child(mContext.getString(R.string.firebase_database_posts))
+                .child(mPostKey);
+        postRef.removeValue();
+        DatabaseReference postCommentRef = ref
+                .child(mContext.getString(R.string.firebase_database_post_comments))
+                .child(mPostKey);
+        postCommentRef.removeValue();
     }
 }
