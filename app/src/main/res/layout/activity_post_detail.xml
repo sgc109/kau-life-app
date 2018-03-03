@@ -110,7 +110,7 @@
                 android:background="@drawable/rounded_corner_comment_edit_text"
                 android:hint="@string/type_the_comment"
                 android:maxLines="4"
-                android:paddingLeft="8dp"
+                android:paddingLeft="14dp"
                 />
 
             <ImageView
