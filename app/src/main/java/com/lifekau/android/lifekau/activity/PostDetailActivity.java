@@ -1,12 +1,14 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -100,6 +102,13 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 .child(getString(R.string.firebase_database_post_comments))
                 .child(mPostKey);
 
+        mPostViewHolder.mDeleteContainer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPostViewHolder.mBottomSheetDialog.dismiss();
+                showYesOrNoDialog();
+            }
+        });
         mCommentEditText.requestFocus();
         mBottomMarginView.setVisibility(View.GONE);
         mRecyclerView.setNestedScrollingEnabled(false);
@@ -180,9 +189,12 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 Log.d("sgc109_debug", "PostDetailActivity:onDataChange");
                 Post post = dataSnapshot.getValue(Post.class);
                 if (post == null) {
-                    Toast.makeText(PostDetailActivity.this, getString(R.string.post_deleted_by_author), Toast.LENGTH_SHORT).show();
+                    if (mPostViewHolder.getPost().author.equals(LoginManager.get(PostDetailActivity.this).getStudentId())) {
+                        Toast.makeText(PostDetailActivity.this, getString(R.string.post_deleted_message), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(PostDetailActivity.this, getString(R.string.post_deleted_by_author), Toast.LENGTH_SHORT).show();
+                    }
                     PostDetailActivity.this.finish();
-                    // 부모 액티비티 적절히 업데이트해야되는데.. 어떻게할지
                     return;
                 }
                 mPostViewHolder.bind(post, mPostKey);
@@ -214,7 +226,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mNestedScrollView.fullScroll(View.FOCUS_DOWN);
     }
 
-    void showSoftKeyboard(){
+    void showSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(mCommentEditText, InputMethodManager.SHOW_IMPLICIT);
     }
@@ -244,6 +256,28 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mPostViewHolder = new PostViewHolder(mPostContainer, this, null);
         mBottomMarginView = mPostContainer.findViewById(R.id.list_item_post_bottom_margin_view);
         mSwipeRefreshLayout = findViewById(R.id.post_detail_swipe_refresh_layout);
+    }
+
+    private void showYesOrNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+
+        builder.setTitle(getString(R.string.post_delete_alert_dialog_title));
+        builder.setMessage(getString(R.string.post_delete_alert_dialog_message));
+        builder.setPositiveButton(getString(R.string.dialog_delete), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mPostViewHolder.deletePost();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.dialog_cancel), null);
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+        });
+        dialog.show();
     }
 
     @Override

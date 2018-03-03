@@ -1,8 +1,10 @@
 package com.lifekau.android.lifekau.viewholder;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,15 +47,20 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     private TextView mDateTextView;
     private LinearLayout mLikeButtonContainer;
     private ImageView mMoreButtonImageView;
+    public LinearLayout mDeleteContainer;
+    private LinearLayout mEditContainer;
     private Context mContext;
     private Post mPost;
     private String mPostKey;
-    private BottomSheetDialog mBottomSheetDialog;
+    public BottomSheetDialog mBottomSheetDialog;
     private PostRecyclerAdapter mAdapter;
 
     public PostViewHolder(View itemView, Context context, PostRecyclerAdapter adapter) {
         super(itemView);
         mContext = context;
+        View sheetView = LayoutInflater.from(mContext).inflate(R.layout.bottom_sheet_dialog_edit_and_delete, null);
+        mDeleteContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_delete);
+        mEditContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_edit);
         mTextView = itemView.findViewById(R.id.list_item_post_content_text_view);
         mLikeButtonImageView = itemView.findViewById(R.id.list_item_post_like_button_image_view);
         mLikeButtonTextView = itemView.findViewById(R.id.list_item_post_like_button_text_view);
@@ -67,17 +74,25 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         mDateTextView = itemView.findViewById(R.id.post_list_date_text_view);
         mMoreButtonImageView = itemView.findViewById(R.id.list_item_post_more_button);
         mAdapter = adapter;
-    }
 
-    public void bind(Post post, String postKey) {
-        mPost = post;
-        mPostKey = postKey;
-
+        mDeleteContainer.setOnClickListener(this);
+        mEditContainer.setOnClickListener(this);
         mCommentButtonContainer.setOnClickListener(this);
         mTextView.setOnClickListener(this);
         mCommentCountTextView.setOnClickListener(this);
         mLikeButtonContainer.setOnClickListener(this);
         mMoreButtonImageView.setOnClickListener(this);
+
+        mBottomSheetDialog = new BottomSheetDialog(mContext);
+        mBottomSheetDialog.setContentView(sheetView);
+    }
+
+    public Post getPost(){
+        return mPost;
+    }
+    public void bind(Post post, String postKey) {
+        mPost = post;
+        mPostKey = postKey;
         updateUI();
     }
 
@@ -180,18 +195,11 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                 updateUI();
                 break;
             case R.id.list_item_post_more_button:
-                mBottomSheetDialog = new BottomSheetDialog(mContext);
-                View sheetView = LayoutInflater.from(mContext).inflate(R.layout.bottom_sheet_dialog_edit_and_delete, null);
-                LinearLayout deleteContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_delete);
-                LinearLayout editContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_edit);
-                deleteContainer.setOnClickListener(this);
-                editContainer.setOnClickListener(this);
-                mBottomSheetDialog.setContentView(sheetView);
                 mBottomSheetDialog.show();
                 break;
             case R.id.fragment_community_bottom_sheet_delete:
                 mBottomSheetDialog.dismiss();
-                deletePost();
+                showYesOrNoDialog();
                 break;
             case R.id.fragment_community_bottom_sheet_edit:
                 mBottomSheetDialog.dismiss();
@@ -199,9 +207,31 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         }
     }
 
-    private void deletePost() {
+    private void showYesOrNoDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AppCompatAlertDialogStyle);
+
+        builder.setTitle(mContext.getString(R.string.post_delete_alert_dialog_title));
+        builder.setMessage(mContext.getString(R.string.post_delete_alert_dialog_message));
+        builder.setPositiveButton(mContext.getString(R.string.dialog_delete), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deletePost();
+            }
+        });
+        builder.setNegativeButton(mContext.getString(R.string.dialog_cancel), null);
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+            }
+        });
+        dialog.show();
+    }
+
+    public void deletePost() {
         int position = getAdapterPosition();
-        if (mAdapter != null) {
+        if (mAdapter != null) { // 글 목록에서 삭제할 때만 업뎃, 그외 엔 onStart 에서 어차피 목록 초기화함
             mAdapter.mPosts.remove(position);
             mAdapter.mPostKeys.remove(position);
             mAdapter.notifyItemRemoved(position);

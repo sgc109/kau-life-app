@@ -129,7 +129,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
                     newPosts.add(snapshot.getValue(Post.class));
                     newPostKeys.add(snapshot.getKey());
                 }
-                if (mAdapter.getItemCount() != 0) {
+                if (mAdapter.getItemCount() > 0 && newPosts.size() > 0) {
                     newPosts.remove(newPosts.size() - 1);
                     newPostKeys.remove(newPostKeys.size() - 1);
                 }
