@@ -87,9 +87,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         mBottomSheetDialog.setContentView(sheetView);
     }
 
-    public Post getPost(){
+    public Post getPost() {
         return mPost;
     }
+
     public void bind(Post post, String postKey) {
         mPost = post;
         mPostKey = postKey;
@@ -207,7 +208,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         }
     }
 
-    private void showYesOrNoDialog(){
+    private void showYesOrNoDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AppCompatAlertDialogStyle);
 
         builder.setTitle(mContext.getString(R.string.post_delete_alert_dialog_title));

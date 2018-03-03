@@ -16,7 +16,8 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="28dp"

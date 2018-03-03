@@ -30,27 +30,31 @@ public class CommentViewHolder extends RecyclerView.ViewHolder{
     private TextView mLikeTextView;
     private TextView mLikeCountTextView;
     private ImageView mLikeImageView;
+    private TextView mAuthorTextView;
     private Context mContext;
     private Comment mComment;
     private String mCommentKey;
-    private String mPostKey;
-    public CommentViewHolder(View itemView, Context context) {
+    private String mPostAuthor;
+    public CommentViewHolder(View itemView, Context context, String postAuthor) {
         super(itemView);
+        mPostAuthor = postAuthor;
         mContentTextView = itemView.findViewById(R.id.list_item_comment_content_text_view);
         mDateTextView = itemView.findViewById(R.id.list_item_comment_date_text_view);
         mLikeTextView = itemView.findViewById(R.id.list_item_comment_like_text_view);
         mLikeCountTextView = itemView.findViewById(R.id.list_item_comment_like_count_text_view);
         mLikeImageView = itemView.findViewById(R.id.list_item_comment_like_image_view);
+        mAuthorTextView = itemView.findViewById(R.id.list_item_comment_author_text_view);
         mContext = context;
     }
 
     public void bind(Comment comment, String commentKey, final String postKey){
         mComment = comment;
         mCommentKey = commentKey;
-        mPostKey = postKey;
 
         updateUI();
-
+        if(mPostAuthor.equals(comment.author)){
+            mAuthorTextView.setText(mContext.getString(R.string.anonymous_author));
+        }
         mLikeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

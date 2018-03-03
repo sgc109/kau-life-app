@@ -57,6 +57,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private TextView mTextView;
     private PostViewHolder mPostViewHolder;
     private String mPostKey;
+    private Post mPost;
     private DatabaseReference mPostRef;
     private DatabaseReference mCommentsRef;
     private RecyclerView mRecyclerView;
@@ -123,7 +124,6 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mCommentSubmitImageView.setOnClickListener(this);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setProgressViewOffset(true, PxDpConverter.convertDpToPx(72), PxDpConverter.convertDpToPx(100));
-        initComments();
         initPost();
     }
 
@@ -197,6 +197,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                     PostDetailActivity.this.finish();
                     return;
                 }
+                mPost = post;
                 mPostViewHolder.bind(post, mPostKey);
                 mPostViewHolder.mCommentButtonContainer.setOnClickListener(new OnClickListener() {
                     @Override
@@ -212,6 +213,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                         focusCommentEditText();
                     }
                 });
+                initComments();
             }
 
             @Override
@@ -232,7 +234,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     }
 
     private void initComments() {
-        mAdapter = new CommentRecyclerAdapter(mPostKey, this);
+        mAdapter = new CommentRecyclerAdapter(mPostKey, this, mPost.author);
         mRecyclerView.setAdapter(mAdapter);
         mIsLoading = true;
         getComments();
@@ -307,7 +309,6 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 increaseCommentCount();
-                initComments();
                 // 여기 장치 회전된다거나 갑자기 어플죽으면 파베디비에 댓글은 써졌는데 댓글개수가 업뎃이 안되는 치명적인 일이 생길 수 있기 때문에
                 // 스레드를 만들어서 돌려야할 수도 있을것같음.. 아니면
 //                new Handler().postDelayed(new Runnable() {

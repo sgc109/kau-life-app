@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.Comment;
-import com.lifekau.android.lifekau.model.Post;
 import com.lifekau.android.lifekau.viewholder.CommentViewHolder;
 
 import java.util.ArrayList;
@@ -23,16 +22,18 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentViewHold
     private List<Comment> mComments = new ArrayList<>();
     private List<String> mCommentKeys = new ArrayList<>();
     private Context mContext;
+    private String mPostAuthor;
 
-    public CommentRecyclerAdapter(String postKey, Context context) {
+    public CommentRecyclerAdapter(String postKey, Context context, String postAuthor) {
         mPostKey = postKey;
         mContext = context;
+        mPostAuthor = postAuthor;
     }
 
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_comment, parent, false);
-        return new CommentViewHolder(view, mContext);
+        return new CommentViewHolder(view, mContext, mPostAuthor);
     }
 
     @Override
