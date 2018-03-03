@@ -314,7 +314,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mCommentsRef.push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                increaseCommentCount();
+                changeCommentCount(1);
                 // 여기 장치 회전된다거나 갑자기 어플죽으면 파베디비에 댓글은 써졌는데 댓글개수가 업뎃이 안되는 치명적인 일이 생길 수 있기 때문에
                 // 스레드를 만들어서 돌려야할 수도 있을것같음.. 아니면
 //                new Handler().postDelayed(new Runnable() {
@@ -338,7 +338,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         });
     }
 
-    private void increaseCommentCount() {
+    private void changeCommentCount(final int size) {
         final String studentId = LoginManager.get(this).getStudentId();
         mPostRef.runTransaction(new Transaction.Handler() {
             @Override
@@ -347,7 +347,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 if (p == null) {
                     return Transaction.success(mutableData);
                 }
-                p.commentCount++;
+                p.commentCount += size;
 
                 mutableData.setValue(p);
                 return Transaction.success(mutableData);
@@ -365,7 +365,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     @Override
     public void onRefresh() {
         if (mIsLoading) return;
-        initComments();
+        initPost();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -400,7 +400,14 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 .child(getString(R.string.firebase_database_post_comments))
                 .child(mPostKey)
                 .child(mAdapter.mCommentKeys.get(position));
-        ref.removeValue();
+        ref
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        changeCommentCount(-1);
+                    }
+                });
         mAdapter.mComments.remove(position);
         mAdapter.mCommentKeys.remove(position);
         mAdapter.notifyItemRemoved(position);
