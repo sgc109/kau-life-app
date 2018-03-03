@@ -12,6 +12,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PostDetailActivity extends AppCompatActivity implements OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class PostDetailActivity extends AppCompatActivity implements OnClickListener, SwipeRefreshLayout.OnRefreshListener, TextWatcher {
     private static final String EXTRA_HAS_CLICKED_COMMENT = "extra_has_clicked_comment";
     private static String EXTRA_POST_KEY = "extra_post_key";
     private final int NUM_OF_COMMENT_PER_PAGE = 5;
@@ -121,9 +123,9 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mCommentSubmitImageView.setOnClickListener(this);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setProgressViewOffset(true, PxDpConverter.convertDpToPx(72), PxDpConverter.convertDpToPx(100));
+        mCommentEditText.addTextChangedListener(this);
         initPost();
     }
 
@@ -206,7 +208,6 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                         showSoftKeyboard();
                     }
                 });
-                mPostViewHolder.mTextView.setOnClickListener(null);
                 mPostViewHolder.mCommentCountTextView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -255,7 +256,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mCommentEditText = findViewById(R.id.post_detail_comment_edit_text);
         mRecyclerView = findViewById(R.id.post_detail_recycler_view);
         mPostContainer = findViewById(R.id.post_detail_post_container);
-        mPostViewHolder = new PostViewHolder(mPostContainer, this, null);
+        mPostViewHolder = new PostViewHolder(mPostContainer, this, null, true);
         mBottomMarginView = mPostContainer.findViewById(R.id.list_item_post_bottom_margin_view);
         mSwipeRefreshLayout = findViewById(R.id.post_detail_swipe_refresh_layout);
     }
@@ -366,5 +367,26 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }, 500);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        if(editable.toString().length() > 0) {
+            mCommentSubmitImageView.setColorFilter(getResources().getColor(R.color.colorPrimary));
+            mCommentSubmitImageView.setOnClickListener(this);
+        } else {
+            mCommentSubmitImageView.setColorFilter(getResources().getColor(R.color.bright_gray));
+            mCommentSubmitImageView.setOnClickListener(null);
+        }
     }
 }

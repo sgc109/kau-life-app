@@ -35,7 +35,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostViewHolder> {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
             params.setMargins(0, PxDpConverter.convertDpToPx(8), 0, 0);
         }
-        return new PostViewHolder(view, mContext, this);
+        return new PostViewHolder(view, mContext, this, false);
     }
 
     @Override

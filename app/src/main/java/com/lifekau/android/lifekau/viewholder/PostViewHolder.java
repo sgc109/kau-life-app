@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,9 +56,11 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     private String mPostKey;
     public BottomSheetDialog mBottomSheetDialog;
     private PostRecyclerAdapter mAdapter;
+    private boolean mIsInDetail;
 
-    public PostViewHolder(View itemView, Context context, PostRecyclerAdapter adapter) {
+    public PostViewHolder(View itemView, Context context, PostRecyclerAdapter adapter, boolean isInDetail) {
         super(itemView);
+        mIsInDetail = isInDetail;
         mContext = context;
         View sheetView = LayoutInflater.from(mContext).inflate(R.layout.bottom_sheet_dialog_edit_and_delete, null);
         mDeleteContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_delete);
@@ -78,7 +82,9 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         mDeleteContainer.setOnClickListener(this);
         mEditContainer.setOnClickListener(this);
         mCommentButtonContainer.setOnClickListener(this);
-        mTextView.setOnClickListener(this);
+        if(!mIsInDetail) {
+            mTextView.setOnClickListener(this);
+        }
         mCommentCountTextView.setOnClickListener(this);
         mLikeButtonContainer.setOnClickListener(this);
         mMoreButtonImageView.setOnClickListener(this);
@@ -98,7 +104,15 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     }
 
     public void updateUI() {
-        mTextView.setText(mPost.text);
+        if(mIsInDetail || !shouldItBeFolded(mPost.text)){
+            mTextView.setText(mPost.text);
+        } else {
+            String left = Html.toHtml(new SpannableString(cutString(mPost.text)));
+            left = left.replace("<p dir=\"ltr\">", "");
+            left = left.replace("</p>", "");
+            String right = "...<font color='#A0A0A0'>계속 읽기</font>";
+            mTextView.setText(Html.fromHtml(left + right));
+        }
         mCommentCountTextView.setText(String.format(
                 mContext.getString(R.string.post_comment_count),
                 NumberFormat.getNumberInstance(Locale.US).format(mPost.commentCount)));
@@ -247,5 +261,34 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                 .child(mContext.getString(R.string.firebase_database_post_comments))
                 .child(mPostKey);
         postCommentRef.removeValue();
+    }
+
+    private boolean shouldItBeFolded(String str){
+        int cntNewLine = 0;
+        for(int i = 0; i < str.length(); i++){
+            if(str.charAt(i) == '\n') {
+                cntNewLine++;
+            }
+        }
+        int cnt = str.length() + cntNewLine * 5;
+        if(cnt > 100 || cntNewLine > 5) return true;
+        return false;
+    }
+
+    private String cutString(String str){
+        int cntNewLine = 0;
+        int cnt = 0;
+        String ret = "";
+        for(int i = 0; i < str.length(); i++){
+            if(str.charAt(i) == '\n'){
+                cntNewLine++;
+                cnt += 6;
+            } else {
+                cnt++;
+            }
+            if(cnt > 100 || cntNewLine > 5) return ret;
+            ret += str.charAt(i);
+        }
+        return ret;
     }
 }

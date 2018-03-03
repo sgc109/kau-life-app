@@ -39,6 +39,7 @@ dependencies {
     compile 'devlight.io:navigationtabbar:1.2.5'
     compile 'com.squareup.okhttp3:okhttp:3.9.1'
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+    compile 'com.github.strooooke:appbarsyncedfab:v0.4'
 }
 
 apply plugin: 'com.google.gms.google-services'
