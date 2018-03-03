@@ -2,6 +2,8 @@
 <resources>
     <integer name="food_review_write_text_limit">150</integer>
     <integer name="lecture_review_write_text_limit">300</integer>
+    <integer name="comment_write_text_limit">150</integer>
+    <integer name="post_write_text_limit">300</integer>
     <integer name="lecture_search_text_limit">50</integer>
 
 </resources>
