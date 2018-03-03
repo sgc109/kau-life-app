@@ -16,7 +16,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,6 +43,7 @@ import com.lifekau.android.lifekau.adapter.CommentRecyclerAdapter;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Comment;
 import com.lifekau.android.lifekau.model.Post;
+import com.lifekau.android.lifekau.viewholder.CommentViewHolder;
 import com.lifekau.android.lifekau.viewholder.PostViewHolder;
 
 import java.util.ArrayList;
@@ -78,6 +78,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private LinearLayout mMoreCommentsLinearLayout;
     private boolean mHasClickedComment;
     private boolean mJustWroteComment;
+    private ContextMenu.ContextMenuInfo mMenuInfo;
 
 
     public static Intent newIntent(Context context, String postKey, boolean hasClickedComment) {
@@ -112,7 +113,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             @Override
             public void onClick(View view) {
                 mPostViewHolder.mBottomSheetDialog.dismiss();
-                showYesOrNoDialog();
+                showPostDeleteYesOrNoDialog();
             }
         });
         mCommentEditText.requestFocus();
@@ -265,7 +266,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mSwipeRefreshLayout = findViewById(R.id.post_detail_swipe_refresh_layout);
     }
 
-    private void showYesOrNoDialog() {
+    private void showPostDeleteYesOrNoDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
 
         builder.setTitle(getString(R.string.post_delete_alert_dialog_title));
@@ -385,7 +386,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 
     @Override
     public void afterTextChanged(Editable editable) {
-        if(editable.toString().length() > 0) {
+        if (editable.toString().length() > 0) {
             mCommentSubmitImageView.setColorFilter(getResources().getColor(R.color.colorPrimary));
             mCommentSubmitImageView.setOnClickListener(this);
         } else {
@@ -394,15 +395,50 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         }
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.comment_context_menu, menu);
+    private void deleteComment(int position){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.firebase_database_post_comments))
+                .child(mPostKey)
+                .child(mAdapter.mCommentKeys.get(position));
+        ref.removeValue();
+        mAdapter.mComments.remove(position);
+        mAdapter.mCommentKeys.remove(position);
+        mAdapter.notifyItemRemoved(position);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        int id = item.getOrder();
+        switch (item.getItemId()) {
+            case CommentViewHolder.ITEM_ID_DELETE_COMMENT:
+                showCommentDeleteYesOrNoDialog(id);
+                break;
+            case CommentViewHolder.ITEM_ID_EDIT_COMMENT:
+                break;
+
+        }
         return super.onContextItemSelected(item);
+    }
+
+    private void showCommentDeleteYesOrNoDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+
+        builder.setTitle(getString(R.string.comment_delete_alert_dialog_title));
+        builder.setMessage(getString(R.string.comment_delete_alert_dialog_message));
+        builder.setPositiveButton(getString(R.string.dialog_delete), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deleteComment(position);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.dialog_cancel), null);
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+        });
+        dialog.show();
     }
 }

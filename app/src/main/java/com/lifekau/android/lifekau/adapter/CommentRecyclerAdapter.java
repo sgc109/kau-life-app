@@ -19,8 +19,8 @@ import java.util.List;
 
 public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentViewHolder> {
     private String mPostKey;
-    private List<Comment> mComments = new ArrayList<>();
-    private List<String> mCommentKeys = new ArrayList<>();
+    public List<Comment> mComments = new ArrayList<>();
+    public List<String> mCommentKeys = new ArrayList<>();
     private Context mContext;
     private String mPostAuthor;
 

@@ -86,12 +86,17 @@
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dddddd"/>
+
         <RelativeLayout
             android:id="@+id/write_comment_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@android:color/white">
+            android:background="#fafafa">
 
             <EditText
                 android:id="@+id/post_detail_comment_edit_text"
