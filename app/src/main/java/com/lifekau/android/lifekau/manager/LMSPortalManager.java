@@ -503,7 +503,7 @@ public class LMSPortalManager {
     }
 
     public Scholarship getScholarship(int index) {
-        return index < getScholarshipSize() ? mScholarshipArray.get(index) : null;
+        return index < getScholarshipSize() ? mScholarshipArray.get(getScholarshipSize() - index - 1) : null;
     }
 
     public void clearScholarship() {

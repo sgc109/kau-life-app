@@ -63,10 +63,8 @@ public class ScholarshipActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.portal_scholarship_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
-        mRecyclerView.setVisibility(View.GONE);
-
-        mProgressBar = findViewById(R.id.scholarship_list_progress_bar);
-        mProgressBar.setVisibility(View.VISIBLE);
+//        mProgressBar = findViewById(R.id.scholarship_list_progress_bar);
+//        mProgressBar.setVisibility(View.VISIBLE);
         executeAsyncTask();
     }
 
@@ -153,9 +151,8 @@ public class ScholarshipActivity extends AppCompatActivity {
             if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return;
             Resources resources = scholarshipActivity.getResources();
             if (result == resources.getInteger(R.integer.no_error)) {
-                scholarshipActivity.mProgressBar.setVisibility(View.GONE);
-                scholarshipActivity.mRecyclerView.setVisibility(View.VISIBLE);
-                scholarshipActivity.mRecyclerAdapter.notifyItemRangeChanged(0, scholarshipActivity.mLMSPortalManager.getScholarshipSize());
+//                scholarshipActivity.mProgressBar.setVisibility(View.GONE);
+                scholarshipActivity.mRecyclerAdapter.notifyDataSetChanged();
             } else if(result == resources.getInteger(R.integer.network_error)){
                 //네트워크 관련 문제
                 scholarshipActivity.showErrorMessage();
