@@ -38,6 +38,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentViewHold
 
     @Override
     public void onBindViewHolder(CommentViewHolder holder, int position) {
+        holder.itemView.setLongClickable(true);
         holder.bind(mComments.get(position), mCommentKeys.get(position), mPostKey);
     }
 

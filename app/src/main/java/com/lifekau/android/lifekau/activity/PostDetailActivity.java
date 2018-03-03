@@ -15,6 +15,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -126,6 +129,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setProgressViewOffset(true, PxDpConverter.convertDpToPx(72), PxDpConverter.convertDpToPx(100));
         mCommentEditText.addTextChangedListener(this);
+        registerForContextMenu(mRecyclerView);
         initPost();
     }
 
@@ -388,5 +392,17 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             mCommentSubmitImageView.setColorFilter(getResources().getColor(R.color.bright_gray));
             mCommentSubmitImageView.setOnClickListener(null);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.comment_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return super.onContextItemSelected(item);
     }
 }
