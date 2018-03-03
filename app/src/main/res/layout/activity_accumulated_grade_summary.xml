@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/grade_title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:gravity="center_vertical"
-        android:text="2013학년 1학기"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="25sp"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:text="누적성적내역"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:gravity="bottom"
+            android:text="(해당 학기를 클릭하면 상세내역이 나옵니다.)"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="10sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +52,7 @@
             android:layout_marginTop="4dp"
             android:layout_weight="0.3"
             android:gravity="center_vertical"
-            android:text="교과목명"
+            android:text="년도/학기"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -47,9 +64,23 @@
             android:layout_marginEnd="2dp"
             android:layout_marginStart="2dp"
             android:layout_marginTop="4dp"
-            android:layout_weight="0.25"
+            android:layout_weight="0.15"
             android:gravity="center_vertical"
-            android:text="담당교수"
+            android:text="신청학점"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="0.15"
+            android:gravity="center_vertical"
+            android:text="취득학점"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -63,7 +94,7 @@
             android:layout_marginTop="4dp"
             android:layout_weight="0.2"
             android:gravity="center_vertical"
-            android:text="이수구분"
+            android:text="평점합"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -75,30 +106,18 @@
             android:layout_marginEnd="2dp"
             android:layout_marginStart="2dp"
             android:layout_marginTop="4dp"
-            android:layout_weight="0.125"
+            android:layout_weight="0.2"
             android:gravity="center_vertical"
-            android:text="학점"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="4dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="4dp"
-            android:layout_weight="0.125"
-            android:gravity="center_vertical"
-            android:text="성적"
+            android:text="평점평균"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="12sp"
             android:textStyle="bold" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/grade_list_recycler_view"
+        android:id="@+id/accumulated_grade_summary_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/list_item_accumulated_grade_summary" />
+
 </LinearLayout>

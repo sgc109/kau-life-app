@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +27,6 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
 
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
     private PullAccumulatedGradeSummaryAsyncTask mPullAccumulatedGradeSummaryAsyncTask;
@@ -37,25 +34,10 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accumulated_grade);
+        setContentView(R.layout.activity_accumulated_grade_summary);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        mSwipeRefreshLayout = findViewById(R.id.portal_accumulated_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mRecyclerAdapter.notifyDataSetChanged();
-                executeAsyncTask();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 500);
-            }
-        });
         mRecyclerAdapter = new RecyclerView.Adapter<AccumulatedGradeSummaryItemViewHolder>() {
             @Override
             public AccumulatedGradeSummaryItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -77,7 +59,7 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
             }
         };
         mLMSPortalManager.clearAccumulatedGradeSummary();
-        mRecyclerView = findViewById(R.id.portal_accumulated_recycler_view);
+        mRecyclerView = findViewById(R.id.accumulated_grade_summary_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
         executeAsyncTask();
@@ -104,22 +86,28 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
     public class AccumulatedGradeSummaryItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSemesterTextView;
-        private TextView mGPAAndTotalGradesTextView;
-        private TextView mCreditsTextView;
+        private TextView mRegisteredCreditsTextView;
+        private TextView mAcquiredCreditsTextView;
+        private TextView mTotalGradesTextView;
+        private TextView mGPATextView;
 
         private AccumulatedGradeSummaryItemViewHolder(View itemView) {
             super(itemView);
             mSemesterTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_semester);
-            mGPAAndTotalGradesTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_GPA_and_total_grades);
-            mCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_credits);
+            mRegisteredCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_registered_credits);
+            mAcquiredCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_acquired_credits);
+            mTotalGradesTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_total_grades);
+            mGPATextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_GPA);
             itemView.setOnClickListener(this);
         }
 
         public void bind(int position) {
             AccumulatedGradeSummary accumulatedGradeSummary = mLMSPortalManager.getAccumulatedGradeSummary(position);
             mSemesterTextView.setText(String.valueOf(accumulatedGradeSummary.semester));
-            mGPAAndTotalGradesTextView.setText(accumulatedGradeSummary.GPA + " / " + accumulatedGradeSummary.totalGrades);
-            mCreditsTextView.setText(accumulatedGradeSummary.acquiredCredits + " / " + accumulatedGradeSummary.registeredCredits);
+            mRegisteredCreditsTextView.setText(String.valueOf(accumulatedGradeSummary.registeredCredits));
+            mAcquiredCreditsTextView.setText(String.valueOf(accumulatedGradeSummary.acquiredCredits));
+            mTotalGradesTextView.setText(String.valueOf(accumulatedGradeSummary.totalGrades));
+            mGPATextView.setText(String.valueOf(accumulatedGradeSummary.GPA));
         }
 
         @Override

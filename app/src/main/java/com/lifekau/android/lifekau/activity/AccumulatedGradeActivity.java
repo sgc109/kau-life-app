@@ -58,7 +58,7 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_grade);
+        setContentView(R.layout.activity_accumulated_grade);
         Intent intent = getIntent();
         Calendar now = Calendar.getInstance();
         mYear = intent.getIntExtra(EXTRA_YEAR, now.get(Calendar.YEAR));
@@ -69,7 +69,7 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
         mRecyclerAdapter = new RecyclerView.Adapter<AccumulatedGradeItemViewHolder>() {
             @Override
             public AccumulatedGradeItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_grade, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_accumulated_grade, parent, false);
                 return new AccumulatedGradeItemViewHolder(view);
             }
 
