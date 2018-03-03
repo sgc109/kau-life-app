@@ -44,6 +44,8 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
+    private ViewGroup mMainLayout;
+    private ViewGroup mProgressBarLayout;
     private GetAccumulatedGradeAsyncTask mGetAccumulatedGradeAsyncTask;
     private int mYear;
     private int mSemesterCode;
@@ -85,10 +87,14 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
         };
 
         mLMSPortalManager.clearAccumulatedGrade();
-        mRecyclerView = findViewById(R.id.grade_list_recycler_view);
+        mRecyclerView = findViewById(R.id.accumulated_grade_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
-        TextView gradeTitleTextView = findViewById(R.id.grade_title);
+        mMainLayout = findViewById(R.id.accumulated_grade_main_layout);
+        mMainLayout.setVisibility(View.GONE);
+        mProgressBarLayout = findViewById(R.id.accumulated_grade_progress_bar_layout);
+        mProgressBarLayout.setVisibility(View.VISIBLE);
+        TextView gradeTitleTextView = findViewById(R.id.accumulated_grade_title);
         gradeTitleTextView.setText(mYear + "년 " + getSemesterString(mSemesterCode));
         executeAsyncTask();
     }
@@ -121,11 +127,11 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
 
         private AccumulatedGradeItemViewHolder(View itemView) {
             super(itemView);
-            mSubjectTitleTextView = itemView.findViewById(R.id.list_item_grade_subject_title);
-            mProfessorNameTextView = itemView.findViewById(R.id.list_item_grade_professor_name);
-            mTypeTextView = itemView.findViewById(R.id.list_item_grade_type);
-            mCreditsTextView = itemView.findViewById(R.id.list_item_grade_credits);
-            mGradeTextView = itemView.findViewById(R.id.list_item_grade_grade);
+            mSubjectTitleTextView = itemView.findViewById(R.id.list_item_accumulated_grade_subject_title);
+            mProfessorNameTextView = itemView.findViewById(R.id.list_item_accumulated_grade_professor_name);
+            mTypeTextView = itemView.findViewById(R.id.list_item_accumulated_grade_type);
+            mCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_credits);
+            mGradeTextView = itemView.findViewById(R.id.list_item_accumulated_grade_grade);
         }
 
         public void bind(int position) {
@@ -181,8 +187,8 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
             if (accumulatedGradeActivity == null || accumulatedGradeActivity.isFinishing()) return;
             Resources resources = accumulatedGradeActivity.getResources();
             if (result == resources.getInteger(R.integer.no_error)) {
-//                accumulatedGradeActivity.mProgressBar.setVisibility(View.GONE);
-//                accumulatedGradeActivity.mRecyclerView.setVisibility(View.VISIBLE);
+                accumulatedGradeActivity.mProgressBarLayout.setVisibility(View.GONE);
+                accumulatedGradeActivity.mMainLayout.setVisibility(View.VISIBLE);
                 accumulatedGradeActivity.mRecyclerAdapter.notifyDataSetChanged();
             } else if(result == resources.getInteger(R.integer.network_error)){
                 //네트워크 관련 문제

@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +28,8 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
+    private ViewGroup mMainLayout;
+    private ViewGroup mProgressBarLayout;
     private PullAccumulatedGradeSummaryAsyncTask mPullAccumulatedGradeSummaryAsyncTask;
 
     @Override
@@ -62,6 +63,10 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.accumulated_grade_summary_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
+        mMainLayout = findViewById(R.id.accumulated_grade_summary_main_layout);
+        mMainLayout.setVisibility(View.GONE);
+        mProgressBarLayout = findViewById(R.id.accumulated_grade_summary_progress_bar_layout);
+        mProgressBarLayout.setVisibility(View.VISIBLE);
         executeAsyncTask();
     }
 
@@ -165,6 +170,8 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
                 return;
             if (result == resources.getInteger(R.integer.no_error)) {
                 accumulatedGradeSummaryActivity.mRecyclerAdapter.notifyDataSetChanged();
+                accumulatedGradeSummaryActivity.mProgressBarLayout.setVisibility(View.GONE);
+                accumulatedGradeSummaryActivity.mMainLayout.setVisibility(View.VISIBLE);
             } else if(result == resources.getInteger(R.integer.network_error)){
                 //네트워크 관련 예외 처리
                 accumulatedGradeSummaryActivity.showErrorMessage();

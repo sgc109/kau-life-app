@@ -8,10 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +33,8 @@ public class ScholarshipActivity extends AppCompatActivity {
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
-    private ProgressBar mProgressBar;
+    private ViewGroup mMainLayout;
+    private ViewGroup mProgressBarLayout;
     private GetScholarshipAsyncTask mGetScholarshipAsyncTask;
 
     @Override
@@ -60,11 +63,13 @@ public class ScholarshipActivity extends AppCompatActivity {
         };
 
         mLMSPortalManager.clearScholarship();
-        mRecyclerView = findViewById(R.id.portal_scholarship_recycler_view);
+        mRecyclerView = findViewById(R.id.scholarship_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
-//        mProgressBar = findViewById(R.id.scholarship_list_progress_bar);
-//        mProgressBar.setVisibility(View.VISIBLE);
+        mMainLayout = findViewById(R.id.scholarship_main_layout);
+        mMainLayout.setVisibility(View.GONE);
+        mProgressBarLayout = findViewById(R.id.scholarship_progress_bar_layout);
+        mProgressBarLayout.setVisibility(View.VISIBLE);
         executeAsyncTask();
     }
 
@@ -151,7 +156,8 @@ public class ScholarshipActivity extends AppCompatActivity {
             if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return;
             Resources resources = scholarshipActivity.getResources();
             if (result == resources.getInteger(R.integer.no_error)) {
-//                scholarshipActivity.mProgressBar.setVisibility(View.GONE);
+                scholarshipActivity.mProgressBarLayout.setVisibility(View.GONE);
+                scholarshipActivity.mMainLayout.setVisibility(View.VISIBLE);
                 scholarshipActivity.mRecyclerAdapter.notifyDataSetChanged();
             } else if(result == resources.getInteger(R.integer.network_error)){
                 //네트워크 관련 문제
