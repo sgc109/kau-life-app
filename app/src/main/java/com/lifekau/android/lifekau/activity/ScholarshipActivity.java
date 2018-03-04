@@ -1,15 +1,19 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,13 +27,14 @@ import java.text.NumberFormat;
 
 public class ScholarshipActivity extends AppCompatActivity {
 
-    private static final int VIEW_ITEM = 0;
-    private static final int VIEW_PROGRESS = 1;
+    private static final int UNEXPECTED_ERROR = -100;
+    private static final int MAXIMUM_RETRY_NUM = 5;
 
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
-    private ProgressBar mProgressBar;
+    private ViewGroup mMainLayout;
+    private ViewGroup mProgressBarLayout;
     private GetScholarshipAsyncTask mGetScholarshipAsyncTask;
 
     @Override
@@ -53,19 +58,18 @@ public class ScholarshipActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                int size = mLMSPortalManager.getScholarshipSize();
-                return (size > 0) ? size : 1;
+                return mLMSPortalManager.getScholarshipSize();
             }
         };
 
         mLMSPortalManager.clearScholarship();
-        mRecyclerView = findViewById(R.id.portal_scholarship_recycler_view);
+        mRecyclerView = findViewById(R.id.scholarship_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
-        mRecyclerView.setVisibility(View.GONE);
-
-        mProgressBar = findViewById(R.id.scholarship_list_progress_bar);
-        mProgressBar.setVisibility(View.VISIBLE);
+        mMainLayout = findViewById(R.id.scholarship_main_layout);
+        mMainLayout.setVisibility(View.GONE);
+        mProgressBarLayout = findViewById(R.id.scholarship_progress_bar_layout);
+        mProgressBarLayout.setVisibility(View.VISIBLE);
         executeAsyncTask();
     }
 
@@ -94,7 +98,7 @@ public class ScholarshipActivity extends AppCompatActivity {
         private TextView mCategorizationTextView;
         private TextView mAmountTextView;
 
-        public ScholarshipItemViewHolder(View itemView) {
+        private ScholarshipItemViewHolder(View itemView) {
             super(itemView);
             mTypeTextView = itemView.findViewById(R.id.list_item_scholarship_type);
             mSemesterTextView = itemView.findViewById(R.id.list_item_scholarship_semester);
@@ -132,29 +136,38 @@ public class ScholarshipActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Integer... params) {
             ScholarshipActivity scholarshipActivity = activityReference.get();
+            if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return UNEXPECTED_ERROR;
+            Resources resources = scholarshipActivity.getResources();
             int count = 0;
-            while ((scholarshipActivity != null && !scholarshipActivity.isFinishing()) &&
-                    scholarshipActivity.mLMSPortalManager.pullScholarship(activityReference.get()) == -1 && !isCancelled()) {
-                Log.e("ERROR", "페이지 불러오기 실패!");
+            int result = scholarshipActivity.mLMSPortalManager.pullScholarship(activityReference.get());
+            while (!scholarshipActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 sleep(3000);
-                count++;
-                if (count == 5) return -1;
+                if(result == resources.getInteger(R.integer.session_error)) return result;
+                else count++;
+                if(count == MAXIMUM_RETRY_NUM) return resources.getInteger(R.integer.network_error);
             }
-            return 0;
+            return resources.getInteger(R.integer.no_error);
         }
 
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            final ScholarshipActivity scholarshipActivity = activityReference.get();
+            ScholarshipActivity scholarshipActivity = activityReference.get();
             if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return;
-            if (result != -1) {
-                scholarshipActivity.mProgressBar.setVisibility(View.GONE);
-                scholarshipActivity.mRecyclerView.setVisibility(View.VISIBLE);
-                scholarshipActivity.mRecyclerAdapter.notifyItemRangeChanged(0, scholarshipActivity.mLMSPortalManager.getScholarshipSize());
-            } else {
-                //예외 처리
+            Resources resources = scholarshipActivity.getResources();
+            if (result == resources.getInteger(R.integer.no_error)) {
+                scholarshipActivity.mProgressBarLayout.setVisibility(View.GONE);
+                scholarshipActivity.mMainLayout.setVisibility(View.VISIBLE);
+                scholarshipActivity.mRecyclerAdapter.notifyDataSetChanged();
+            } else if(result == resources.getInteger(R.integer.network_error)){
+                //네트워크 관련 문제
                 scholarshipActivity.showErrorMessage();
+            }
+            else if(result == resources.getInteger(R.integer.session_error)){
+                //세션 관련 문제
+                Intent intent = LoginActivity.newIntent(scholarshipActivity);
+                scholarshipActivity.startActivity(intent);
+                scholarshipActivity.finish();
             }
         }
 

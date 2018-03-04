@@ -1,9 +1,9 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,74 +24,49 @@ import java.lang.ref.WeakReference;
 
 public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
-    private static final int VIEW_ITEM = 0;
-    private static final int VIEW_PROGRESS = 1;
 
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
+    private ViewGroup mMainLayout;
+    private ViewGroup mProgressBarLayout;
     private PullAccumulatedGradeSummaryAsyncTask mPullAccumulatedGradeSummaryAsyncTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accumulated_grade);
+        setContentView(R.layout.activity_accumulated_grade_summary);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        mSwipeRefreshLayout = findViewById(R.id.portal_accumulated_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRecyclerAdapter = new RecyclerView.Adapter<AccumulatedGradeSummaryItemViewHolder>() {
             @Override
-            public void onRefresh() {
-                mRecyclerAdapter.notifyDataSetChanged();
-                executeAsyncTask();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 500);
-            }
-        });
-        mRecyclerAdapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public AccumulatedGradeSummaryItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view;
-                RecyclerView.ViewHolder viewHolder;
-                if (viewType == VIEW_ITEM) {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_accumulated_grade_summary, parent, false);
-                    viewHolder = new AccumulatedGradeSummaryItemViewHolder(view);
-                } else {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_progress, parent, false);
-                    viewHolder = new ItemProgressViewHolder(view);
-                }
+                AccumulatedGradeSummaryItemViewHolder viewHolder;
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_accumulated_grade_summary, parent, false);
+                viewHolder = new AccumulatedGradeSummaryItemViewHolder(view);
                 return viewHolder;
             }
 
             @Override
-            public int getItemViewType(int position) {
-                return mLMSPortalManager.getAccumulatedGradeSummary(position) != null ? VIEW_ITEM : VIEW_PROGRESS;
-            }
-
-            @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                if (holder instanceof AccumulatedGradeSummaryItemViewHolder)
-                    ((AccumulatedGradeSummaryItemViewHolder) holder).bind(position);
-                else ((ItemProgressViewHolder) holder).bind(position);
+            public void onBindViewHolder(AccumulatedGradeSummaryItemViewHolder holder, int position) {
+                holder.bind(position);
             }
 
             @Override
             public int getItemCount() {
-                int size = mLMSPortalManager.getAccumulatedGradeSummarySize();
-                return (size > 0) ? size : 1;
+                return mLMSPortalManager.getAccumulatedGradeSummarySize();
             }
         };
         mLMSPortalManager.clearAccumulatedGradeSummary();
-        mRecyclerView = findViewById(R.id.portal_accumulated_recycler_view);
+        mRecyclerView = findViewById(R.id.accumulated_grade_summary_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
+        mMainLayout = findViewById(R.id.accumulated_grade_summary_main_layout);
+        mMainLayout.setVisibility(View.GONE);
+        mProgressBarLayout = findViewById(R.id.accumulated_grade_summary_progress_bar_layout);
+        mProgressBarLayout.setVisibility(View.VISIBLE);
         executeAsyncTask();
     }
 
@@ -115,36 +89,40 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
         mPullAccumulatedGradeSummaryAsyncTask.execute();
     }
 
-    public class AccumulatedGradeSummaryItemViewHolder extends RecyclerView.ViewHolder {
+    public class AccumulatedGradeSummaryItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSemesterTextView;
-        private TextView mGPAAndTotalGradesTextView;
-        private TextView mCreditsTextView;
+        private TextView mRegisteredCreditsTextView;
+        private TextView mAcquiredCreditsTextView;
+        private TextView mTotalGradesTextView;
+        private TextView mGPATextView;
 
-        public AccumulatedGradeSummaryItemViewHolder(View itemView) {
+        private AccumulatedGradeSummaryItemViewHolder(View itemView) {
             super(itemView);
             mSemesterTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_semester);
-            mGPAAndTotalGradesTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_GPA_and_total_grades);
-            mCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_credits);
+            mRegisteredCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_registered_credits);
+            mAcquiredCreditsTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_acquired_credits);
+            mTotalGradesTextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_total_grades);
+            mGPATextView = itemView.findViewById(R.id.list_item_accumulated_grade_summary_GPA);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(int position) {
             AccumulatedGradeSummary accumulatedGradeSummary = mLMSPortalManager.getAccumulatedGradeSummary(position);
             mSemesterTextView.setText(String.valueOf(accumulatedGradeSummary.semester));
-            mGPAAndTotalGradesTextView.setText(accumulatedGradeSummary.GPA + " / " + accumulatedGradeSummary.totalGrades);
-            mCreditsTextView.setText(accumulatedGradeSummary.acquiredCredits + " / " + accumulatedGradeSummary.registeredCredits);
-        }
-    }
-
-    public class ItemProgressViewHolder extends RecyclerView.ViewHolder {
-        private ProgressBar mProgressBar;
-
-        public ItemProgressViewHolder(View progressView) {
-            super(progressView);
-            mProgressBar = progressView.findViewById(R.id.list_item_progress_bar);
+            mRegisteredCreditsTextView.setText(String.valueOf(accumulatedGradeSummary.registeredCredits));
+            mAcquiredCreditsTextView.setText(String.valueOf(accumulatedGradeSummary.acquiredCredits));
+            mTotalGradesTextView.setText(String.valueOf(accumulatedGradeSummary.totalGrades));
+            mGPATextView.setText(String.valueOf(accumulatedGradeSummary.GPA));
         }
 
-        public void bind(int position) {
-
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            if(position != RecyclerView.NO_POSITION) {
+                AccumulatedGradeSummary accumulatedGradeSummary = mLMSPortalManager.getAccumulatedGradeSummary(position);
+                Intent intent = AccumulatedGradeActivity.newIntent(AccumulatedGradeSummaryActivity.this, accumulatedGradeSummary.year, accumulatedGradeSummary.semesterCode);
+                startActivity(intent);
+            }
         }
     }
 
@@ -169,35 +147,40 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Integer... params) {
+            Resources res = applicationWeakReference.get().getResources();
             AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
+            if (accumulatedGradeSummaryActivity == null || accumulatedGradeSummaryActivity.isFinishing()) return res.getInteger(R.integer.unexpected_error);
             int count = 0;
-            while ((accumulatedGradeSummaryActivity != null && !accumulatedGradeSummaryActivity.isFinishing()) &&
-                    accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(activityReference.get()) == -1 && !isCancelled()) {
-                Log.e("ERROR", "페이지 불러오기 실패!");
+            int result = accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(activityReference.get());
+            while (!accumulatedGradeSummaryActivity.isFinishing() && result != res.getInteger(R.integer.no_error) && !isCancelled()) {
                 sleep(3000);
-                count++;
-                if (count == 5) return -1;
+                if(result == res.getInteger(R.integer.session_error)) return result;
+                else count++;
+                if(count == res.getInteger(R.integer.maximum_retry_num)) return res.getInteger(R.integer.network_error);
             }
-            return 0;
+            return res.getInteger(R.integer.no_error);
         }
 
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            final AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
+            AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
+            Resources resources = applicationWeakReference.get().getResources();
             if (accumulatedGradeSummaryActivity == null || accumulatedGradeSummaryActivity.isFinishing())
                 return;
-            if (result != -1) {
+            if (result == resources.getInteger(R.integer.no_error)) {
                 accumulatedGradeSummaryActivity.mRecyclerAdapter.notifyDataSetChanged();
-            } else {
-                //예외 처리
+                accumulatedGradeSummaryActivity.mProgressBarLayout.setVisibility(View.GONE);
+                accumulatedGradeSummaryActivity.mMainLayout.setVisibility(View.VISIBLE);
+            } else if(result == resources.getInteger(R.integer.network_error)){
+                //네트워크 관련 예외 처리
                 accumulatedGradeSummaryActivity.showErrorMessage();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        accumulatedGradeSummaryActivity.mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
+            }
+            else if(result == resources.getInteger(R.integer.session_error)){
+                //세션 관련 예외 처리
+                Intent intent = LoginActivity.newIntent(accumulatedGradeSummaryActivity);
+                accumulatedGradeSummaryActivity.startActivity(intent);
+                accumulatedGradeSummaryActivity.finish();
             }
         }
 

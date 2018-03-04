@@ -9,21 +9,7 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/list_item_scholarship_semester"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="4dp"
-        android:layout_weight="0.25"
-        android:gravity="center_vertical"
-        android:text="2013학년/1학기"
-        android:textColor="@color/grade_list_text"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/list_item_scholarship_type"
+        android:id="@+id/list_item_grade_subject_title"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginBottom="4dp"
@@ -33,26 +19,12 @@
         android:layout_weight="0.3"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="후배사랑릴레이장학"
+        android:text="Introduction to International Relations"
         android:textColor="@color/grade_list_text"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/list_item_scholarship_categorization"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="4dp"
-        android:layout_weight="0.2"
-        android:gravity="center_vertical"
-        android:text="교내장학"
-        android:textColor="@color/grade_list_text"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/list_item_scholarship_amount"
+        android:id="@+id/list_item_grade_professor_name"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginBottom="4dp"
@@ -61,7 +33,49 @@
         android:layout_marginTop="4dp"
         android:layout_weight="0.25"
         android:gravity="center_vertical"
-        android:text="5,000,000"
+        android:singleLine="true"
+        android:text="칼훈 앤드류 데이비드"
         android:textColor="@color/grade_list_text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/list_item_grade_type"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="0.2"
+        android:gravity="center_vertical"
+        android:text="전필"
+        android:textColor="@color/grade_list_text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/list_item_grade_credits"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="0.125"
+        android:gravity="center_vertical"
+        android:text="3"
+        android:textColor="@color/grade_list_text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/list_item_grade_grade"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="0.125"
+        android:gravity="center_vertical"
+        android:text="A+"
         android:textSize="12sp" />
 </LinearLayout>

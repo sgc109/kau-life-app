@@ -91,6 +91,8 @@
         </activity>
         <activity android:name=".activity.NoticePageActivity">
         </activity>
+        <activity android:name=".activity.AccumulatedGradeActivity">
+        </activity>
     </application>
 
 </manifest>
