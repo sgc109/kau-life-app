@@ -275,6 +275,7 @@ public class LoginActivity extends AppCompatActivity{
                 loginManager.setStudentId(activitiy.mLMSPortalManager.getStudentId());
                 Intent intent = HomeActivity.newIntent(activityReference.get());
                 activitiy.startActivity(intent);
+                activitiy.finish();
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 activitiy.mPasswordView.setError(activitiy.getString(R.string.error_incorrect_password));
                 activitiy.mPasswordView.requestFocus();
