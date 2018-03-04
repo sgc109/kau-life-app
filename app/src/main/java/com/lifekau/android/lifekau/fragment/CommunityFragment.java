@@ -209,13 +209,13 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         return mAdapter;
     }
 
-    public void updatePost(final int position){
+    public void updatePost(final int position) {
         mPostsRef
                 .child(mAdapter.mPostKeys.get(position))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot == null){
+                        if (dataSnapshot == null) {
                             mAdapter.mPosts.remove(position);
                             mAdapter.mPostKeys.remove(position);
                             return;

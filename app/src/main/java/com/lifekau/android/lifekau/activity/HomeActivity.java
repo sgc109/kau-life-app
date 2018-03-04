@@ -260,4 +260,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     protected void onResume() {
         super.onResume();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(viewPager.getCurrentItem() != 0) return;
+    }
 }

@@ -199,6 +199,8 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 if (mHasClickedComment) {
                     showSoftKeyboard();
                     focusCommentEditText();
+                } else {
+                    mCommentEditText.requestFocus();
                 }
             }
 
@@ -368,7 +370,6 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                         getString(R.string.successfully_comment_registered),
                         Toast.LENGTH_SHORT).
                         show();
-
             }
         });
     }
