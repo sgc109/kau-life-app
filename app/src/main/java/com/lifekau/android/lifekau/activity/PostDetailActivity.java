@@ -403,6 +403,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 //            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
             editable.delete(limitTextCnt, editable.length());
         }
+        mCommentEditText.setText(editable);
     }
 
     private void deleteComment(int position){

@@ -89,6 +89,7 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
 //            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
             editable.delete(limitTextCnt, editable.length());
         }
+        mCommentEditText.setText(editable);
     }
 
     @Override
