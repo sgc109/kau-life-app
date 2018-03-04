@@ -21,7 +21,6 @@
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_create"
         android:visibility="visible"
-        app:layout_behavior=".FABHideOnScrollBehavior"
         app:useCompatPadding="true"/>
 
     <android.support.design.widget.AppBarLayout

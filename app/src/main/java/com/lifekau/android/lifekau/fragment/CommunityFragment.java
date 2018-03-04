@@ -90,6 +90,10 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
         mRecyclerView.addOnScrollListener(scrollListener);
         setHasOptionsMenu(true);
+
+
+        initPostList();
+
         return view;
     }
 
@@ -100,7 +104,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
         mEmptyMessageTextView = view.findViewById(R.id.post_list_empty_message_text_view);
     }
 
-    private void initPostList() {
+    public void initPostList() {
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
         mEmptyMessageTextView.setVisibility(View.GONE);
@@ -182,7 +186,6 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     @Override
     public void onStart() {
         super.onStart();
-        initPostList();
     }
 
     @Override

@@ -400,10 +400,9 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         if(editable.length() > limitTextCnt) {
             String toastMsg = String.format(getString(R.string.text_limit_message), limitTextCnt);
             DialogMaker.showOkButtonDialog(this, toastMsg);
-//            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
             editable.delete(limitTextCnt, editable.length());
+            return;
         }
-        mCommentEditText.setText(editable);
     }
 
     private void deleteComment(int position){

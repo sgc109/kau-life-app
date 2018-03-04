@@ -65,6 +65,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
     }
 
     private void writePost(Post post) {
+        setResult(RESULT_OK);
         DatabaseReference postsRef = mDatabase.child(getString(R.string.firebase_database_posts));
         String postKey = postsRef.push().getKey();
         postsRef.child(postKey).setValue(post);
@@ -123,10 +124,9 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
         if(editable.length() > limitTextCnt) {
             String toastMsg = String.format(getString(R.string.text_limit_message), limitTextCnt);
             DialogMaker.showOkButtonDialog(this, toastMsg);
-//            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
             editable.delete(limitTextCnt, editable.length());
+            return;
         }
-        mPostEditText.setText(editable);
     }
 
     @Override

@@ -41,6 +41,7 @@
     </LinearLayout>
 
     <EditText
+        android:maxLength="310"
         android:id="@+id/write_post_edit_text"
         android:layout_width="match_parent"
         android:layout_height="260dp"
