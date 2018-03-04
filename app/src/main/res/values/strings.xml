@@ -135,7 +135,7 @@
     <string name="library_study_room_detail_format">%s</string>
 
     <string name="available_now">이용 가능</string>
-    <string name="not_available_now">사용중</string>
+    <string name="not_available_now">이용 불가</string>
     <string name="no_seat_now">여석 없음</string>
 
     <string name="permission_rationale">권한 요청</string>

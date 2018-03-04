@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LibraryManager;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
 
-public class LibraryListActivity extends AppCompatActivity {
+public class LibraryListActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     private static final String EXTRA_ROOM_TYPE = "extra_room_type";
     public static final int TYPE_READING_ROOM = 0;
     public static final int TYPE_STUDY_ROOM = 1;
@@ -55,8 +57,8 @@ public class LibraryListActivity extends AppCompatActivity {
         }
         Intent intent = getIntent();
         mRoomType = intent.getIntExtra(EXTRA_ROOM_TYPE, TYPE_READING_ROOM);
-        mSelectedArray = mRoomType == 0 ? R.array.library_reading_room_list : R.array.library_study_room_list;
-        int listLen = getResources().getStringArray(mSelectedArray).length;
+        mSelectedArray =
+                mRoomType == TYPE_READING_ROOM ? R.array.library_reading_room_list : R.array.library_study_room_list;
         mRecyclerAdapter = new RecyclerView.Adapter<LibraryListViewHolder>() {
             @Override
             public LibraryListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -87,7 +89,6 @@ public class LibraryListActivity extends AppCompatActivity {
     public class LibraryListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mNameTextView;
         private TextView mDetailTextView;
-        private Context mContext;
         private View mItemView;
 
         public LibraryListViewHolder(View itemView) {
@@ -95,11 +96,11 @@ public class LibraryListActivity extends AppCompatActivity {
             mItemView = itemView;
             mNameTextView = itemView.findViewById(R.id.list_item_library_item_name);
             mDetailTextView = itemView.findViewById(R.id.list_item_library_item_detail);
-            mContext = itemView.getContext();
             itemView.setOnClickListener(this);
         }
 
         public void bind(int position) {
+            mItemView.setBackgroundColor(Color.WHITE);
             if (mRoomType == TYPE_READING_ROOM) {
                 mNameTextView.setText(mLibraryManager.getReadingRoomName(position));
                 int cntAvailableSeat = mLibraryManager.getReadingRoomAvailableSeat(position);
@@ -107,6 +108,7 @@ public class LibraryListActivity extends AppCompatActivity {
                 String statusString;
                 String format = getString(R.string.library_reading_room_detail_format);
                 statusString = String.format(format, cntTotalSeat - cntAvailableSeat, cntAvailableSeat);
+//                mItemView.setBackgroundColor(Color.WHITE);
                 if (cntAvailableSeat == 0) {
                     mItemView.setBackgroundColor(changeAlpha(Color.RED, 0.15f));
                     mDetailTextView.setTextColor(getResources().getColor(R.color.room_not_available_color));
@@ -122,6 +124,7 @@ public class LibraryListActivity extends AppCompatActivity {
             } else if(mRoomType == TYPE_STUDY_ROOM) {
                 mNameTextView.setText(mLibraryManager.getStudyRoomName(position));
                 boolean isAvailableNow = mLibraryManager.isStudyRoomAvailableNow(position);
+                Log.e("ERROR", "position" + position + " " + "이용 가능 여부 "+ isAvailableNow);
                 String format = getString(R.string.library_study_room_detail_format);
                 if (!isAvailableNow) {
                     mDetailTextView.setText(String.format(format, getString(R.string.not_available_now)));
@@ -129,7 +132,7 @@ public class LibraryListActivity extends AppCompatActivity {
                     mDetailTextView.setTextColor(getResources().getColor(R.color.room_not_available_color));
                 } else {
                     mDetailTextView.setText(String.format(format, getString(R.string.available_now)));
-//                    mItemView.setBackgroundColor(changeAlpha(Color.GREEN, 0.15f));
+                    mItemView.setBackgroundColor(Color.WHITE);
                     mDetailTextView.setTextColor(getResources().getColor(R.color.room_available_color));
                 }
             }
@@ -141,9 +144,14 @@ public class LibraryListActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), mRoomType == 0 ? ReadingRoomDetailActivity.class : StudyRoomDetailActivity.class);
-            intent.putExtra("roomNum", getAdapterPosition());
-            startActivity(intent);
+            if(mRoomType == TYPE_READING_ROOM){
+                Intent intent = ReadingRoomDetailActivity.newIntent(view.getContext());
+                intent.putExtra("roomNum", getAdapterPosition());
+                startActivity(intent);
+            }
+            else{
+                mLibraryManager.showStudyRoomStatus(view.getContext(), getAdapterPosition());
+            }
         }
     }
 
@@ -151,7 +159,7 @@ public class LibraryListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (mRecyclerAdapter != null) {
-            mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
+            mRecyclerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -184,6 +192,7 @@ public class LibraryListActivity extends AppCompatActivity {
             LibraryListActivity libraryListActivity = activityReference.get();
             if (libraryListActivity == null || libraryListActivity.isFinishing()) return;
             if (result != -1) {
+                libraryListActivity.mRecyclerAdapter.notifyDataSetChanged();
             } else {
                 //예외 처리
                 libraryListActivity.showErrorMessage();
@@ -198,5 +207,10 @@ public class LibraryListActivity extends AppCompatActivity {
     public void showErrorMessage() {
         Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+
     }
 }
