@@ -3,7 +3,6 @@ package com.lifekau.android.lifekau.activity;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -22,14 +21,16 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 import com.lifekau.android.lifekau.FABHideOnScrollBehavior;
-import com.lifekau.android.lifekau.adapter.HomeViewPagerAdapter;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.adapter.HomeViewPagerAdapter;
+import com.lifekau.android.lifekau.fragment.CommunityFragment;
 import com.lifekau.android.lifekau.fragment.PagerFragment;
 
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity implements AHBottomNavigation.OnTabSelectedListener {
 
+    private static final int REQUEST_POST_WRITE = 0;
     private PagerFragment currentFragment;
     private HomeViewPagerAdapter adapter;
     private AHBottomNavigationAdapter navigationAdapter;
@@ -58,6 +59,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         initUI();
+
+        CoordinatorLayout.LayoutParams params =
+                (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
+        params.setBehavior(new FABHideOnScrollBehavior(viewPager));
     }
 
     private void initUI() {
@@ -144,9 +149,20 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             @Override
             public void onClick(View view) {
                 Intent intent = PostWriteActivity.newIntent(HomeActivity.this);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_POST_WRITE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_POST_WRITE) {
+            if (resultCode == RESULT_OK) {
+                CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
+                fragment.initPostList();
+            }
+        }
     }
 
     @Override
