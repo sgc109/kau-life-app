@@ -1,11 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/login_background9"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                tools:context="com.lifekau.android.lifekau.activity.LoginActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background9"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="com.lifekau.android.lifekau.activity.LoginActivity">
 
     <ScrollView
         android:id="@+id/login_form"
@@ -25,7 +25,7 @@
                 android:layout_height="120dp"
                 android:layout_marginBottom="30dp"
                 android:alpha=".80"
-                android:src="@drawable/kau_bold2"/>
+                android:src="@drawable/kau_bold2" />
 
             <AutoCompleteTextView
                 android:id="@+id/id"
@@ -38,7 +38,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="2012122327"/>
+                android:text="2013122141" />
 
 
             <EditText
@@ -55,7 +55,7 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="qqqqqq"/>
+                android:text="qqqqqq" />
 
 
             <Button
@@ -66,8 +66,20 @@
                 android:alpha="0.80"
                 android:background="@drawable/rounded_corner_login_button"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
+            <CheckBox
+                style="?android:textAppearanceSmall"
+                android:id="@+id/auto_login_check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:alpha="0.80"
+                android:text="자동로그인"
+                android:textStyle="bold" />
         </LinearLayout>
+
+
     </ScrollView>
+
 </RelativeLayout>
