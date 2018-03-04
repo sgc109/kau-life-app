@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.lifekau.android.lifekau.AdvancedEncryptionStandard;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
 import com.lifekau.android.lifekau.manager.LoginManager;
@@ -52,9 +54,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends AppCompatActivity{
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
+    private static final String SAVE_GUID = "shared_preferences_globally_unique_identifier";
     private static final String SAVE_ID = "shared_preferences_save_id";
     private static final String SAVE_PASSWORD = "shared_preferences_save_password";
     private static final String SAVE_CHECKED_AUTO_LOGIN = "shared_preferences_save_checked_auto_login";
@@ -264,8 +264,14 @@ public class LoginActivity extends AppCompatActivity{
                 if (activitiy.mAutoLoginCheckBox.isChecked()) {
                     SharedPreferences sharedPref = activitiy.getPreferences(Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString(SAVE_ID, mid);
-                    editor.putString(SAVE_PASSWORD, mPassword);
+                    String uniqueID = sharedPref.getString(SAVE_GUID, null);
+                    if(uniqueID == null){
+                        uniqueID = UUID.randomUUID().toString();
+                        editor.putString(SAVE_GUID, uniqueID);
+                    }
+                    AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
+                    editor.putString(SAVE_ID, advancedEncryptionStandard.encrypt(mid, uniqueID));
+                    editor.putString(SAVE_PASSWORD, advancedEncryptionStandard.encrypt(mPassword, uniqueID));
                     editor.putBoolean(SAVE_CHECKED_AUTO_LOGIN, true);
                     editor.apply();
                 }
@@ -303,10 +309,16 @@ public class LoginActivity extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
         showProgress(false);
-        String uniqueID = UUID.randomUUID().toString();
+        AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        String id = sharedPref.getString(SAVE_ID, null);
-        String password = sharedPref.getString(SAVE_PASSWORD, null);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String uniqueID = sharedPref.getString(SAVE_GUID, null);
+        if(uniqueID == null){
+            uniqueID = UUID.randomUUID().toString();
+            editor.putString(SAVE_GUID, uniqueID);
+        }
+        String id = advancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_ID, ""), uniqueID);
+        String password = advancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_PASSWORD, ""), uniqueID);
         boolean checked = sharedPref.getBoolean(SAVE_CHECKED_AUTO_LOGIN, false);
         if (checked){
             InputMethodManager imm = (InputMethodManager) getSystemService(
