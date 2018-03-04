@@ -16,7 +16,9 @@
 -->
 <resources>
 
+    <color name="mdtp_black">#000000</color>
     <color name="mdtp_white">#ffffff</color>
+    <color name="mdtp_gray">#707070</color>
     <color name="mdtp_background_color">@color/mdtp_white</color>
     <color name="mdtp_circle_background">@color/mdtp_background_color</color>
     <color name="mdtp_circle_color">#f5f5f5</color>
