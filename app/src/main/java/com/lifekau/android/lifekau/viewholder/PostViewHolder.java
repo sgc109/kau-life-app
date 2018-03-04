@@ -125,7 +125,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             mLikeCountTextView.setVisibility(View.VISIBLE);
             mCircleHeartImageView.setVisibility(View.VISIBLE);
         }
-        if (mPost.commentCount == 0) {
+        if (mIsInDetail || mPost.commentCount == 0) {
             mCommentCountTextView.setVisibility(View.GONE);
         } else {
             mCommentCountTextView.setVisibility(View.VISIBLE);

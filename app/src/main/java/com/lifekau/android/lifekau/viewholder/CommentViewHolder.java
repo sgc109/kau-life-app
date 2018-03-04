@@ -28,6 +28,7 @@ import java.util.Date;
 public class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
     public static final int ITEM_ID_DELETE_COMMENT = 0;
     public static final int ITEM_ID_EDIT_COMMENT = 1;
+    public static final int ITEM_ID_CANCEL_COMMENT = 2;
     private TextView mContentTextView;
     private TextView mDateTextView;
     private TextView mLikeTextView;
@@ -132,5 +133,6 @@ public class CommentViewHolder extends RecyclerView.ViewHolder implements View.O
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo MenuInfo) {
         menu.add(0, ITEM_ID_DELETE_COMMENT, getAdapterPosition(), mContext.getString(R.string.dialog_delete));
+        menu.add(0, ITEM_ID_CANCEL_COMMENT, getAdapterPosition(), mContext.getString(R.string.dialog_delete));
     }
 }

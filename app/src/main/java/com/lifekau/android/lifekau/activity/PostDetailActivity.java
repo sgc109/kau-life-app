@@ -37,6 +37,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.lifekau.android.lifekau.DialogMaker;
 import com.lifekau.android.lifekau.PxDpConverter;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.adapter.CommentRecyclerAdapter;
@@ -195,6 +196,9 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("sgc109_debug", "PostDetailActivity:onDataChange");
                 Post post = dataSnapshot.getValue(Post.class);
+                if(mPost != null && post != null && !mJustWroteComment) { // 댓글 삭제한거
+                    return;
+                }
                 if (post == null) {
                     if (mPostViewHolder.getPost().author.equals(LoginManager.get(PostDetailActivity.this).getStudentId())) {
                         Toast.makeText(PostDetailActivity.this, getString(R.string.post_deleted_message), Toast.LENGTH_SHORT).show();
@@ -339,7 +343,6 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     }
 
     private void changeCommentCount(final int size) {
-        final String studentId = LoginManager.get(this).getStudentId();
         mPostRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -381,7 +384,6 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
     }
 
     @Override
@@ -392,6 +394,14 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         } else {
             mCommentSubmitImageView.setColorFilter(getResources().getColor(R.color.bright_gray));
             mCommentSubmitImageView.setOnClickListener(null);
+        }
+
+        int limitTextCnt = getResources().getInteger(R.integer.comment_write_text_limit);
+        if(editable.length() > limitTextCnt) {
+            String toastMsg = String.format(getString(R.string.text_limit_message), limitTextCnt);
+            DialogMaker.showOkButtonDialog(this, toastMsg);
+//            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
+            editable.delete(limitTextCnt, editable.length());
         }
     }
 
@@ -411,6 +421,9 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mAdapter.mComments.remove(position);
         mAdapter.mCommentKeys.remove(position);
         mAdapter.notifyItemRemoved(position);
+        if(mAdapter.mComments.size() == 0) {
+            getComments();
+        }
     }
 
     @Override

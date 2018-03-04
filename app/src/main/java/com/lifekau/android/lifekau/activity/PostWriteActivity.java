@@ -5,19 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.lifekau.android.lifekau.DialogMaker;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Post;
@@ -107,12 +103,10 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
     }
 
     @Override
@@ -123,6 +117,14 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
         } else {
             mSubmitButton.setTextColor(Color.WHITE);
             mSubmitButton.setFocusable(true);
+        }
+
+        int limitTextCnt = getResources().getInteger(R.integer.post_write_text_limit);
+        if(editable.length() > limitTextCnt) {
+            String toastMsg = String.format(getString(R.string.text_limit_message), limitTextCnt);
+            DialogMaker.showOkButtonDialog(this, toastMsg);
+//            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
+            editable.delete(limitTextCnt, editable.length());
         }
     }
 
