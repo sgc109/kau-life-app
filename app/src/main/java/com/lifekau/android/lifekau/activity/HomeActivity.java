@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.animation.Animator;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,11 +12,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
@@ -27,6 +30,7 @@ import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.fragment.PagerFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements AHBottomNavigation.OnTabSelectedListener {
 
@@ -39,6 +43,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     private AHBottomNavigationViewPager viewPager;
     private AHBottomNavigation bottomNavigation;
     private FloatingActionButton mFab;
+    private long mPressedTime;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, HomeActivity.class);
@@ -57,6 +62,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+        mPressedTime = 0;
         initUI();
     }
 
@@ -224,6 +230,24 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mPressedTime == 0 ) {
+            Toast.makeText(this, " 한 번 더 누르면 종료됩니다." , Toast.LENGTH_LONG).show();
+            mPressedTime = System.currentTimeMillis();
+        }
+        else {
+            int seconds = (int) (System.currentTimeMillis() - mPressedTime);
+            if (seconds > 2000) {
+                Toast.makeText(this, " 한 번 더 누르면 종료됩니다.", Toast.LENGTH_LONG).show();
+                mPressedTime = 0;
+            } else {
+                super.onBackPressed();
+                finish();
+            }
+        }
     }
 
     @Override
