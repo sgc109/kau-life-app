@@ -25,7 +25,7 @@ import java.util.Date;
  * Created by sgc109 on 2018-02-12.
  */
 
-public class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+public class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
     public static final int ITEM_ID_DELETE_COMMENT = 0;
     public static final int ITEM_ID_EDIT_COMMENT = 1;
     public static final int ITEM_ID_CANCEL_COMMENT = 2;
@@ -39,6 +39,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder implements View.O
     private Comment mComment;
     private String mCommentKey;
     private String mPostAuthor;
+
     public CommentViewHolder(View itemView, Context context, String postAuthor) {
         super(itemView);
         mPostAuthor = postAuthor;
@@ -52,12 +53,12 @@ public class CommentViewHolder extends RecyclerView.ViewHolder implements View.O
         itemView.setOnCreateContextMenuListener(this);
     }
 
-    public void bind(Comment comment, String commentKey, final String postKey){
+    public void bind(Comment comment, String commentKey, final String postKey) {
         mComment = comment;
         mCommentKey = commentKey;
 
         updateUI();
-        if(mPostAuthor.equals(comment.author)){
+        if (mPostAuthor.equals(comment.author)) {
             mAuthorTextView.setText(mContext.getString(R.string.anonymous_author));
         }
         mLikeTextView.setOnClickListener(new View.OnClickListener() {
@@ -81,11 +82,11 @@ public class CommentViewHolder extends RecyclerView.ViewHolder implements View.O
         });
     }
 
-    private void updateUI(){
+    private void updateUI() {
         mContentTextView.setText(mComment.text);
         mDateTextView.setText(DateDisplayer.dateToStringFormat(new Date(mComment.date)));
         mLikeCountTextView.setText("" + mComment.likeCount);
-        if(mComment.likeCount == 0){
+        if (mComment.likeCount == 0) {
             mLikeImageView.setVisibility(View.GONE);
             mLikeCountTextView.setVisibility(View.GONE);
         } else {
@@ -99,6 +100,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder implements View.O
             mLikeTextView.setTextColor(mContext.getResources().getColor(android.R.color.tab_indicator_text));
         }
     }
+
     private void onLikeClicked(DatabaseReference postRef) {
         final String studentId = LoginManager.get(mContext).getStudentId();
         postRef.runTransaction(new Transaction.Handler() {
@@ -132,7 +134,9 @@ public class CommentViewHolder extends RecyclerView.ViewHolder implements View.O
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo MenuInfo) {
-        menu.add(0, ITEM_ID_DELETE_COMMENT, getAdapterPosition(), mContext.getString(R.string.dialog_delete));
-        menu.add(0, ITEM_ID_CANCEL_COMMENT, getAdapterPosition(), mContext.getString(R.string.dialog_delete));
+        if (mPostAuthor.equals(LoginManager.get(mContext).getStudentId())) {
+            menu.add(0, ITEM_ID_DELETE_COMMENT, getAdapterPosition(), mContext.getString(R.string.dialog_delete));
+        }
+        menu.add(0, ITEM_ID_CANCEL_COMMENT, getAdapterPosition(), mContext.getString(R.string.dialog_cancel));
     }
 }
