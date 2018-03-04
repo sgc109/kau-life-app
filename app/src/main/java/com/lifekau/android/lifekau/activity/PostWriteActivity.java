@@ -126,6 +126,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
 //            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
             editable.delete(limitTextCnt, editable.length());
         }
+        mPostEditText.setText(editable);
     }
 
     @Override
