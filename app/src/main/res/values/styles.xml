@@ -19,6 +19,16 @@
         <item name="windowActionBar">false</item>
     </style>
 
+    <!--AlertDialog Colors-->
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--text-->
+        <item name="android:textColorPrimary">@android:color/tertiary_text_dark</item>
+        <!--background-->
+        <item name="android:background">@android:color/white</item>
+        <!--title-->
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
     <!-- ToolBar -->
     <style name="ToolBarStyle" parent="Theme.AppCompat">
         <item name="android:textColorPrimary">@android:color/white</item>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Mostra documento" android:id="@+id/context_menu_documents_fragment_view"></item>
+    <item android:title="Aggiungi ad un contenitore" android:id="@+id/context_menu_documents_fragment_add_to_box"></item>
+    <item android:title="Elimina documento" android:id="@+id/context_menu_documents_fragment_delete"></item>
+</menu>

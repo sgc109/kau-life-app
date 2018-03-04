@@ -1,12 +1,16 @@
 package com.lifekau.android.lifekau.viewholder;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.widget.CardView;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableString;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,41 +24,47 @@ import com.google.firebase.database.Transaction;
 import com.lifekau.android.lifekau.DateDisplayer;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.activity.PostDetailActivity;
+import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.Post;
 
-import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
-
-import com.lifekau.android.lifekau.R;
 
 /**
  * Created by sgc109 on 2018-02-11.
  */
 
-public class PostViewHolder extends RecyclerView.ViewHolder {
+public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public TextView mTextView;
-    public ImageView mLikeButtonImageView;
-    public TextView mLikeButtonTextView;
-    public ImageView mCommentButtonImageView;
-    public TextView mCommentButtonTextView;
-    public TextView mCommentCountTextView;
-    public TextView mLikeCountTextView;
-    public ImageView mCircleHeartImageView;
-    public TextView mDateTextView;
-    public LinearLayout mLikeButtonContainer;
     public LinearLayout mCommentButtonContainer;
-    public Context mContext;
-    public Post mPost;
-    public String mPostKey;
+    public TextView mCommentCountTextView;
+    private ImageView mLikeButtonImageView;
+    private TextView mLikeButtonTextView;
+    private ImageView mCommentButtonImageView;
+    private TextView mCommentButtonTextView;
+    private TextView mLikeCountTextView;
+    private ImageView mCircleHeartImageView;
+    private TextView mDateTextView;
+    private LinearLayout mLikeButtonContainer;
+    private ImageView mMoreButtonImageView;
+    public LinearLayout mDeleteContainer;
+    private LinearLayout mEditContainer;
+    private Context mContext;
+    private Post mPost;
+    private String mPostKey;
+    public BottomSheetDialog mBottomSheetDialog;
+    private PostRecyclerAdapter mAdapter;
+    private boolean mIsInDetail;
 
-    public PostViewHolder(View itemView, Context context) {
+    public PostViewHolder(View itemView, Context context, PostRecyclerAdapter adapter, boolean isInDetail) {
         super(itemView);
+        mIsInDetail = isInDetail;
         mContext = context;
+        View sheetView = LayoutInflater.from(mContext).inflate(R.layout.bottom_sheet_dialog_edit_and_delete, null);
+        mDeleteContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_delete);
+        mEditContainer = sheetView.findViewById(R.id.fragment_community_bottom_sheet_edit);
         mTextView = itemView.findViewById(R.id.list_item_post_content_text_view);
         mLikeButtonImageView = itemView.findViewById(R.id.list_item_post_like_button_image_view);
         mLikeButtonTextView = itemView.findViewById(R.id.list_item_post_like_button_text_view);
@@ -66,55 +76,43 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         mLikeButtonContainer = itemView.findViewById(R.id.list_item_post_like_button_container);
         mCommentButtonContainer = itemView.findViewById(R.id.list_item_post_comment_button_container);
         mDateTextView = itemView.findViewById(R.id.post_list_date_text_view);
+        mMoreButtonImageView = itemView.findViewById(R.id.list_item_post_more_button);
+        mAdapter = adapter;
+
+        mDeleteContainer.setOnClickListener(this);
+        mEditContainer.setOnClickListener(this);
+        mCommentButtonContainer.setOnClickListener(this);
+        if(!mIsInDetail) {
+            mTextView.setOnClickListener(this);
+        }
+        mCommentCountTextView.setOnClickListener(this);
+        mLikeButtonContainer.setOnClickListener(this);
+        mMoreButtonImageView.setOnClickListener(this);
+
+        mBottomSheetDialog = new BottomSheetDialog(mContext);
+        mBottomSheetDialog.setContentView(sheetView);
+    }
+
+    public Post getPost() {
+        return mPost;
     }
 
     public void bind(Post post, String postKey) {
         mPost = post;
         mPostKey = postKey;
-
-        mCommentButtonContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDetailActivity(true);
-            }
-        });
-        mTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDetailActivity(false);
-            }
-        });
-        mCommentCountTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDetailActivity(false);
-            }
-        });
-
         updateUI();
-
-        mLikeButtonContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String studentId = LoginManager.get(mContext).getStudentId();
-                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
-                        .child(mContext.getString(R.string.firebase_database_posts))
-                        .child(mPostKey);
-                if (mPost.likes.containsKey(studentId)) {
-                    mPost.likes.remove(studentId);
-                    mPost.likeCount--;
-                } else {
-                    mPost.likes.put(studentId, true);
-                    mPost.likeCount++;
-                }
-                onLikeClicked(postRef);
-                updateUI();
-            }
-        });
     }
 
     public void updateUI() {
-        mTextView.setText(mPost.text);
+        if(mIsInDetail || !shouldItBeFolded(mPost.text)){
+            mTextView.setText(mPost.text);
+        } else {
+            String left = Html.toHtml(new SpannableString(cutString(mPost.text)));
+            left = left.replace("<p dir=\"ltr\">", "");
+            left = left.replace("</p>", "");
+            String right = "...<font color='#A0A0A0'>계속 읽기</font>";
+            mTextView.setText(Html.fromHtml(left + right));
+        }
         mCommentCountTextView.setText(String.format(
                 mContext.getString(R.string.post_comment_count),
                 NumberFormat.getNumberInstance(Locale.US).format(mPost.commentCount)));
@@ -127,7 +125,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
             mLikeCountTextView.setVisibility(View.VISIBLE);
             mCircleHeartImageView.setVisibility(View.VISIBLE);
         }
-        if (mPost.commentCount == 0) {
+        if (mIsInDetail || mPost.commentCount == 0) {
             mCommentCountTextView.setVisibility(View.GONE);
         } else {
             mCommentCountTextView.setVisibility(View.VISIBLE);
@@ -141,6 +139,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
             mLikeButtonImageView.setImageResource(R.drawable.ic_heart_empty);
             mLikeButtonImageView.setColorFilter(mContext.getResources().getColor(android.R.color.tab_indicator_text));
             mLikeButtonTextView.setTextColor(mContext.getResources().getColor(android.R.color.tab_indicator_text));
+        }
+
+        if (!LoginManager.get(mContext).getStudentId().equals(mPost.author)) {
+            mMoreButtonImageView.setVisibility(View.GONE);
         }
     }
 
@@ -170,7 +172,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Log.d("fuck", "postTransaction:onComplete:" + databaseError);
+                Log.d("sgc109_debug", "postTransaction:onComplete:" + databaseError);
             }
         });
     }
@@ -178,5 +180,115 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     private void startDetailActivity(boolean hasClickedComment) {
         Intent intent = PostDetailActivity.newIntent(mContext, mPostKey, hasClickedComment);
         mContext.startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.list_item_post_comment_button_container:
+                startDetailActivity(true);
+                break;
+            case R.id.list_item_post_content_text_view:
+                startDetailActivity(false);
+                break;
+            case R.id.list_item_post_comment_count_text_view:
+                startDetailActivity(false);
+                break;
+            case R.id.list_item_post_like_button_container:
+                String studentId = LoginManager.get(mContext).getStudentId();
+                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
+                        .child(mContext.getString(R.string.firebase_database_posts))
+                        .child(mPostKey);
+                if (mPost.likes.containsKey(studentId)) {
+                    mPost.likes.remove(studentId);
+                    mPost.likeCount--;
+                } else {
+                    mPost.likes.put(studentId, true);
+                    mPost.likeCount++;
+                }
+                onLikeClicked(postRef);
+                updateUI();
+                break;
+            case R.id.list_item_post_more_button:
+                mBottomSheetDialog.show();
+                break;
+            case R.id.fragment_community_bottom_sheet_delete:
+                mBottomSheetDialog.dismiss();
+                showYesOrNoDialog();
+                break;
+            case R.id.fragment_community_bottom_sheet_edit:
+                mBottomSheetDialog.dismiss();
+                break;
+        }
+    }
+
+    private void showYesOrNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AppCompatAlertDialogStyle);
+
+        builder.setTitle(mContext.getString(R.string.post_delete_alert_dialog_title));
+        builder.setMessage(mContext.getString(R.string.post_delete_alert_dialog_message));
+        builder.setPositiveButton(mContext.getString(R.string.dialog_delete), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deletePost();
+            }
+        });
+        builder.setNegativeButton(mContext.getString(R.string.dialog_cancel), null);
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+            }
+        });
+        dialog.show();
+    }
+
+    public void deletePost() {
+        int position = getAdapterPosition();
+        if (mAdapter != null) { // 글 목록에서 삭제할 때만 업뎃, 그외 엔 onStart 에서 어차피 목록 초기화함
+            mAdapter.mPosts.remove(position);
+            mAdapter.mPostKeys.remove(position);
+            mAdapter.notifyItemRemoved(position);
+        }
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference postRef = ref
+                .child(mContext.getString(R.string.firebase_database_posts))
+                .child(mPostKey);
+        postRef.removeValue();
+        DatabaseReference postCommentRef = ref
+                .child(mContext.getString(R.string.firebase_database_post_comments))
+                .child(mPostKey);
+        postCommentRef.removeValue();
+    }
+
+    private boolean shouldItBeFolded(String str){
+        int cntNewLine = 0;
+        for(int i = 0; i < str.length(); i++){
+            if(str.charAt(i) == '\n') {
+                cntNewLine++;
+            }
+        }
+        int cnt = str.length() + cntNewLine * 5;
+        if(cnt > 100 || cntNewLine > 5) return true;
+        return false;
+    }
+
+    private String cutString(String str){
+        int cntNewLine = 0;
+        int cnt = 0;
+        String ret = "";
+        for(int i = 0; i < str.length(); i++){
+            if(str.charAt(i) == '\n'){
+                cntNewLine++;
+                cnt += 6;
+            } else {
+                cnt++;
+            }
+            if(cnt > 100 || cntNewLine > 5) return ret;
+            ret += str.charAt(i);
+        }
+        return ret;
     }
 }

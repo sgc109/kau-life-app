@@ -3,8 +3,8 @@ package com.lifekau.android.lifekau.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,8 +15,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.lifekau.android.lifekau.adapter.LectureSearchAdapter;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.adapter.LectureSearchAdapter;
 import com.lifekau.android.lifekau.manager.LectureManager;
 import com.lifekau.android.lifekau.model.Lecture;
 
@@ -76,7 +76,7 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
                     String lectureName = snapshot.getValue(String.class);
                     newLectureList.add(new Lecture(lectureName));
                 }
-                Log.d("fuck", "cnt : " + newLectureList.size());
+                Log.d("sgc109_debug", "cnt : " + newLectureList.size());
                 mLectureList = newLectureList;
                 LectureManager.get(LectureReviewSearchActivity.this).addLectures(mLectureList);
                 updateAutoComplete();

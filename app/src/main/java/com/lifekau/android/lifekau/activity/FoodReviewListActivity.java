@@ -1,13 +1,15 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.annotation.SuppressLint;
-import android.os.Handler;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +27,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.FoodReview;
@@ -40,7 +41,7 @@ import java.util.List;
  * Created by sgc109 on 2018-01-27.
  */
 
-public class FoodReviewListActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class FoodReviewListActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, DialogInterface.OnClickListener {
     private static final String SAVED_IS_WRITING = "saved_is_writing";
     private final static String EXTRA_FOOD_CORNER_TYPE = "extra_food_corner_type";
     private final String SAVED_ORDERED_BY_RATING_ASC = "saved_order_by_rating_asc";
@@ -58,10 +59,13 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private ActionBar mActionBar;
     private TextView mToolbarTextView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private AlertDialog mOrderByAlertDialog;
     private int mFoodCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
-//    private Boolean mIsWriting;
+    private ImageView mBackImageView;
+    private TextView mOrderByTextView;
+    //    private Boolean mIsWriting;
     private RecyclerView.Adapter mRecyclerAdapter;
     private List<FoodReview> mFoodReviews;
 
@@ -84,7 +88,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
         if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
         }
 
@@ -99,34 +102,33 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mProgressBar = findViewById(R.id.food_review_list_progress_bar);
         mEmptyListMessage = findViewById(R.id.food_review_list_empty_list_text_view);
-//        mOrderByRatingButton = findViewById(R.id.order_by_rating_button);
-//        mOrderByRatingButton.setOnClickListener(this);
-//        mOrderByTimeButton = findViewById(R.id.order_by_time_button);
-//        mOrderByTimeButton.setOnClickListener(this);
-
+        mOrderByTextView = findViewById(R.id.food_review_list_order_by_text_view);
+        mOrderByTextView.setOnClickListener(this);
+        mBackImageView = findViewById(R.id.food_review_list_back_image_view);
+        mBackImageView.setOnClickListener(this);
         mRecyclerView = findViewById(R.id.food_review_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
+
         mRecyclerView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
+        mEmptyListMessage.setVisibility(View.GONE);
 
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference()
-                        .child(getString(R.string.firebase_database_food_reviews))
-                        .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType));
+                .child(getString(R.string.firebase_database_food_reviews))
+                .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType));
 
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        mFoodReviews.clear();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            mFoodReviews.add(snapshot.getValue(FoodReview.class));
-                        }
-                        mProgressBar.setVisibility(View.GONE);
-                        mRecyclerAdapter.notifyDataSetChanged();
-                        setVisibilities();
-                        rearrangeReviews();
-                        Log.d("fuck", "data!!!!");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mFoodReviews.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    mFoodReviews.add(snapshot.getValue(FoodReview.class));
+                }
+                mProgressBar.setVisibility(View.GONE);
+                setVisibilities();
+                rearrangeReviews();
             }
 
             @Override
@@ -157,8 +159,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
-    public void setVisibilities(){
-        if(mFoodReviews.size() != 0){
+    public void setVisibilities() {
+        if (mFoodReviews.size() != 0) {
             mRecyclerView.setVisibility(View.VISIBLE);
             mEmptyListMessage.setVisibility(View.GONE);
         } else {
@@ -167,10 +169,10 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         }
     }
 
-    private void rearrangeReviews(){
+    private void rearrangeReviews() {
         Comparator comparator = null;
-        if(mOrderedByRatingAsc != 0){
-            if(mOrderedByRatingAsc == -1){
+        if (mOrderedByRatingAsc != 0) {
+            if (mOrderedByRatingAsc == -1) {
                 comparator = new Comparator<FoodReview>() {
                     @Override
                     public int compare(FoodReview foodReview, FoodReview t1) {
@@ -185,8 +187,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
                     }
                 };
             }
-        } else if(mOrderedByTimeAsc != 0){
-            if(mOrderedByTimeAsc == -1){
+        } else if (mOrderedByTimeAsc != 0) {
+            if (mOrderedByTimeAsc == -1) {
                 comparator = new Comparator<FoodReview>() {
                     @Override
                     public int compare(FoodReview foodReview, FoodReview t1) {
@@ -202,8 +204,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
                 };
             }
         }
-        if(comparator == null) {
-            Log.e("fuck", "comparator is not initialized!! It's null.. check this right now");
+        if (comparator == null) {
+            Log.e("sgc109_debug", "comparator is not initialized!! It's null.. check this right now");
         }
         Collections.sort(mFoodReviews, comparator);
         mRecyclerAdapter.notifyDataSetChanged();
@@ -212,12 +214,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     @Override
     protected void onResume() {
         super.onResume();
-        setVisibilities();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
     public void onClickWriteFoodReviewFab(View view) {
@@ -254,29 +250,22 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.order_by_time_button:
-//                if (mOrderedByTimeAsc != 0) {
-//                    mOrderedByTimeAsc = -mOrderedByTimeAsc;
-//                } else {
-//                    mOrderedByTimeAsc = -1;
-//                }
-//                mOrderedByRatingAsc = 0;
-//                rearrangeReviews();
-////                mRecyclerView.smoothScrollToPosition(0);
-//                break;
-//            default:
-//            case R.id.order_by_rating_button:
-//                if (mOrderedByRatingAsc != 0) {
-//                    mOrderedByRatingAsc = -mOrderedByRatingAsc;
-//                } else {
-//                    mOrderedByRatingAsc = -1;
-//                }
-//                mOrderedByTimeAsc = 0;
-//                rearrangeReviews();
-////                mRecyclerView.smoothScrollToPosition(0);
-//                break;
-//        }
+        switch (view.getId()) {
+            case R.id.food_review_list_back_image_view:
+                finish();
+                break;
+            case R.id.food_review_list_order_by_text_view:
+                CharSequence[] values = getResources().getStringArray(R.array.order_by_list);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle(getString(R.string.order_by_dialog_title));
+
+                builder.setSingleChoiceItems(values, -1, this);
+
+                mOrderByAlertDialog = builder.create();
+                mOrderByAlertDialog.show();
+                break;
+        }
     }
 
     @Override
@@ -288,5 +277,34 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }, 500);
+    }
+
+    @Override
+    public void onClick(DialogInterface dialogInterface, int item) {
+        final int ORDER_BY_TIME_DESC = 0;
+        final int ORDER_BY_TIME_ASC = 1;
+        final int ORDER_BY_RATING_DESC = 2;
+        final int ORDER_BY_RATING_ASC = 3;
+        switch (item) {
+            case ORDER_BY_TIME_DESC:
+                mOrderedByTimeAsc = -1;
+                mOrderedByRatingAsc = 0;
+                break;
+            case ORDER_BY_TIME_ASC:
+                mOrderedByTimeAsc = 1;
+                mOrderedByRatingAsc = 0;
+                break;
+            case ORDER_BY_RATING_DESC:
+                mOrderedByTimeAsc = 0;
+                mOrderedByRatingAsc = -1;
+                break;
+            case ORDER_BY_RATING_ASC:
+                mOrderedByTimeAsc = 0;
+                mOrderedByRatingAsc = 1;
+                break;
+        }
+        rearrangeReviews();
+//                mRecyclerView.smoothScrollToPosition(0);
+        mOrderByAlertDialog.dismiss();
     }
 }

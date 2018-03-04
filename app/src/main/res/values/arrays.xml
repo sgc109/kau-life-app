@@ -26,4 +26,11 @@
         <item>@string/library_study_room_name_05</item>
         <item>@string/library_study_room_name_06</item>
     </string-array>
+
+    <string-array name="order_by_list">
+        <item>@string/order_by_time_desc</item>
+        <item>@string/order_by_time_asc</item>
+        <item>@string/order_by_rating_desc</item>
+        <item>@string/order_by_rating_asc</item>
+    </string-array>
 </resources>

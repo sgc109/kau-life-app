@@ -32,9 +32,9 @@ public class NoticePageActivity extends AppCompatActivity {
         WebView webView = findViewById(R.id.notice_page);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
-        webView.postUrl(intent.getStringExtra(EXTRA_URL), intent.getStringExtra(EXTRA_POST).getBytes());
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
+        webView.postUrl(intent.getStringExtra(EXTRA_URL), intent.getStringExtra(EXTRA_POST).getBytes());
     }
 }

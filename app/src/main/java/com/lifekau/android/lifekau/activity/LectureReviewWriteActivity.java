@@ -2,19 +2,19 @@ package com.lifekau.android.lifekau.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.lifekau.android.lifekau.DialogMaker;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.LectureReview;
 
@@ -68,25 +68,26 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        String text = charSequence.toString();
-        int limitTextCnt = getResources().getInteger(R.integer.lecture_review_write_text_limit);
-        if(text.length() == limitTextCnt) {
-            String toastMsg = String.format(getString(R.string.lecture_review_text_limit_message), limitTextCnt);
-            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
-    public void afterTextChanged(Editable str) {
-        for(int i = str.length(); i > 0; i--) {
-            if(str.subSequence(i - 1, i).toString().equals("\n")) {
-                str.replace(i - 1, i, "");
+    public void afterTextChanged(Editable editable) {
+        for(int i = editable.length(); i > 0; i--) {
+            if(editable.subSequence(i - 1, i).toString().equals("\n")) {
+                editable.replace(i - 1, i, "");
             }
+        }
+
+        int limitTextCnt = getResources().getInteger(R.integer.lecture_review_write_text_limit);
+        if(editable.length() > limitTextCnt) {
+            String toastMsg = String.format(getString(R.string.text_limit_message), limitTextCnt);
+            DialogMaker.showOkButtonDialog(this, toastMsg);
+//            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
+            editable.delete(limitTextCnt, editable.length());
         }
     }
 

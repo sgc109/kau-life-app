@@ -40,7 +40,6 @@
                 android:singleLine="true"
                 android:text="2013122141" />
 
-
             <EditText
                 android:id="@+id/password"
                 android:layout_width="280dp"
@@ -55,8 +54,7 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="qqqqqq" />
-
+                android:text="qqqqqqqqqqq" />
 
             <Button
                 android:id="@+id/id_sign_in_button"
@@ -69,8 +67,8 @@
                 android:textStyle="bold" />
 
             <CheckBox
-                style="?android:textAppearanceSmall"
                 android:id="@+id/auto_login_check_box"
+                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

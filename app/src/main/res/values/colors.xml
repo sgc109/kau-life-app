@@ -10,6 +10,7 @@
     <color name="yellow">#fdd835</color>
     <color name="orange">#ff6d00</color>
     <color name="heart_red">#f05228</color>
+    <color name="delete_post_red">#f50057</color>
     <color name="heart_hot_pink">#e04f5f</color>
     <color name="heart_pink">#f48fb1</color>
     <color name="heart_light_pink">#ffc7e1</color>

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +44,9 @@ public class LectureReviewListActivity extends AppCompatActivity {
     private TextView mLectureNameTextView;
     private FloatingActionButton mFab;
     private NestedScrollView mNestedScrollView;
-//    private TextView mEmptyListMessage;
+    private ProgressBar mProgressBar;
+    private TextView mEmptyListMessage;
+    //    private TextView mEmptyListMessage;
     List<LectureReview> mLectureReviews;
 
 
@@ -62,7 +65,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
             mLectureName = savedInstanceState.getString(SAVED_LECTURE_NAME);
         }
 
-        if(getSupportActionBar() != null ) {
+        if (getSupportActionBar() != null) {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
         }
@@ -70,17 +73,23 @@ public class LectureReviewListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mLectureName = intent.getStringExtra(EXTRA_LECTURE_NAME);
 
-        if(mLectureReviews == null){
+        if (mLectureReviews == null) {
             mLectureReviews = new ArrayList<>();
         }
 
-//        mEmptyListMessage = findViewById(R.id.lecture_review_list_empty_list_text_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.lecture_review_recycler_view);
+        mProgressBar = findViewById(R.id.lecture_review_list_progress_bar);
+        mEmptyListMessage = findViewById(R.id.lecture_review_list_empty_list_text_view);
         mNestedScrollView = findViewById(R.id.lecture_review_list_nested_scroll_view);
         mCntReviewsTextView = findViewById(R.id.lecture_review_number_of_reviews_text_view);
         mAvgRatingTextView = findViewById(R.id.lecture_review_average_rating_text_view);
         mRatingBar = findViewById(R.id.lecture_review_list_rating_bar);
         mLectureNameTextView = findViewById(R.id.lecture_review_list_lecture_text_view);
         mLectureNameTextView.setText(mLectureName);
+
+        mProgressBar.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+        mEmptyListMessage.setVisibility(View.GONE);
 
         mRecyclerAdapter = new RecyclerView.Adapter<LectureReviewHolder>() {
             @Override
@@ -100,10 +109,8 @@ public class LectureReviewListActivity extends AppCompatActivity {
                 return mLectureReviews.size();
             }
         };
-        mRecyclerView = (RecyclerView) findViewById(R.id.lecture_review_recycler_view);
         mRecyclerView.setAdapter(mRecyclerAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
 
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/" + getString(R.string.firebase_database_lecture_reviews)).child(mLectureName);
@@ -118,8 +125,11 @@ public class LectureReviewListActivity extends AppCompatActivity {
                     sumRating += review.mRating;
                     newLectureReviews.add(review);
                 }
+                mProgressBar.setVisibility(View.GONE);
+                setVisibilities();
+
                 int cntReviews = newLectureReviews.size();
-                float averageRating = cntReviews > 0 ? sumRating / cntReviews : (float)0.0;
+                float averageRating = cntReviews > 0 ? sumRating / cntReviews : (float) 0.0;
                 mCntReviewsTextView.setText("" + cntReviews + getString(R.string.review_number_of_review_string));
                 mAvgRatingTextView.setText("" + String.format("%.1f", averageRating) + " / 5.0");
                 mRatingBar.setRating(averageRating);
@@ -136,15 +146,16 @@ public class LectureReviewListActivity extends AppCompatActivity {
 //        setVisibilities();
     }
 
-//    private void setVisibilities(){
-//        if(mLectureReviews.size() == 0){
-//            mNestedScrollView.setVisibility(View.GONE);
-//            mEmptyListMessage.setVisibility(View.VISIBLE);
-//        } else {
-//            mNestedScrollView.setVisibility(View.VISIBLE);
-//            mEmptyListMessage.setVisibility(View.GONE);
-//        }
-//    }
+    private void setVisibilities() {
+        if (mLectureReviews.size() == 0) {
+            mRecyclerView.setVisibility(View.GONE);
+            mEmptyListMessage.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyListMessage.setVisibility(View.GONE);
+        }
+    }
+
     public void onClickWriteLectureReviewFab(View view) {
         writeLectureReview();
     }
@@ -157,8 +168,8 @@ public class LectureReviewListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            switch (requestCode){
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
                 case REQUEST_WRITE_REVIEW:
                     Toast.makeText(this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
                     break;

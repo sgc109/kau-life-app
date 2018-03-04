@@ -13,8 +13,7 @@
     <string name="food_corner_name7">조식</string>
     <string name="food_review_order_by_time_string">시간순</string>
     <string name="food_review_order_by_rating_string">평점순</string>
-    <string name="food_review_text_limit_message">최대 %1$d자 까지 입력할 수 있습니다</string>
-    <string name="lecture_review_text_limit_message">최대 %1$d자 까지 입력할 수 있습니다</string>
+    <string name="text_limit_message">최대 %1$d자 까지 입력할 수 있습니다</string>
     <string name="lecture_review_search_bar_hint">"강의명(교수)으로 검색하세요(초성으로도 가능)"</string>
     <string name="review_number_of_review_string"> 개의 평가</string>
     <string name="firebase_database_food_reviews">food_reviews</string>
@@ -30,6 +29,7 @@
     <string name="please_write_post_text_alert_message">내용을 작성해주세요!</string>
     <string name="empty_alarm_list_message">알람이 없습니다.</string>
     <string name="empty_review_list_message">평가가 없습니다.</string>
+    <string name="empty_post_list_message">이야기가 없습니다.</string>
     <string name="write_post_hint_message">하고 싶은 이야기를 자유롭게 써주세요.</string>
     <string name="submit_post_button">게시하기</string>
     <string name="write_new_post">새 글 쓰기</string>
@@ -42,8 +42,21 @@
     <string name="type_the_comment">댓글을 입력하세요...</string>
     <string name="successfully_comment_registered">댓글이 성공적으로 등록되었습니다!</string>
     <string name="post_deleted_by_author">보고 계신 글이 작성자에 의해 삭제 되었습니다.</string>
-
-
+    <string name="order_by_dialog_title">리뷰 정렬하기</string>
+    <string name="order_by_time_desc">최근 날짜순</string>
+    <string name="order_by_time_asc">오래된 날짜순</string>
+    <string name="order_by_rating_desc">높은 평점순</string>
+    <string name="order_by_rating_asc">낮은 평점순</string>
+    <string name="dialog_edit">수정</string>
+    <string name="dialog_delete">삭제</string>
+    <string name="dialog_cancel">취소</string>
+    <string name="post_delete_alert_dialog_title">이야기 삭제</string>
+    <string name="comment_delete_alert_dialog_title">댓글 삭제</string>
+    <string name="post_deleted_message">이야기가 성공적으로 삭제되었습니다.</string>
+    <string name="post_delete_alert_dialog_message">이야기가 삭제되면 더 이상 찾을 수 없게됩니다. 삭제하시겠습니까?</string>
+    <string name="comment_delete_alert_dialog_message">이 댓글을 삭제하시겠어요?</string>
+    <string name="anonymous_author">익명(작성자)</string>
+    
     <string name="menu_1">커뮤니티</string>
     <string name="menu_2">리뷰</string>
     <string name="menu_3">공지</string>

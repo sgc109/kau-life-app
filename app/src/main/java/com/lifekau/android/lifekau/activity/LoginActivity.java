@@ -1,7 +1,5 @@
 package com.lifekau.android.lifekau.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.ProgressDialog;
