@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,9 +75,11 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private NestedScrollView mNestedScrollView;
     private ImageView mMoreCommentsImageView;
+    private ProgressBar mProgressBar;
     private TextView mMoreCommentsTextView;
     private ProgressBar mMoreCommentsProgressBar;
     private LinearLayout mMoreCommentsLinearLayout;
+    private RelativeLayout mWriteCommentBar;
     private boolean mHasClickedComment;
     private boolean mJustWroteComment;
     private ContextMenu.ContextMenuInfo mMenuInfo;
@@ -118,6 +121,9 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             }
         });
         mCommentEditText.requestFocus();
+        mProgressBar.setVisibility(View.VISIBLE);
+        mNestedScrollView.setVisibility(View.GONE);
+        mWriteCommentBar.setVisibility(View.GONE);
         mBottomMarginView.setVisibility(View.GONE);
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setItemAnimator(null);
@@ -175,6 +181,10 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                     mJustWroteComment = false;
                     mNestedScrollView.fullScroll(View.FOCUS_DOWN);
                 }
+
+                mProgressBar.setVisibility(View.GONE);
+                mWriteCommentBar.setVisibility(View.VISIBLE);
+                mNestedScrollView.setVisibility(View.VISIBLE);
 
                 if (mHasClickedComment) {
                     showSoftKeyboard();
@@ -256,6 +266,8 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     }
 
     private void initializeViews() {
+        mWriteCommentBar = findViewById(R.id.write_comment_bar);
+        mProgressBar = findViewById(R.id.post_detail_progress_bar);
         mMoreCommentsLinearLayout = findViewById(R.id.more_comments_linear_layout);
         mMoreCommentsProgressBar = findViewById(R.id.more_comments_progress_bar);
         mMoreCommentsTextView = findViewById(R.id.more_comments_text_view);
@@ -327,12 +339,11 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 //                    }
 //                }, 0);
                 mJustWroteComment = true;
-
+                mCommentEditText.setText("");
                 InputMethodManager imm = (InputMethodManager) getSystemService(
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mCommentEditText.getWindowToken(), 0);
 
-                mCommentEditText.setText("");
                 Toast.makeText(PostDetailActivity.this,
                         getString(R.string.successfully_comment_registered),
                         Toast.LENGTH_SHORT).
