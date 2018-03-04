@@ -76,8 +76,6 @@
                 android:text="자동로그인"
                 android:textStyle="bold" />
         </LinearLayout>
-
-
     </ScrollView>
 
 </RelativeLayout>
