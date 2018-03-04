@@ -370,6 +370,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                         getString(R.string.successfully_comment_registered),
                         Toast.LENGTH_SHORT).
                         show();
+                mNestedScrollView.fullScroll(View.FOCUS_DOWN);
             }
         });
     }
