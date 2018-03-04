@@ -23,6 +23,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 import com.lifekau.android.lifekau.FABHideOnScrollBehavior;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.adapter.HomeViewPagerAdapter;
+import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
 import com.lifekau.android.lifekau.fragment.CommunityFragment;
 import com.lifekau.android.lifekau.fragment.PagerFragment;
 
@@ -31,6 +32,9 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity implements AHBottomNavigation.OnTabSelectedListener {
 
     private static final int REQUEST_POST_WRITE = 0;
+    public static final int REQUEST_POST_DETAIL = 1;
+    public static final String EXTRA_WAS_POST_DELETED = "extra_was_post_deleted";
+    public static final String EXTRA_ITEM_POSITION = "extra_item_position";
     private PagerFragment currentFragment;
     private HomeViewPagerAdapter adapter;
     private AHBottomNavigationAdapter navigationAdapter;
@@ -157,10 +161,20 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) return;
+        CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
         if (requestCode == REQUEST_POST_WRITE) {
-            if (resultCode == RESULT_OK) {
-                CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
-                fragment.initPostList();
+            fragment.initPostList();
+        } else if(requestCode == REQUEST_POST_DETAIL){
+            boolean wasPostDeleted = data.getBooleanExtra(EXTRA_WAS_POST_DELETED, false);
+            int itemPosition = data.getIntExtra(EXTRA_ITEM_POSITION, 0);
+            if(wasPostDeleted){
+                PostRecyclerAdapter adapter = fragment.getAdapter();
+                adapter.mPosts.remove(itemPosition);
+                adapter.mPostKeys.remove(itemPosition);
+                adapter.notifyItemRemoved(itemPosition);
+            } else {
+                fragment.updatePost(itemPosition);
             }
         }
     }

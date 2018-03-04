@@ -54,6 +54,7 @@ import java.util.List;
 
 public class PostDetailActivity extends AppCompatActivity implements OnClickListener, SwipeRefreshLayout.OnRefreshListener, TextWatcher {
     private static final String EXTRA_HAS_CLICKED_COMMENT = "extra_has_clicked_comment";
+    private static final String EXTRA_ITEM_POSITION = "extra_item_position";
     private static String EXTRA_POST_KEY = "extra_post_key";
     private final int NUM_OF_COMMENT_PER_PAGE = 5;
     private int mTotalItemCount = 0;
@@ -80,15 +81,18 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private ProgressBar mMoreCommentsProgressBar;
     private LinearLayout mMoreCommentsLinearLayout;
     private RelativeLayout mWriteCommentBar;
+    private boolean mWasPostDeleted;
     private boolean mHasClickedComment;
     private boolean mJustWroteComment;
     private ContextMenu.ContextMenuInfo mMenuInfo;
+    private int mItemPosition;
 
 
-    public static Intent newIntent(Context context, String postKey, boolean hasClickedComment) {
+    public static Intent newIntent(Context context, String postKey, boolean hasClickedComment, int itemPosition) {
         Intent intent = new Intent(context, PostDetailActivity.class);
         intent.putExtra(EXTRA_POST_KEY, postKey);
         intent.putExtra(EXTRA_HAS_CLICKED_COMMENT, hasClickedComment);
+        intent.putExtra(EXTRA_ITEM_POSITION, itemPosition);
         return intent;
     }
 
@@ -101,9 +105,15 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             getSupportActionBar().hide();
         }
 
+        mItemPosition = getIntent().getIntExtra(EXTRA_ITEM_POSITION, 0);
         mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
         mHasClickedComment = getIntent().getBooleanExtra(EXTRA_HAS_CLICKED_COMMENT, false);
         initializeViews();
+
+        Intent intent = new Intent();
+        intent.putExtra(HomeActivity.EXTRA_ITEM_POSITION, mItemPosition);
+        intent.putExtra(HomeActivity.EXTRA_WAS_POST_DELETED, false);
+        setResult(RESULT_OK, intent);
 
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         mPostRef = database
@@ -205,21 +215,31 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("sgc109_debug", "PostDetailActivity:onDataChange");
+                if(dataSnapshot == null){
+                    Log.d("fuck!", "dataSnapshot null!");
+                    return;
+                }
                 Post post = dataSnapshot.getValue(Post.class);
                 if(mPost != null && post != null && !mJustWroteComment) { // 댓글 삭제한거
                     return;
                 }
                 if (post == null) {
+                    mWasPostDeleted = true;
+                    // 왜 getPost() 가 null을 반환!?
                     if (mPostViewHolder.getPost().author.equals(LoginManager.get(PostDetailActivity.this).getStudentId())) {
                         Toast.makeText(PostDetailActivity.this, getString(R.string.post_deleted_message), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(PostDetailActivity.this, getString(R.string.post_deleted_by_author), Toast.LENGTH_SHORT).show();
                     }
+                    Intent intent = new Intent();
+                    intent.putExtra(HomeActivity.EXTRA_WAS_POST_DELETED, true);
+                    intent.putExtra(HomeActivity.EXTRA_ITEM_POSITION, mItemPosition);
+                    PostDetailActivity.this.setResult(RESULT_OK, intent);
                     PostDetailActivity.this.finish();
                     return;
                 }
                 mPost = post;
-                mPostViewHolder.bind(post, mPostKey);
+                mPostViewHolder.bind(post, mPostKey, mItemPosition);
                 mPostViewHolder.mCommentButtonContainer.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -290,7 +310,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         builder.setPositiveButton(getString(R.string.dialog_delete), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mPostViewHolder.deletePost();
+                mPostViewHolder.deletePost(); // 글 목록이아닌 Detail 액티비티에서 삭제할땐 목록 업뎃은 못해줌(onActivityResult 에서 해줘야함)
             }
         });
         builder.setNegativeButton(getString(R.string.dialog_cancel), null);
@@ -471,5 +491,10 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
             }
         });
         dialog.show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }
