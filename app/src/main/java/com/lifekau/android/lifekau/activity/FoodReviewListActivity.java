@@ -1,12 +1,10 @@
 package com.lifekau.android.lifekau.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -29,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.FoodReview;
 import com.lifekau.android.lifekau.viewholder.FoodReviewHolder;
 
@@ -47,6 +46,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private final String SAVED_ORDERED_BY_RATING_ASC = "saved_order_by_rating_asc";
     private final String SAVED_ORDERED_BY_TIME_ASC = "saved_order_by_time_asc";
     private final String SAVED_FOOD_CORNER_TYPE = "saved_food_corner_type";
+    private final String SAVED_IS_CHECK_FINISHED = "saved_is_check_finished";
     private final int REQUEST_FOOD_REVIEW = 0;
     public final static int RESTAURENT_TYPE_STUDENT = 0;
     public final static int RESTAURENT_TYPE_DORM = 1;
@@ -60,14 +60,18 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private TextView mToolbarTextView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AlertDialog mOrderByAlertDialog;
+    private FoodReview mMyFoodReview;
     private int mFoodCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
     private ImageView mBackImageView;
     private TextView mOrderByTextView;
+    private FirebaseDatabase mDatabase;
     //    private Boolean mIsWriting;
     private RecyclerView.Adapter mRecyclerAdapter;
     private List<FoodReview> mFoodReviews;
+    private boolean mAlreadyWritten;
+    private boolean mIsCheckFinished;
 
     public static Intent newIntent(Context packageContext, int foodCornerType) {
         Intent intent = new Intent(packageContext, FoodReviewListActivity.class);
@@ -83,7 +87,12 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         if (savedInstanceState != null) {
             mOrderedByTimeAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_TIME_ASC);
             mOrderedByRatingAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_RATING_ASC);
+            mIsCheckFinished = savedInstanceState.getBoolean(SAVED_IS_CHECK_FINISHED);
         }
+
+        mDatabase = FirebaseDatabase.getInstance();
+
+        checkIfAlreadyWritten();
 
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
@@ -159,6 +168,28 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
+    private void checkIfAlreadyWritten(){
+        DatabaseReference ref = mDatabase.getReference()
+                .child(getString(R.string.firebase_database_food_reviews))
+                .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType))
+                .child(LoginManager.get(this).getStudentId());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot != null) {
+                    mAlreadyWritten = true;
+                    mMyFoodReview = dataSnapshot.getValue(FoodReview.class);
+                }
+                mIsCheckFinished = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void setVisibilities() {
         if (mFoodReviews.size() != 0) {
             mRecyclerView.setVisibility(View.VISIBLE);
@@ -217,15 +248,36 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     }
 
     public void onClickWriteFoodReviewFab(View view) {
-        writeFoodReview();
+        if(!mIsCheckFinished) {
+            Toast.makeText(this, "네트워크가 원활하지 않습니다.", Toast.LENGTH_SHORT).show();
+        } else if(mAlreadyWritten){
+            showEditReviewYesOrNoDialog();
+        } else {
+            Intent intent = FoodReviewWriteActivity.newIntent(this, mFoodCornerType, null);
+            startActivityForResult(intent, REQUEST_FOOD_REVIEW);
+        }
     }
 
-    @SuppressLint("RestrictedApi")
-    public void writeFoodReview() {
-        Intent intent = FoodReviewWriteActivity.newIntent(this, mFoodCornerType);
-        ActivityOptionsCompat options =
-                ActivityOptionsCompat.makeCustomAnimation(this, R.anim.right_to_left_slide_in, R.anim.right_to_left_slide_out);
-        startActivityForResult(intent, REQUEST_FOOD_REVIEW, options.toBundle());
+    private void showEditReviewYesOrNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+
+        builder.setMessage(String.format(getString(R.string.food_review_only_once_alert_message), getResources().getStringArray(R.array.food_corner_list)[mFoodCornerType]));
+        builder.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = FoodReviewWriteActivity.newIntent(FoodReviewListActivity.this, mFoodCornerType, mMyFoodReview.mComment);
+                startActivityForResult(intent, REQUEST_FOOD_REVIEW);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.dialog_no), null);
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -233,7 +285,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_FOOD_REVIEW) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
                 mOrderedByTimeAsc = -1;
                 mOrderedByRatingAsc = 0;
             }
@@ -246,6 +297,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         outState.putInt(SAVED_FOOD_CORNER_TYPE, mFoodCornerType);
         outState.putInt(SAVED_ORDERED_BY_RATING_ASC, mOrderedByRatingAsc);
         outState.putInt(SAVED_ORDERED_BY_TIME_ASC, mOrderedByTimeAsc);
+        outState.putBoolean(SAVED_IS_CHECK_FINISHED, mIsCheckFinished);
     }
 
     @Override

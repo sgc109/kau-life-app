@@ -1,5 +1,6 @@
 package com.lifekau.android.lifekau.viewholder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.lifekau.android.lifekau.DateDisplayer;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.activity.HomeActivity;
 import com.lifekau.android.lifekau.activity.PostDetailActivity;
 import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
 import com.lifekau.android.lifekau.manager.LoginManager;
@@ -56,6 +58,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     private String mPostKey;
     public BottomSheetDialog mBottomSheetDialog;
     private PostRecyclerAdapter mAdapter;
+    private int mItemPosition;
     private boolean mIsInDetail;
 
     public PostViewHolder(View itemView, Context context, PostRecyclerAdapter adapter, boolean isInDetail) {
@@ -97,9 +100,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         return mPost;
     }
 
-    public void bind(Post post, String postKey) {
+    public void bind(Post post, String postKey, int itemPosition) {
         mPost = post;
         mPostKey = postKey;
+        mItemPosition = itemPosition;
         updateUI();
     }
 
@@ -178,8 +182,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     }
 
     private void startDetailActivity(boolean hasClickedComment) {
-        Intent intent = PostDetailActivity.newIntent(mContext, mPostKey, hasClickedComment);
-        mContext.startActivity(intent);
+        Intent intent = PostDetailActivity.newIntent(mContext, mPostKey, hasClickedComment, mItemPosition);
+        ((Activity)mContext).startActivityForResult(intent, HomeActivity.REQUEST_POST_DETAIL);
     }
 
     @Override
@@ -246,7 +250,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     public void deletePost() {
         int position = getAdapterPosition();
-        if (mAdapter != null) { // 글 목록에서 삭제할 때만 업뎃, 그외 엔 onStart 에서 어차피 목록 초기화함
+        if (mAdapter != null) { // 글 목록에서 삭제할 때만 업뎃, 그외 엔 CommunityFragment 의 onActivityResult 업뎃해줘야함
             mAdapter.mPosts.remove(position);
             mAdapter.mPostKeys.remove(position);
             mAdapter.notifyItemRemoved(position);

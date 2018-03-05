@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommunityFragment extends PagerFragment implements SwipeRefreshLayout.OnRefreshListener {
-
     private final int NUM_OF_POST_PER_PAGE = 20;
     private int mTotalItemCount = 0;
     private int mLastVisibleItemPosition;
@@ -38,6 +38,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     private DatabaseReference mPostsRef;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
+
     private PostRecyclerAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -174,6 +175,10 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
     @Override
     public void onRefresh() {
+        onRefreshManually();
+    }
+
+    public void onRefreshManually(){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -186,6 +191,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     @Override
     public void onStart() {
         super.onStart();
+
     }
 
     @Override
@@ -201,5 +207,40 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
     @Override
     public void refresh() {
 
+    }
+
+    public PostRecyclerAdapter getAdapter() {
+        return mAdapter;
+    }
+
+    public RecyclerView getRecyclerView(){
+        return mRecyclerView;
+    }
+
+    public SwipeRefreshLayout getSwipeRefreshLayout(){
+        return mSwipeRefreshLayout;
+    }
+
+    public void updatePost(final int position) {
+        mPostsRef
+                .child(mAdapter.mPostKeys.get(position))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot == null) {
+                            mAdapter.mPosts.remove(position);
+                            mAdapter.mPostKeys.remove(position);
+                            return;
+                        }
+                        Post post = dataSnapshot.getValue(Post.class);
+                        mAdapter.mPosts.set(position, post);
+                        mAdapter.notifyItemChanged(position);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("sgc109_debug", "CommunityFragment.updatePost.onCancelled");
+                    }
+                });
     }
 }

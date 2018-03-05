@@ -41,7 +41,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostViewHolder> {
     @Override
     public void onBindViewHolder(final PostViewHolder holder, final int position) {
         final String postKey = mPostKeys.get(position);
-        holder.bind(mPosts.get(position), mPostKeys.get(position));
+        holder.bind(mPosts.get(position), mPostKeys.get(position), position);
     }
 
     @Override
