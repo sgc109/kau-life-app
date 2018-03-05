@@ -12,10 +12,10 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.AccumulatedGrade;
 import com.lifekau.android.lifekau.model.AccumulatedGradeSummary;
-import com.lifekau.android.lifekau.model.CurrGrade;
+import com.lifekau.android.lifekau.model.CurrentGrade;
 import com.lifekau.android.lifekau.model.Scholarship;
 import com.lifekau.android.lifekau.model.TotalAccumulatedGrade;
-import com.lifekau.android.lifekau.model.TotalCurrGrade;
+import com.lifekau.android.lifekau.model.TotalCurrentGrade;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,8 +39,8 @@ public class LMSPortalManager {
     private static final int MAX_SUBJECT_NUM = 21;
 
     private ArrayList<Scholarship> mScholarshipArray;
-    private ArrayList<CurrGrade> mCurrGrade;
-    private TotalCurrGrade mTotalCurrGrade;
+    private ArrayList<CurrentGrade> mCurrentGrade;
+    private TotalCurrentGrade mTotalCurrentGrade;
     private ArrayList<AccumulatedGrade> mAccumulatedGradeArray;
     private ArrayList<AccumulatedGradeSummary> mAccumulatedGradeSummaryArray;
     private TotalAccumulatedGrade mTotalAccumulatedGrade;
@@ -51,8 +51,8 @@ public class LMSPortalManager {
 
     private LMSPortalManager() {
         mScholarshipArray = new ArrayList<Scholarship>();
-        mCurrGrade = new ArrayList<CurrGrade>();
-        mTotalCurrGrade = new TotalCurrGrade();
+        mCurrentGrade = new ArrayList<CurrentGrade>();
+        mTotalCurrentGrade = new TotalCurrentGrade();
         mAccumulatedGradeArray = new ArrayList<AccumulatedGrade>();
         mAccumulatedGradeSummaryArray = new ArrayList<AccumulatedGradeSummary>();
         mTotalAccumulatedGrade = new TotalAccumulatedGrade();
@@ -296,7 +296,7 @@ public class LMSPortalManager {
         return resources.getInteger(R.integer.no_error);
     }
 
-    public int pullCurrGrade(Context context) {
+    public int pullCurrentGrade(Context context) {
         Resources resources = context.getResources();
         OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
@@ -313,16 +313,17 @@ public class LMSPortalManager {
                 return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("cellspacing", "1");
-            mCurrGrade.clear();
-            if (resources.getString(R.string.portal_curr_grade_no_data).equals(elements.get(0).select("tr").get(1).select("td").text()))
-                return -1;
+            mCurrentGrade.clear();
+            if (resources.getString(R.string.portal_curr_grade_no_data).equals(elements.get(0).select("tr").get(1).select("td").text())) {
+                return resources.getInteger(R.integer.missing_data_error);
+            }
             int elementsSize = elements.size();
             for (int i = 0; i < elementsSize; i++) {
                 Elements grades = elements.get(i).select("tr");
                 int gradesSize = grades.size();
                 for (int j = 1; j < gradesSize; j++) {
                     Elements infomation = grades.get(j).select("td");
-                    CurrGrade grade = new CurrGrade();
+                    CurrentGrade grade = new CurrentGrade();
                     grade.courseNumber = infomation.get(0).text();
                     grade.courseTitle = infomation.get(1).text();
                     grade.credits = infomation.get(2).text();
@@ -332,16 +333,16 @@ public class LMSPortalManager {
                     grade.portfolio = infomation.get(6).text();
                     grade.remarks = infomation.get(7).text();
                     grade.retake = infomation.get(8).text();
-                    mCurrGrade.add(grade);
+                    mCurrentGrade.add(grade);
                 }
             }
             Elements totalGradeSummary = elements.get(1).select("tr").get(1).select("td");
-            mTotalCurrGrade.registeredCredits = Integer.valueOf(totalGradeSummary.get(0).text());
-            mTotalCurrGrade.acquiredCredits = Integer.valueOf(totalGradeSummary.get(1).text());
-            mTotalCurrGrade.totalGrades = Double.valueOf(totalGradeSummary.get(2).text());
-            mTotalCurrGrade.GPA = Double.valueOf(totalGradeSummary.get(3).text());
-            mTotalCurrGrade.semesterRanking = totalGradeSummary.get(4).text();
-            mTotalCurrGrade.remarks = totalGradeSummary.get(5).text();
+            mTotalCurrentGrade.registeredCredits = Integer.valueOf(totalGradeSummary.get(0).text());
+            mTotalCurrentGrade.acquiredCredits = Integer.valueOf(totalGradeSummary.get(1).text());
+            mTotalCurrentGrade.totalGrades = Double.valueOf(totalGradeSummary.get(2).text());
+            mTotalCurrentGrade.GPA = Double.valueOf(totalGradeSummary.get(3).text());
+            mTotalCurrentGrade.semesterRanking = totalGradeSummary.get(4).text();
+            mTotalCurrentGrade.remarks = totalGradeSummary.get(5).text();
         } catch (NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
@@ -509,6 +510,22 @@ public class LMSPortalManager {
     public void clearScholarship() {
         mScholarshipArray.clear();
     }
+
+    public int getCurrentGradeSize() {
+        return mCurrentGrade.size();
+    }
+
+    public CurrentGrade getCurrentGrade(int index) {
+        return index < getCurrentGradeSize() ? mCurrentGrade.get(index) : null;
+    }
+
+    public void clearTotalCurrentGrade() { mTotalCurrentGrade = new TotalCurrentGrade(); }
+
+    public TotalCurrentGrade getTotalCurrentGrade() {
+        return mTotalCurrentGrade;
+    }
+
+    public void clearCurrentGrade() { mCurrentGrade.clear(); }
 
     public int getAccumulatedGradeSize() {
         return mAccumulatedGradeArray.size();

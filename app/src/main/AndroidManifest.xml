@@ -89,6 +89,8 @@
         </activity>
         <activity android:name=".activity.AccumulatedGradeActivity">
         </activity>
+        <activity android:name=".activity.CurrentGradeActivity">
+        </activity>
     </application>
 
 </manifest>

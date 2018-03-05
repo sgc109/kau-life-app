@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.activity.AccumulatedGradeSummaryActivity;
+import com.lifekau.android.lifekau.activity.CurrentGradeActivity;
 import com.lifekau.android.lifekau.activity.ScholarshipActivity;
 
 public class LmsAndInfoFragment extends PagerFragment implements View.OnClickListener {
@@ -25,10 +26,12 @@ public class LmsAndInfoFragment extends PagerFragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lms_and_info, container, false);
         findFragmentContainer(view);
-        FrameLayout showScholarshipButton = view.findViewById(R.id.fragment_portal_show_scholarship_button);
+        FrameLayout showScholarshipButton = view.findViewById(R.id.fragment_show_scholarship_button);
         showScholarshipButton.setOnClickListener(this);
-        FrameLayout showAccumulatedGradeSummaryButton = view.findViewById(R.id.fragment_portal_show_accumulated_grade_summary_button);
+        FrameLayout showAccumulatedGradeSummaryButton = view.findViewById(R.id.fragment_show_accumulated_grade_summary_button);
         showAccumulatedGradeSummaryButton.setOnClickListener(this);
+        FrameLayout showCurrentGradeButton = view.findViewById(R.id.fragment_show_current_grade_button);
+        showCurrentGradeButton.setOnClickListener(this);
         setHasOptionsMenu(true);
         return view;
     }
@@ -53,12 +56,16 @@ public class LmsAndInfoFragment extends PagerFragment implements View.OnClickLis
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()) {
-            case R.id.fragment_portal_show_scholarship_button:
+            case R.id.fragment_show_scholarship_button:
                 intent = new Intent(view.getContext(), ScholarshipActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.fragment_portal_show_accumulated_grade_summary_button:
+            case R.id.fragment_show_accumulated_grade_summary_button:
                 intent = new Intent(view.getContext(), AccumulatedGradeSummaryActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.fragment_show_current_grade_button:
+                intent = new Intent(view.getContext(), CurrentGradeActivity.class);
                 startActivity(intent);
                 break;
         }

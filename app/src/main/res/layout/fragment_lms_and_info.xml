@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/fragment_portal_show_scholarship_button"
+            android:id="@+id/fragment_show_scholarship_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
@@ -51,7 +51,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/fragment_portal_show_curr_grade_button"
+            android:id="@+id/fragment_show_current_grade_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
@@ -89,7 +89,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/fragment_portal_show_accumulated_grade_summary_button"
+            android:id="@+id/fragment_show_accumulated_grade_summary_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
@@ -127,7 +127,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/fragment_portal_show_examination_time_table_button"
+            android:id="@+id/fragment_show_examination_time_table_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="10dp"
