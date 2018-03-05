@@ -48,6 +48,8 @@
     <string name="order_by_rating_desc">높은 평점순</string>
     <string name="order_by_rating_asc">낮은 평점순</string>
     <string name="dialog_edit">수정</string>
+    <string name="dialog_yes">예</string>
+    <string name="dialog_no">아니오</string>
     <string name="dialog_delete">삭제</string>
     <string name="dialog_cancel">취소</string>
     <string name="post_delete_alert_dialog_title">이야기 삭제</string>
@@ -56,6 +58,7 @@
     <string name="post_delete_alert_dialog_message">이야기가 삭제되면 더 이상 찾을 수 없게됩니다. 삭제하시겠습니까?</string>
     <string name="comment_delete_alert_dialog_message">이 댓글을 삭제하시겠어요?</string>
     <string name="anonymous_author">익명(작성자)</string>
+    <string name="food_review_only_once_alert_message">오늘 %1$s 에 대한 평가를 이미 작성하셨습니다. 수정하시겠습니까?</string>
     
     <string name="menu_1">커뮤니티</string>
     <string name="menu_2">리뷰</string>

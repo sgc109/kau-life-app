@@ -5,11 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -35,6 +39,8 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     public static final int REQUEST_POST_DETAIL = 1;
     public static final String EXTRA_WAS_POST_DELETED = "extra_was_post_deleted";
     public static final String EXTRA_ITEM_POSITION = "extra_item_position";
+    private Toolbar mToolbar;
+    private AppBarLayout mAppBarLayout;
     private PagerFragment currentFragment;
     private HomeViewPagerAdapter adapter;
     private AHBottomNavigationAdapter navigationAdapter;
@@ -57,8 +63,8 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                 .getBoolean("translucentNavigation", false);
         setTheme(enabledTranslucentNavigation ? R.style.AppTheme_TranslucentNavigation : R.style.Theme_AppCompat_Light_NoActionBar);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = findViewById(R.id.home_toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = findViewById(R.id.home_toolbar);
+        setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
@@ -75,6 +81,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         }
 
+        mAppBarLayout = findViewById(R.id.home_app_bar_layout);
         bottomNavigation = findViewById(R.id.home_bottom_navigation_bar);
         viewPager = findViewById(R.id.home_view_pager);
         mFab = findViewById(R.id.new_post_fab);
@@ -248,9 +255,27 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            // 정말 종료하시겠습니까? 다시 묻지 않기 체크
-            return super.onKeyDown(keyCode, event);
-//            return true;
+            if(viewPager.getCurrentItem() != 0) {
+                return super.onKeyDown(keyCode, event);
+            }
+            final CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
+            final RecyclerView recyclerView = fragment.getRecyclerView();
+            LinearLayoutManager manager = (LinearLayoutManager)recyclerView.getLayoutManager();
+            int first = manager.findFirstCompletelyVisibleItemPosition();
+            if(first == 0) {
+                return super.onKeyDown(keyCode, event);
+            }
+            final SwipeRefreshLayout swipeRefreshLayout = fragment.getSwipeRefreshLayout();
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                    fragment.onRefreshManually();
+                    recyclerView.smoothScrollToPosition(0);
+                    mAppBarLayout.setExpanded(true, true);
+                }
+            });
+            return true;
         }
 
         return super.onKeyDown(keyCode, event);
@@ -259,11 +284,5 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if(viewPager.getCurrentItem() != 0) return;
     }
 }

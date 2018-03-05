@@ -175,6 +175,10 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
     @Override
     public void onRefresh() {
+        onRefreshManually();
+    }
+
+    public void onRefreshManually(){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -207,6 +211,14 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
     public PostRecyclerAdapter getAdapter() {
         return mAdapter;
+    }
+
+    public RecyclerView getRecyclerView(){
+        return mRecyclerView;
+    }
+
+    public SwipeRefreshLayout getSwipeRefreshLayout(){
+        return mSwipeRefreshLayout;
     }
 
     public void updatePost(final int position) {

@@ -3,6 +3,7 @@ package com.lifekau.android.lifekau.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -11,25 +12,33 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lifekau.android.lifekau.DialogMaker;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.FoodReview;
 
 public class FoodReviewWriteActivity extends AppCompatActivity implements TextWatcher, View.OnClickListener{
     private static final String EXTRA_FOOD_CORNER_TYPE = "extra_corner_type";
+    private static final String EXTRA_PREVIOUS_COMMENT = "extra_previous_comment";
 
     private Button mSubmitButton;
     private Button mCancelButton;
     private EditText mCommentEditText;
     private RatingBar mRatingBar;
     private int mFoodCornerType;
+    private String mPreviousComment;
+    private FirebaseDatabase mDatabase;
 
-    public static Intent newIntent(Context packageContext, int foodCornerType){
+    public static Intent newIntent(Context packageContext, int foodCornerType, String previousComment){
         Intent intent = new Intent(packageContext, FoodReviewWriteActivity.class);
         intent.putExtra(EXTRA_FOOD_CORNER_TYPE, foodCornerType);
+        intent.putExtra(EXTRA_PREVIOUS_COMMENT, previousComment);
         return intent;
     }
     @Override
@@ -43,7 +52,12 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
             getSupportActionBar().hide();
         }
 
+        mDatabase = FirebaseDatabase.getInstance();
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
+        mPreviousComment = getIntent().getStringExtra(EXTRA_PREVIOUS_COMMENT);
+        if(mPreviousComment != null) {
+            mCommentEditText.setText(mPreviousComment);
+        }
 
         mRatingBar = (RatingBar)findViewById(R.id.food_review_write_rating_bar);
         mCommentEditText = (EditText)findViewById(R.id.food_review_write_comment_edit_text);
@@ -54,12 +68,21 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
         mSubmitButton.setOnClickListener(this);
     }
     public void insertReviewToDB(int cornerType, float rating, String comment){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference(getString(R.string.firebase_database_food_reviews));
+        DatabaseReference ref = mDatabase.getReference()
+                .child(getString(R.string.firebase_database_food_reviews))
+                .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType))
+                .child(LoginManager.get(this).getStudentId());
         FoodReview review = new FoodReview(cornerType, rating, comment);
-        ref.child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType))
-                .push()
-                .setValue(review);
+        ref
+                .setValue(review)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(FoodReviewWriteActivity.this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
+                        FoodReviewWriteActivity.this.finish();
+                    }
+                });
+
     }
 
     @Override
@@ -102,10 +125,8 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
                 int commentLength = mCommentEditText.getText().toString().length();
                 if(commentLength != 0) {
                     insertReviewToDB(mFoodCornerType, mRatingBar.getRating(), mCommentEditText.getText().toString()); // 특정 코너
-                    Intent intent = new Intent();
                     // intent.putExtra
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    setResult(RESULT_OK);
                 } else {
                     Snackbar.make(findViewById(R.id.food_review_write_linear_layout),
                             getString(R.string.please_write_review_alert_message),
