@@ -92,6 +92,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
         mDatabase = FirebaseDatabase.getInstance();
 
+        checkIfAlreadyWritten();
+
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
         if (getSupportActionBar() != null) {
@@ -249,20 +251,17 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         if(!mIsCheckFinished) {
             Toast.makeText(this, "네트워크가 원활하지 않습니다.", Toast.LENGTH_SHORT).show();
         } else if(mAlreadyWritten){
-//            Toast.makeText(this, "한 코너의 리뷰는 하루에 한번만 작성할 수 있습니다.", Toast.LENGTH_SHORT).show();
+            showEditReviewYesOrNoDialog();
         } else {
             Intent intent = FoodReviewWriteActivity.newIntent(this, mFoodCornerType, null);
             startActivityForResult(intent, REQUEST_FOOD_REVIEW);
-//            ActivityOptionsCompat options =
-//                    ActivityOptionsCompat.makeCustomAnimation(this, R.anim.right_to_left_slide_in, R.anim.right_to_left_slide_out);
-//            startActivityForResult(intent, REQUEST_FOOD_REVIEW, options.toBundle());
         }
     }
 
-    private void showYesOrNoDialog() {
+    private void showEditReviewYesOrNoDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
 
-        builder.setMessage(getString(R.string.food_review_only_once_alert_message));
+        builder.setMessage(String.format(getString(R.string.food_review_only_once_alert_message), getResources().getStringArray(R.array.food_corner_list)[mFoodCornerType]));
         builder.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

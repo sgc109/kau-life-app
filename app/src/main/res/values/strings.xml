@@ -58,7 +58,7 @@
     <string name="post_delete_alert_dialog_message">이야기가 삭제되면 더 이상 찾을 수 없게됩니다. 삭제하시겠습니까?</string>
     <string name="comment_delete_alert_dialog_message">이 댓글을 삭제하시겠어요?</string>
     <string name="anonymous_author">익명(작성자)</string>
-    <string name="food_review_only_once_alert_message">오늘 %1$s 에 대한 평가를 이미 작성하셨습니다. 수정하시겠습니까?</string>
+    <string name="food_review_only_once_alert_message">오늘 %1$s 에 대한 평가를 이미 작성하셨습니다. 평가를 수정하시겠습니까?</string>
     
     <string name="menu_1">커뮤니티</string>
     <string name="menu_2">리뷰</string>
