@@ -135,16 +135,19 @@ public class ScholarshipActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Integer... params) {
+            Resources resources = applicationWeakReference.get().getResources();
             ScholarshipActivity scholarshipActivity = activityReference.get();
-            if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return UNEXPECTED_ERROR;
-            Resources resources = scholarshipActivity.getResources();
+            if (scholarshipActivity == null || scholarshipActivity.isFinishing())
+                return resources.getInteger(R.integer.unexpected_error);
             int count = 0;
             int result = scholarshipActivity.mLMSPortalManager.pullScholarship(activityReference.get());
             while (!scholarshipActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
-                sleep(3000);
-                if(result == resources.getInteger(R.integer.session_error)) return result;
-                else count++;
-                if(count == MAXIMUM_RETRY_NUM) return resources.getInteger(R.integer.network_error);
+                if (result == resources.getInteger(R.integer.network_error)) {
+                    sleep(3000);
+                    count++;
+                } else return result;
+                if (count == resources.getInteger(R.integer.maximum_retry_num))
+                    return resources.getInteger(R.integer.network_error);
             }
             return resources.getInteger(R.integer.no_error);
         }
@@ -159,11 +162,10 @@ public class ScholarshipActivity extends AppCompatActivity {
                 scholarshipActivity.mProgressBarLayout.setVisibility(View.GONE);
                 scholarshipActivity.mMainLayout.setVisibility(View.VISIBLE);
                 scholarshipActivity.mRecyclerAdapter.notifyDataSetChanged();
-            } else if(result == resources.getInteger(R.integer.network_error)){
+            } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 문제
                 scholarshipActivity.showErrorMessage();
-            }
-            else if(result == resources.getInteger(R.integer.session_error)){
+            } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 문제
                 Intent intent = LoginActivity.newIntent(scholarshipActivity);
                 scholarshipActivity.startActivity(intent);

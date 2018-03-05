@@ -118,7 +118,7 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if(position != RecyclerView.NO_POSITION) {
+            if (position != RecyclerView.NO_POSITION) {
                 AccumulatedGradeSummary accumulatedGradeSummary = mLMSPortalManager.getAccumulatedGradeSummary(position);
                 Intent intent = AccumulatedGradeActivity.newIntent(AccumulatedGradeSummaryActivity.this, accumulatedGradeSummary.year, accumulatedGradeSummary.semesterCode);
                 startActivity(intent);
@@ -147,18 +147,22 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Integer... params) {
-            Resources res = applicationWeakReference.get().getResources();
+            Resources resources = applicationWeakReference.get().getResources();
             AccumulatedGradeSummaryActivity accumulatedGradeSummaryActivity = activityReference.get();
-            if (accumulatedGradeSummaryActivity == null || accumulatedGradeSummaryActivity.isFinishing()) return res.getInteger(R.integer.unexpected_error);
+            if (accumulatedGradeSummaryActivity == null || accumulatedGradeSummaryActivity.isFinishing()) {
+                return resources.getInteger(R.integer.unexpected_error);
+            }
             int count = 0;
             int result = accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(activityReference.get());
-            while (!accumulatedGradeSummaryActivity.isFinishing() && result != res.getInteger(R.integer.no_error) && !isCancelled()) {
-                sleep(3000);
-                if(result == res.getInteger(R.integer.session_error)) return result;
-                else count++;
-                if(count == res.getInteger(R.integer.maximum_retry_num)) return res.getInteger(R.integer.network_error);
+            while (!accumulatedGradeSummaryActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
+                if (result == resources.getInteger(R.integer.network_error)) {
+                    sleep(3000);
+                    count++;
+                } else return result;
+                if (count == resources.getInteger(R.integer.maximum_retry_num))
+                    return resources.getInteger(R.integer.network_error);
             }
-            return res.getInteger(R.integer.no_error);
+            return resources.getInteger(R.integer.no_error);
         }
 
         @Override
@@ -172,11 +176,10 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
                 accumulatedGradeSummaryActivity.mRecyclerAdapter.notifyDataSetChanged();
                 accumulatedGradeSummaryActivity.mProgressBarLayout.setVisibility(View.GONE);
                 accumulatedGradeSummaryActivity.mMainLayout.setVisibility(View.VISIBLE);
-            } else if(result == resources.getInteger(R.integer.network_error)){
+            } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 예외 처리
                 accumulatedGradeSummaryActivity.showErrorMessage();
-            }
-            else if(result == resources.getInteger(R.integer.session_error)){
+            } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 예외 처리
                 Intent intent = LoginActivity.newIntent(accumulatedGradeSummaryActivity);
                 accumulatedGradeSummaryActivity.startActivity(intent);

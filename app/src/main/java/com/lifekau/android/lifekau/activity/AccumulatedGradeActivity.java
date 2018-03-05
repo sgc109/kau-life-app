@@ -164,18 +164,21 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Void... params) {
+            Resources resources = applicationWeakReference.get().getResources();
             AccumulatedGradeActivity accumulatedGradeActivity = activityReference.get();
-            if (accumulatedGradeActivity == null || accumulatedGradeActivity.isFinishing()) return UNEXPECTED_ERROR;
-            Resources resources = accumulatedGradeActivity.getResources();
+            if (accumulatedGradeActivity == null || accumulatedGradeActivity.isFinishing())
+                return resources.getInteger(R.integer.unexpected_error);
             int count = 0;
             int year = accumulatedGradeActivity.mYear;
             int semesterCode = accumulatedGradeActivity.mSemesterCode;
             int result = accumulatedGradeActivity.mLMSPortalManager.pullAccumulatedGrade(activityReference.get(), year, semesterCode);
             while (!accumulatedGradeActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
-                sleep(3000);
-                if(result == resources.getInteger(R.integer.session_error)) return result;
-                else count++;
-                if(count == MAXIMUM_RETRY_NUM) return resources.getInteger(R.integer.network_error);
+                if (result == resources.getInteger(R.integer.network_error)) {
+                    sleep(3000);
+                    count++;
+                } else return result;
+                if (count == resources.getInteger(R.integer.maximum_retry_num))
+                    return resources.getInteger(R.integer.network_error);
             }
             return resources.getInteger(R.integer.no_error);
         }
@@ -190,11 +193,10 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
                 accumulatedGradeActivity.mProgressBarLayout.setVisibility(View.GONE);
                 accumulatedGradeActivity.mMainLayout.setVisibility(View.VISIBLE);
                 accumulatedGradeActivity.mRecyclerAdapter.notifyDataSetChanged();
-            } else if(result == resources.getInteger(R.integer.network_error)){
+            } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 문제
                 accumulatedGradeActivity.showErrorMessage();
-            }
-            else if(result == resources.getInteger(R.integer.session_error)){
+            } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 문제
                 Intent intent = LoginActivity.newIntent(accumulatedGradeActivity);
                 accumulatedGradeActivity.startActivity(intent);
@@ -211,7 +213,7 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
         }
     }
 
-    public String getSemesterString(int semesterCode){
+    public String getSemesterString(int semesterCode) {
         return SEMESTER_STRING[mSemesterCode / 5 - 2];
     }
 

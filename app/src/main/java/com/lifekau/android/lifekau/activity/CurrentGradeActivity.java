@@ -160,7 +160,6 @@ public class CurrentGradeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            Log.e("???", "???");
             CurrentGradeActivity currentGradeActivity = activityReference.get();
             if (currentGradeActivity == null || currentGradeActivity.isFinishing()) return;
             Resources resources = currentGradeActivity.getResources();

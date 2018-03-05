@@ -52,7 +52,7 @@ import com.lifekau.android.lifekau.manager.LoginManager;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
 
     private static final String SAVE_GUID = "shared_preferences_globally_unique_identifier";
     private static final String SAVE_ID = "shared_preferences_save_id";
@@ -234,21 +234,14 @@ public class LoginActivity extends AppCompatActivity{
 
         @Override
         protected Integer doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            if (activityReference == null) return UNEXPECTED_ERROR;
-            if (applicationWeakReference == null) return UNEXPECTED_ERROR;
+            Resources resources = applicationWeakReference.get().getResources();
             LoginActivity activitiy = activityReference.get();
-            Resources resources = activitiy.getResources();
-            try {
-                // Simulate network access.
-                Integer result = activitiy.mLMSPortalManager.pullSession(applicationWeakReference.get(), mid, mPassword);
-                if (result != resources.getInteger(R.integer.no_error)) return result;
-                result = activitiy.mLMSPortalManager.pullStudentId(applicationWeakReference.get());
-                if (result != resources.getInteger(R.integer.no_error)) return result;
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                return UNEXPECTED_ERROR;
-            }
+            if (activityReference == null || activitiy.isFinishing())
+                return resources.getInteger(R.integer.unexpected_error);
+            Integer result = activitiy.mLMSPortalManager.pullSession(activitiy, mid, mPassword);
+            if (result != resources.getInteger(R.integer.no_error)) return result;
+            result = activitiy.mLMSPortalManager.pullStudentId(activitiy);
+            if (result != resources.getInteger(R.integer.no_error)) return result;
             return resources.getInteger(R.integer.no_error);
         }
 
@@ -265,7 +258,7 @@ public class LoginActivity extends AppCompatActivity{
                     SharedPreferences sharedPref = activitiy.getPreferences(Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     String uniqueID = sharedPref.getString(SAVE_GUID, null);
-                    if(uniqueID == null){
+                    if (uniqueID == null) {
                         uniqueID = UUID.randomUUID().toString();
                         editor.putString(SAVE_GUID, uniqueID);
                     }
@@ -313,14 +306,14 @@ public class LoginActivity extends AppCompatActivity{
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         String uniqueID = sharedPref.getString(SAVE_GUID, null);
-        if(uniqueID == null){
+        if (uniqueID == null) {
             uniqueID = UUID.randomUUID().toString();
             editor.putString(SAVE_GUID, uniqueID);
         }
         String id = advancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_ID, ""), uniqueID);
         String password = advancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_PASSWORD, ""), uniqueID);
         boolean checked = sharedPref.getBoolean(SAVE_CHECKED_AUTO_LOGIN, false);
-        if (checked){
+        if (checked) {
             InputMethodManager imm = (InputMethodManager) getSystemService(
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
