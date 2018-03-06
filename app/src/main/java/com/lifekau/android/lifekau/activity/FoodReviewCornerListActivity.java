@@ -3,18 +3,16 @@ package com.lifekau.android.lifekau.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -90,6 +88,11 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                int size = getResources().getStringArray(R.array.food_corner_list).length;
+                for(int i = 0; i <  size; i++){
+                    mListCntReviews.set(i, 0);
+                    mListSumReviewRatings.set(i, 0.0f);
+                }
                 for (DataSnapshot cornerSnapshot : dataSnapshot.getChildren()) {
                     int cornerType = -1;
                     Float sumRating = 0.0f;
@@ -100,7 +103,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
                         if (cornerType == -1) cornerType = review.mCornerType;
                         sumRating += review.mRating;
                     }
-                    mListCntReviews.set(cornerType, cntReviews);
+                    mListCntReviews.add(cornerType, cntReviews);
                     mListSumReviewRatings.set(cornerType, sumRating);
                 }
                 mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);

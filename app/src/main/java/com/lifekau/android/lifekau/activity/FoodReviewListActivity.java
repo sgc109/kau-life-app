@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,18 +61,16 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private TextView mToolbarTextView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AlertDialog mOrderByAlertDialog;
-    private FoodReview mMyReview;
+    private FoodReview mMyFoodReview;
     private int mFoodCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
     private ImageView mBackImageView;
     private TextView mOrderByTextView;
     private FirebaseDatabase mDatabase;
-    //    private Boolean mIsWriting;
     private RecyclerView.Adapter mRecyclerAdapter;
     private List<FoodReview> mFoodReviews;
     private boolean mAlreadyWritten;
-    private boolean mIsCheckFinished;
 
     public static Intent newIntent(Context packageContext, int foodCornerType) {
         Intent intent = new Intent(packageContext, FoodReviewListActivity.class);
@@ -96,7 +93,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
-        checkIfAlreadyWritten();
+//        checkIfAlreadyWritten();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -135,7 +132,11 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mFoodReviews.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    mFoodReviews.add(snapshot.getValue(FoodReview.class));
+                    if(snapshot.getKey().equals(LoginManager.get(FoodReviewListActivity.this).getStudentId())) {
+                        mAlreadyWritten = true;
+                    }
+                    FoodReview review = snapshot.getValue(FoodReview.class);
+                    mFoodReviews.add(review);
                 }
                 mProgressBar.setVisibility(View.GONE);
                 setVisibilities();
@@ -168,29 +169,6 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         };
 
         mRecyclerView.setAdapter(mRecyclerAdapter);
-    }
-
-    private void checkIfAlreadyWritten(){
-        DatabaseReference ref = mDatabase.getReference()
-                .child(getString(R.string.firebase_database_food_reviews))
-                .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType))
-                .child(LoginManager.get(this).getStudentId());
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                FoodReview review = dataSnapshot.getValue(FoodReview.class);
-                if(review != null) {
-                    mAlreadyWritten = true;
-                    mMyReview = review;
-                }
-                mIsCheckFinished = true;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     public void setVisibilities() {
@@ -250,13 +228,12 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         super.onResume();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     public void onClickWriteFoodReviewFab(View view) {
-        if(!mIsCheckFinished) {
-            Toast.makeText(this, "네트워크가 원활하지 않습니다.", Toast.LENGTH_SHORT).show();
-        } else if(mAlreadyWritten){
+        if(mAlreadyWritten){
             showEditReviewYesOrNoDialog();
         } else {
-            Intent intent = FoodReviewWriteActivity.newIntent(this, mFoodCornerType, null, 0.0f);
+            Intent intent = FoodReviewWriteActivity.newIntent(this, mFoodCornerType, mAlreadyWritten);
             startActivityForResult(intent, REQUEST_FOOD_REVIEW);
         }
     }
@@ -269,7 +246,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         builder.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = FoodReviewWriteActivity.newIntent(FoodReviewListActivity.this, mFoodCornerType, mMyReview.mComment, mMyReview.mRating);
+                Intent intent = FoodReviewWriteActivity.newIntent(FoodReviewListActivity.this, mFoodCornerType, mAlreadyWritten);
                 startActivityForResult(intent, REQUEST_FOOD_REVIEW);
             }
         });

@@ -7,5 +7,4 @@
 /build
 /captures
 .externalNativeBuild
-**/library/build/
-/library/build
+library/build

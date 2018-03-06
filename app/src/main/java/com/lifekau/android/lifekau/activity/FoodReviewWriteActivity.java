@@ -28,23 +28,20 @@ import com.lifekau.android.lifekau.model.FoodReview;
 
 public class FoodReviewWriteActivity extends AppCompatActivity implements TextWatcher, View.OnClickListener {
     private static final String EXTRA_FOOD_CORNER_TYPE = "extra_corner_type";
-    private static final String EXTRA_PREVIOUS_COMMENT = "extra_previous_comment";
-    private static final String EXTRA_PREVIOUS_RATING = "extra_previous_rating";
+    private static final String EXTRA_ALREADY_WRITTEN = "extra_already-written";
 
     private Button mSubmitButton;
     private Button mCancelButton;
     private EditText mCommentEditText;
     private RatingBar mRatingBar;
     private int mFoodCornerType;
-    private String mPreviousComment;
-    private float mPreviousRating;
     private FirebaseDatabase mDatabase;
+    private boolean mAlreadyWritten;
 
-    public static Intent newIntent(Context packageContext, int foodCornerType, String previousComment, float previousRating) {
+    public static Intent newIntent(Context packageContext, int foodCornerType, boolean alreadyWritten) {
         Intent intent = new Intent(packageContext, FoodReviewWriteActivity.class);
         intent.putExtra(EXTRA_FOOD_CORNER_TYPE, foodCornerType);
-        intent.putExtra(EXTRA_PREVIOUS_COMMENT, previousComment);
-        intent.putExtra(EXTRA_PREVIOUS_RATING, previousRating);
+        intent.putExtra(EXTRA_ALREADY_WRITTEN, alreadyWritten);
         return intent;
     }
 
@@ -61,19 +58,14 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
 
         mDatabase = FirebaseDatabase.getInstance();
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
-        mPreviousComment = getIntent().getStringExtra(EXTRA_PREVIOUS_COMMENT);
-        mPreviousRating = getIntent().getFloatExtra(EXTRA_PREVIOUS_RATING, 0.0f);
+        mAlreadyWritten = getIntent().getBooleanExtra(EXTRA_ALREADY_WRITTEN, false);
 
-        mRatingBar = (RatingBar) findViewById(R.id.food_review_write_rating_bar);
-        mCommentEditText = (EditText) findViewById(R.id.food_review_write_comment_edit_text);
+        mRatingBar = findViewById(R.id.food_review_write_rating_bar);
+        mCommentEditText = findViewById(R.id.food_review_write_comment_edit_text);
         mCommentEditText.addTextChangedListener(this);
-        if (mPreviousComment != null) {
-            mCommentEditText.setText(mPreviousComment);
-            mRatingBar.setRating(mPreviousRating);
-        }
-        mCancelButton = (Button) findViewById(R.id.food_review_write_cancel_button);
+        mCancelButton = findViewById(R.id.food_review_write_cancel_button);
         mCancelButton.setOnClickListener(this);
-        mSubmitButton = (Button) findViewById(R.id.food_review_write_submit_button);
+        mSubmitButton = findViewById(R.id.food_review_write_submit_button);
         mSubmitButton.setOnClickListener(this);
     }
 
@@ -82,13 +74,14 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
                 .child(getString(R.string.firebase_database_food_reviews))
                 .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType))
                 .child(LoginManager.get(this).getStudentId());
-        FoodReview review = new FoodReview(cornerType, rating, comment);
+        final FoodReview review = new FoodReview(cornerType, rating, comment);
         ref
                 .setValue(review)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(FoodReviewWriteActivity.this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
                         FoodReviewWriteActivity.this.setResult(RESULT_OK);
                         FoodReviewWriteActivity.this.finish();
                     }
@@ -126,7 +119,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
         int commentLength = mCommentEditText.getText().toString().length();
         switch (view.getId()) {
             case R.id.food_review_write_cancel_button:
-                if (mPreviousComment == null) {
+                if (!mAlreadyWritten) {
                     if (commentLength != 0) {
                         askDiscardTextOrNot();
                     } else {
@@ -155,7 +148,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            if (mPreviousComment == null) {
+            if (!mAlreadyWritten) {
                 int textLen = mCommentEditText.getText().length();
                 if (textLen != 0) {
                     askDiscardTextOrNot();
