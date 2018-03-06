@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lifekau.android.lifekau.DialogMaker;
@@ -32,6 +36,7 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
     private EditText mCommentEditText;
     private RatingBar mRatingBar;
     private String mLectureName;
+    FirebaseDatabase mDatabase;
     private boolean mAlreadyWritten;
 
     public static Intent newIntent(Context packageContext, String lectureName, boolean alreadyWritten){
@@ -53,25 +58,38 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
+        mDatabase = FirebaseDatabase.getInstance();
+
         mLectureName = getIntent().getStringExtra(EXTRA_LECTURE_NAME);
         mAlreadyWritten = getIntent().getBooleanExtra(EXTRA_LECTURE_ALREADY_WRITTEN, false);
 
-        mRatingBar = (RatingBar)findViewById(R.id.lecture_review_write_rating_bar);
-        mCommentEditText = (EditText)findViewById(R.id.lecture_review_write_comment_edit_text);
+        mRatingBar = findViewById(R.id.lecture_review_write_rating_bar);
+        mCommentEditText = findViewById(R.id.lecture_review_write_comment_edit_text);
         mCommentEditText.addTextChangedListener(this);
-        mCancelButton = (Button)findViewById(R.id.lecture_review_write_cancel_button);
+        mCancelButton = findViewById(R.id.lecture_review_write_cancel_button);
         mCancelButton.setOnClickListener(this);
-        mSubmitButton = (Button)findViewById(R.id.lecture_review_write_submit_button);
+        mSubmitButton = findViewById(R.id.lecture_review_write_submit_button);
         mSubmitButton.setOnClickListener(this);
     }
     public void insertReviewToDB(float rating, String comment){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference(getString(R.string.firebase_database_lecture_reviews));
+        DatabaseReference ref = mDatabase.getReference()
+                .child(getString(R.string.firebase_database_lecture_reviews))
+                .child(mLectureName)
+                .child(LoginManager.get(this).getStudentId());
         LectureReview review = new LectureReview(rating, comment);
         ref
-                .child(mLectureName)
-                .child(LoginManager.get(this).getStudentId())
-                .setValue(review);
+                .setValue(review)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(LectureReviewWriteActivity.this
+                                , getString(R.string.review_write_success_message)
+                                , Toast.LENGTH_SHORT)
+                                .show();
+                        LectureReviewWriteActivity.this.setResult(RESULT_OK);
+                        LectureReviewWriteActivity.this.finish();
+                    }
+                });
     }
 
     @Override
@@ -118,9 +136,6 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
             case R.id.lecture_review_write_submit_button:
                 if(commentLength != 0) {
                     insertReviewToDB(mRatingBar.getRating(), mCommentEditText.getText().toString()); // 특정 코너
-                    Intent intent = new Intent();
-                    setResult(RESULT_OK, intent);
-                    finish();
                 } else {
                     Snackbar.make(findViewById(R.id.lecture_review_write_linear_layout),
                             getString(R.string.please_write_review_alert_message),

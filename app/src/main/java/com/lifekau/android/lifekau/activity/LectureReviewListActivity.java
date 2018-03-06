@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +29,7 @@ import com.lifekau.android.lifekau.model.LectureReview;
 import com.lifekau.android.lifekau.viewholder.LectureReviewHolder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -129,8 +129,8 @@ public class LectureReviewListActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Comparator comparator = new Comparator<LectureReview>() {
                     @Override
-                    public int compare(LectureReview foodReview, LectureReview t1) {
-                        return Long.valueOf(t1.mDate).compareTo(Long.valueOf(foodReview.mDate));
+                    public int compare(LectureReview lectureReview, LectureReview t1) {
+                        return Long.valueOf(t1.mDate).compareTo(Long.valueOf(lectureReview.mDate));
                     }
                 };
 
@@ -145,8 +145,8 @@ public class LectureReviewListActivity extends AppCompatActivity {
                     sumRating += review.mRating;
                     newLectureReviews.add(review);
                 }
-                mProgressBar.setVisibility(View.GONE);
-                setVisibilities();
+
+                Collections.sort(newLectureReviews, comparator);
 
                 int cntReviews = newLectureReviews.size();
                 float averageRating = cntReviews > 0 ? sumRating / cntReviews : (float) 0.0;
@@ -156,6 +156,9 @@ public class LectureReviewListActivity extends AppCompatActivity {
 
                 mLectureReviews = newLectureReviews;
                 mRecyclerAdapter.notifyDataSetChanged();
+
+                mProgressBar.setVisibility(View.GONE);
+                setVisibilities();
             }
 
             @Override
@@ -214,7 +217,6 @@ public class LectureReviewListActivity extends AppCompatActivity {
             switch (requestCode) {
                 case REQUEST_WRITE_REVIEW:
                     mAlreadyWritten = true;
-                    Toast.makeText(this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
                     break;
             }
         }

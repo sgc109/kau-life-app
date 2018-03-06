@@ -74,14 +74,16 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
                 .child(getString(R.string.firebase_database_food_reviews))
                 .child(String.format(getString(R.string.firebase_database_food_review_corner_id), mFoodCornerType))
                 .child(LoginManager.get(this).getStudentId());
-        final FoodReview review = new FoodReview(cornerType, rating, comment);
+        FoodReview review = new FoodReview(cornerType, rating, comment);
         ref
                 .setValue(review)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(FoodReviewWriteActivity.this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent();
+                        Toast.makeText(FoodReviewWriteActivity.this
+                                , getString(R.string.review_write_success_message)
+                                , Toast.LENGTH_SHORT)
+                                .show();
                         FoodReviewWriteActivity.this.setResult(RESULT_OK);
                         FoodReviewWriteActivity.this.finish();
                     }
