@@ -34,6 +34,7 @@
     <string name="submit_post_button">게시하기</string>
     <string name="write_new_post">새 글 쓰기</string>
     <string name="text_gone_warning_message">작성 중인 글이 사라집니다.\n계속 하시겠습니까?</string>
+    <string name="review_edit_cancel_alert_message">수정을 취소하시습니까?</string>
     <string name="yes">예</string>
     <string name="no">아니오</string>
     <string name="post_comment_count">댓글 %1$s개</string>
