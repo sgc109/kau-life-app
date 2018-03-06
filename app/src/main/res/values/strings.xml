@@ -34,7 +34,7 @@
     <string name="submit_post_button">게시하기</string>
     <string name="write_new_post">새 글 쓰기</string>
     <string name="text_gone_warning_message">작성 중인 글이 사라집니다.\n계속 하시겠습니까?</string>
-    <string name="review_edit_cancel_alert_message">수정을 취소하시습니까?</string>
+    <string name="review_edit_cancel_alert_message">수정을 취소해도 전에 작성했던 리뷰는 그대로 남습니다. \n수정을 취소하시습니까?</string>
     <string name="yes">예</string>
     <string name="no">아니오</string>
     <string name="post_comment_count">댓글 %1$s개</string>
@@ -59,7 +59,7 @@
     <string name="post_delete_alert_dialog_message">이야기가 삭제되면 더 이상 찾을 수 없게됩니다. 삭제하시겠습니까?</string>
     <string name="comment_delete_alert_dialog_message">이 댓글을 삭제하시겠어요?</string>
     <string name="anonymous_author">익명(작성자)</string>
-    <string name="food_review_only_once_alert_message">오늘 %1$s 에 대한 평가를 이미 작성하셨습니다. 평가를 수정하시겠습니까?</string>
+    <string name="food_review_only_once_alert_message">오늘 %1$s 에 대한 평가를 이미 작성하셨습니다. 지우고 다시 작성하시겠습니까?</string>
     
     <string name="menu_1">커뮤니티</string>
     <string name="menu_2">리뷰</string>

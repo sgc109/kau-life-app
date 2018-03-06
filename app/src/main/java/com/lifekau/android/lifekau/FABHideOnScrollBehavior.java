@@ -27,7 +27,7 @@ public class FABHideOnScrollBehavior extends FloatingActionButton.Behavior {
     @Override
     public void onNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionButton child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
-        if(mViewPager.getCurrentItem() != 0) {
+        if(mViewPager != null && mViewPager.getCurrentItem() != 0) {
             return;
         }
         if (dyConsumed > 0 && child.getVisibility() == View.VISIBLE) {
