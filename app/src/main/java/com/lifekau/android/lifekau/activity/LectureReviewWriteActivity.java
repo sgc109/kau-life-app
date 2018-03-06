@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -130,6 +131,26 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
             default:
                     return;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            if (!mAlreadyWritten) {
+                int textLen = mCommentEditText.getText().length();
+                if (textLen != 0) {
+                    askDiscardTextOrNot();
+                } else {
+                    setResult(RESULT_CANCELED, new Intent());
+                    finish();
+                }
+            } else {
+                askCancelEditingOrNot();
+            }
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     private void askDiscardTextOrNot() {

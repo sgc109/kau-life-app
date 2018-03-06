@@ -1,11 +1,13 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +30,7 @@ import com.lifekau.android.lifekau.model.LectureReview;
 import com.lifekau.android.lifekau.viewholder.LectureReviewHolder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class LectureReviewListActivity extends AppCompatActivity {
@@ -82,7 +85,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
             mLectureReviews = new ArrayList<>();
         }
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.lecture_review_recycler_view);
+        mRecyclerView = findViewById(R.id.lecture_review_recycler_view);
         mProgressBar = findViewById(R.id.lecture_review_list_progress_bar);
         mEmptyListMessage = findViewById(R.id.lecture_review_list_empty_list_text_view);
         mNestedScrollView = findViewById(R.id.lecture_review_list_nested_scroll_view);
@@ -118,10 +121,19 @@ public class LectureReviewListActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/" + getString(R.string.firebase_database_lecture_reviews)).child(mLectureName);
+        DatabaseReference ref = mDatabase.getReference()
+                .child(getString(R.string.firebase_database_lecture_reviews))
+                .child(mLectureName);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Comparator comparator = new Comparator<LectureReview>() {
+                    @Override
+                    public int compare(LectureReview foodReview, LectureReview t1) {
+                        return Long.valueOf(t1.mDate).compareTo(Long.valueOf(foodReview.mDate));
+                    }
+                };
+
                 List<LectureReview> newLectureReviews = new ArrayList<>();
                 float sumRating = 0;
 
@@ -166,11 +178,33 @@ public class LectureReviewListActivity extends AppCompatActivity {
 
     public void onClickWriteLectureReviewFab(View view) {
         if(mAlreadyWritten){
-
+            showEditReviewYesOrNoDialog();
         } else {
             Intent intent = LectureReviewWriteActivity.newIntent(this, mLectureName, mAlreadyWritten);
             startActivityForResult(intent, REQUEST_WRITE_REVIEW);
         }
+    }
+
+    private void showEditReviewYesOrNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+
+        builder.setMessage(String.format(getString(R.string.lecture_review_only_once_alert_message), mLectureName));
+        builder.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = LectureReviewWriteActivity.newIntent(LectureReviewListActivity.this, mLectureName, mAlreadyWritten);
+                startActivityForResult(intent, REQUEST_WRITE_REVIEW);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.dialog_no), null);
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+        });
+        dialog.show();
     }
 
     @Override
