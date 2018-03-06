@@ -46,7 +46,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private final String SAVED_ORDERED_BY_RATING_ASC = "saved_order_by_rating_asc";
     private final String SAVED_ORDERED_BY_TIME_ASC = "saved_order_by_time_asc";
     private final String SAVED_FOOD_CORNER_TYPE = "saved_food_corner_type";
-    private final String SAVED_IS_CHECK_FINISHED = "saved_is_check_finished";
+//    private final String SAVED_IS_CHECK_FINISHED = "saved_is_check_finished";
     private final int REQUEST_FOOD_REVIEW = 0;
     public final static int RESTAURENT_TYPE_STUDENT = 0;
     public final static int RESTAURENT_TYPE_DORM = 1;
@@ -87,14 +87,14 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         if (savedInstanceState != null) {
             mOrderedByTimeAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_TIME_ASC);
             mOrderedByRatingAsc = savedInstanceState.getInt(SAVED_ORDERED_BY_RATING_ASC);
-            mIsCheckFinished = savedInstanceState.getBoolean(SAVED_IS_CHECK_FINISHED);
+//            mIsCheckFinished = savedInstanceState.getBoolean(SAVED_IS_CHECK_FINISHED);
         }
 
         mDatabase = FirebaseDatabase.getInstance();
 
-        checkIfAlreadyWritten();
-
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
+
+        checkIfAlreadyWritten();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -176,7 +176,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot != null) {
+                FoodReview review = dataSnapshot.getValue(FoodReview.class);
+                if(review != null) {
                     mAlreadyWritten = true;
                     mMyFoodReview = dataSnapshot.getValue(FoodReview.class);
                 }
@@ -253,7 +254,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         } else if(mAlreadyWritten){
             showEditReviewYesOrNoDialog();
         } else {
-            Intent intent = FoodReviewWriteActivity.newIntent(this, mFoodCornerType, null);
+            Intent intent = FoodReviewWriteActivity.newIntent(this, mFoodCornerType, null, 0.0f);
             startActivityForResult(intent, REQUEST_FOOD_REVIEW);
         }
     }
@@ -265,7 +266,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         builder.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = FoodReviewWriteActivity.newIntent(FoodReviewListActivity.this, mFoodCornerType, mMyFoodReview.mComment);
+                Intent intent = FoodReviewWriteActivity.newIntent(FoodReviewListActivity.this, mFoodCornerType, mMyFoodReview.mComment, mMyFoodReview.mRating);
                 startActivityForResult(intent, REQUEST_FOOD_REVIEW);
             }
         });
@@ -285,6 +286,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_FOOD_REVIEW) {
             if (resultCode == RESULT_OK) {
+                mAlreadyWritten = true;
                 mOrderedByTimeAsc = -1;
                 mOrderedByRatingAsc = 0;
             }
@@ -297,7 +299,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         outState.putInt(SAVED_FOOD_CORNER_TYPE, mFoodCornerType);
         outState.putInt(SAVED_ORDERED_BY_RATING_ASC, mOrderedByRatingAsc);
         outState.putInt(SAVED_ORDERED_BY_TIME_ASC, mOrderedByTimeAsc);
-        outState.putBoolean(SAVED_IS_CHECK_FINISHED, mIsCheckFinished);
+//        outState.putBoolean(SAVED_IS_CHECK_FINISHED, mIsCheckFinished);
     }
 
     @Override
