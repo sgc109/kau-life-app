@@ -1,9 +1,11 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +23,7 @@ import com.lifekau.android.lifekau.model.LectureReview;
 
 public class LectureReviewWriteActivity extends AppCompatActivity implements TextWatcher, View.OnClickListener{
     private static final String EXTRA_LECTURE_NAME = "extra_lecture_name";
+    private static final String EXTRA_LECTURE_ALREADY_WRITTEN = "extra_already_written";
     private static final String SAVED_LECTURE_NAME = "saved_lecture_name";
 
     private Button mSubmitButton;
@@ -28,9 +31,12 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
     private EditText mCommentEditText;
     private RatingBar mRatingBar;
     private String mLectureName;
-    public static Intent newIntent(Context packageContext, String lectureName){
+    private boolean mAlreadyWritten;
+
+    public static Intent newIntent(Context packageContext, String lectureName, boolean alreadyWritten){
         Intent intent = new Intent(packageContext, LectureReviewWriteActivity.class);
         intent.putExtra(EXTRA_LECTURE_NAME, lectureName);
+        intent.putExtra(EXTRA_LECTURE_ALREADY_WRITTEN, alreadyWritten);
         return intent;
     }
     @Override
@@ -46,9 +52,8 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        if(getIntent() != null){
-            mLectureName = getIntent().getStringExtra(EXTRA_LECTURE_NAME);
-        }
+        mLectureName = getIntent().getStringExtra(EXTRA_LECTURE_NAME);
+        mAlreadyWritten = getIntent().getBooleanExtra(EXTRA_LECTURE_ALREADY_WRITTEN, false);
 
         mRatingBar = (RatingBar)findViewById(R.id.lecture_review_write_rating_bar);
         mCommentEditText = (EditText)findViewById(R.id.lecture_review_write_comment_edit_text);
@@ -95,21 +100,24 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
 
     @Override
     public void onClick(View view) {
+        int commentLength = mCommentEditText.getText().toString().length();
         switch (view.getId()){
             case R.id.lecture_review_write_cancel_button:
-                if(mCommentEditText.getText().toString().equals("")){
-                    setResult(RESULT_CANCELED, new Intent());
-                    finish();
+                if (!mAlreadyWritten) {
+                    if (commentLength != 0) {
+                        askDiscardTextOrNot();
+                    } else {
+                        setResult(RESULT_CANCELED);
+                        finish();
+                    }
                 } else {
-                    // 작성 중인 거 다 날릴 건지 체크
+                    askCancelEditingOrNot();
                 }
                 break;
             case R.id.lecture_review_write_submit_button:
-                int commentLength = mCommentEditText.getText().toString().length();
                 if(commentLength != 0) {
                     insertReviewToDB(mRatingBar.getRating(), mCommentEditText.getText().toString()); // 특정 코너
                     Intent intent = new Intent();
-                    // intent.putExtra
                     setResult(RESULT_OK, intent);
                     finish();
                 } else {
@@ -122,5 +130,36 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
             default:
                     return;
         }
+    }
+
+    private void askDiscardTextOrNot() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        finish();
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.text_gone_warning_message)).setPositiveButton(getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.no), dialogClickListener).show();
+    }
+    private void askCancelEditingOrNot() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        finish();
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.review_edit_cancel_alert_message)).setPositiveButton(getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.no), dialogClickListener).show();
     }
 }

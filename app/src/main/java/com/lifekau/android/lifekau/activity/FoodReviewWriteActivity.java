@@ -176,7 +176,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
             }
         };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(FoodReviewWriteActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.text_gone_warning_message)).setPositiveButton(getString(R.string.yes), dialogClickListener)
                 .setNegativeButton(getString(R.string.no), dialogClickListener).show();
     }
@@ -192,7 +192,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
             }
         };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(FoodReviewWriteActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.review_edit_cancel_alert_message)).setPositiveButton(getString(R.string.yes), dialogClickListener)
                 .setNegativeButton(getString(R.string.no), dialogClickListener).show();
     }

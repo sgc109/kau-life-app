@@ -52,7 +52,6 @@ public class LectureReviewListActivity extends AppCompatActivity {
     //    private TextView mEmptyListMessage;
     List<LectureReview> mLectureReviews;
     private boolean mAlreadyWritten;
-    private boolean mIsCheckFinished;
 
 
     public static Intent newIntent(Context context, String lectureName) {
@@ -78,10 +77,6 @@ public class LectureReviewListActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
 
         mLectureName = getIntent().getStringExtra(EXTRA_LECTURE_NAME);
-
-        checkIfAlreadyWritten();
-
-
 
         if (mLectureReviews == null) {
             mLectureReviews = new ArrayList<>();
@@ -131,6 +126,9 @@ public class LectureReviewListActivity extends AppCompatActivity {
                 float sumRating = 0;
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if(snapshot.getKey().equals(LoginManager.get(LectureReviewListActivity.this).getStudentId())){
+                        mAlreadyWritten = true;
+                    }
                     LectureReview review = snapshot.getValue(LectureReview.class);
                     sumRating += review.mRating;
                     newLectureReviews.add(review);
@@ -156,29 +154,6 @@ public class LectureReviewListActivity extends AppCompatActivity {
 //        setVisibilities();
     }
 
-    private void checkIfAlreadyWritten(){
-        DatabaseReference ref = mDatabase.getReference()
-                .child(getString(R.string.firebase_database_lecture_reviews))
-                .child(mLectureName)
-                .child(LoginManager.get(this).getStudentId());
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                LectureReview review = dataSnapshot.getValue(LectureReview.class);
-                if(review != null) {
-                    mAlreadyWritten = true;
-                    mMyReview = review;
-                }
-                mIsCheckFinished = true;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     private void setVisibilities() {
         if (mLectureReviews.size() == 0) {
             mRecyclerView.setVisibility(View.GONE);
@@ -190,12 +165,12 @@ public class LectureReviewListActivity extends AppCompatActivity {
     }
 
     public void onClickWriteLectureReviewFab(View view) {
-        writeLectureReview();
-    }
+        if(mAlreadyWritten){
 
-    private void writeLectureReview() {
-        Intent intent = LectureReviewWriteActivity.newIntent(this, mLectureName);
-        startActivityForResult(intent, REQUEST_WRITE_REVIEW);
+        } else {
+            Intent intent = LectureReviewWriteActivity.newIntent(this, mLectureName, mAlreadyWritten);
+            startActivityForResult(intent, REQUEST_WRITE_REVIEW);
+        }
     }
 
     @Override
@@ -204,6 +179,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_WRITE_REVIEW:
+                    mAlreadyWritten = true;
                     Toast.makeText(this, getString(R.string.review_write_success_message), Toast.LENGTH_SHORT).show();
                     break;
             }

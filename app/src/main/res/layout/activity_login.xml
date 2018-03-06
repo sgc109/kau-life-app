@@ -38,7 +38,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="2013122141"/>
+                android:text="2012122327"/>
 
 
             <EditText
@@ -55,7 +55,7 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="qqqqqqqqqqq"/>
+                android:text="qqqqqq"/>
 
 
             <Button
