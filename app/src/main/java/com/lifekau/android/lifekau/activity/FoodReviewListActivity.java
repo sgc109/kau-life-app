@@ -294,8 +294,18 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 
                 builder.setTitle(getString(R.string.order_by_dialog_title));
 
-                builder.setSingleChoiceItems(values, -1, this);
+                int checked = -1;
+                if(mOrderedByRatingAsc == 1){
+                    checked = 3;
+                } else if(mOrderedByRatingAsc == -1){
+                    checked = 2;
+                } else if(mOrderedByTimeAsc == 1) {
+                    checked = 1;
+                } else if(mOrderedByTimeAsc == -1) {
+                    checked = 0;
+                }
 
+                builder.setSingleChoiceItems(values, checked, this);
                 mOrderByAlertDialog = builder.create();
                 mOrderByAlertDialog.show();
                 break;
