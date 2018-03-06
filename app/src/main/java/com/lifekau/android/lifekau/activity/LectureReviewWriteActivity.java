@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lifekau.android.lifekau.DialogMaker;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.LectureReview;
 
 public class LectureReviewWriteActivity extends AppCompatActivity implements TextWatcher, View.OnClickListener{
@@ -61,8 +62,9 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(getString(R.string.firebase_database_lecture_reviews));
         LectureReview review = new LectureReview(rating, comment);
-        ref.child(mLectureName)
-                .push()
+        ref
+                .child(mLectureName)
+                .child(LoginManager.get(this).getStudentId())
                 .setValue(review);
     }
 

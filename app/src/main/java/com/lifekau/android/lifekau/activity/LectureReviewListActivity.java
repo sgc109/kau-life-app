@@ -2,11 +2,11 @@ package com.lifekau.android.lifekau.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.LectureReview;
 import com.lifekau.android.lifekau.viewholder.LectureReviewHolder;
 
@@ -46,8 +47,12 @@ public class LectureReviewListActivity extends AppCompatActivity {
     private NestedScrollView mNestedScrollView;
     private ProgressBar mProgressBar;
     private TextView mEmptyListMessage;
+    private LectureReview mMyReview;
+    private FirebaseDatabase mDatabase;
     //    private TextView mEmptyListMessage;
     List<LectureReview> mLectureReviews;
+    private boolean mAlreadyWritten;
+    private boolean mIsCheckFinished;
 
 
     public static Intent newIntent(Context context, String lectureName) {
@@ -70,8 +75,13 @@ public class LectureReviewListActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        Intent intent = getIntent();
-        mLectureName = intent.getStringExtra(EXTRA_LECTURE_NAME);
+        mDatabase = FirebaseDatabase.getInstance();
+
+        mLectureName = getIntent().getStringExtra(EXTRA_LECTURE_NAME);
+
+        checkIfAlreadyWritten();
+
+
 
         if (mLectureReviews == null) {
             mLectureReviews = new ArrayList<>();
@@ -144,6 +154,29 @@ public class LectureReviewListActivity extends AppCompatActivity {
             }
         });
 //        setVisibilities();
+    }
+
+    private void checkIfAlreadyWritten(){
+        DatabaseReference ref = mDatabase.getReference()
+                .child(getString(R.string.firebase_database_lecture_reviews))
+                .child(mLectureName)
+                .child(LoginManager.get(this).getStudentId());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                LectureReview review = dataSnapshot.getValue(LectureReview.class);
+                if(review != null) {
+                    mAlreadyWritten = true;
+                    mMyReview = review;
+                }
+                mIsCheckFinished = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void setVisibilities() {

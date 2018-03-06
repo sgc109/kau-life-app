@@ -3,8 +3,10 @@ package com.lifekau.android.lifekau.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -60,7 +62,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private TextView mToolbarTextView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AlertDialog mOrderByAlertDialog;
-    private FoodReview mMyFoodReview;
+    private FoodReview mMyReview;
     private int mFoodCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
@@ -179,7 +181,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
                 FoodReview review = dataSnapshot.getValue(FoodReview.class);
                 if(review != null) {
                     mAlreadyWritten = true;
-                    mMyFoodReview = dataSnapshot.getValue(FoodReview.class);
+                    mMyReview = review;
                 }
                 mIsCheckFinished = true;
             }
@@ -259,6 +261,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     private void showEditReviewYesOrNoDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
 
@@ -266,7 +269,7 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
         builder.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = FoodReviewWriteActivity.newIntent(FoodReviewListActivity.this, mFoodCornerType, mMyFoodReview.mComment, mMyFoodReview.mRating);
+                Intent intent = FoodReviewWriteActivity.newIntent(FoodReviewListActivity.this, mFoodCornerType, mMyReview.mComment, mMyReview.mRating);
                 startActivityForResult(intent, REQUEST_FOOD_REVIEW);
             }
         });
