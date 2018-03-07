@@ -74,6 +74,7 @@
     <string name="header_accept_encoding_with_br">gzip, deflate, br</string>
     <string name="header_accpet_language">ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7</string>
     <string name="header_user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36</string>
+    <string name="header_connection">keep-alive</string>
 
     <!-- Portal 관련 스트링 정의-->
     <string name="portal_lms_check_page">https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1</string>

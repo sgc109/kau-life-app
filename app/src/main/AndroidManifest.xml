@@ -2,12 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lifekau.android.lifekau">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!-- 파싱을 위한 인터넷 권한 요구 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 웹뷰에서 파일 다운로드를 위한 권한 요구 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:largeHeap="true"
@@ -92,6 +90,10 @@
         <activity android:name=".activity.NoticePageActivity">
         </activity>
         <activity android:name=".activity.AccumulatedGradeActivity">
+        </activity>
+        <activity android:name=".activity.CurrentGradeActivity">
+        </activity>
+        <activity android:name=".activity.LMSActivity">
         </activity>
     </application>
 
