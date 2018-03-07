@@ -77,13 +77,6 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         }
 
-        mFab = findViewById(R.id.new_post_fab);
-        CoordinatorLayout.LayoutParams params =
-                (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
-        params.setBehavior(new FABHideOnScrollBehavior(viewPager));
-        mFab.requestLayout();
-        setFabOnClickListenerToWritePost();
-
         mAppBarLayout = findViewById(R.id.home_app_bar_layout);
         bottomNavigation = findViewById(R.id.home_bottom_navigation_bar);
         viewPager = findViewById(R.id.home_view_pager);
@@ -105,7 +98,12 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
         updateBottomNavigationItems();
 
-
+        mFab = findViewById(R.id.new_post_fab);
+        CoordinatorLayout.LayoutParams params =
+                (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
+        params.setBehavior(new FABHideOnScrollBehavior(viewPager));
+        mFab.requestLayout();
+        setFabOnClickListenerToWritePost();
     }
 
     public void updateBottomNavigationColor(boolean isColored) {
