@@ -140,7 +140,7 @@ public class ScholarshipActivity extends AppCompatActivity {
             if (scholarshipActivity == null || scholarshipActivity.isFinishing())
                 return resources.getInteger(R.integer.unexpected_error);
             int count = 0;
-            int result = scholarshipActivity.mLMSPortalManager.pullScholarship(activityReference.get());
+            int result = scholarshipActivity.mLMSPortalManager.pullScholarship(applicationWeakReference.get());
             while (!scholarshipActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 if (result == resources.getInteger(R.integer.network_error)) {
                     sleep(3000);

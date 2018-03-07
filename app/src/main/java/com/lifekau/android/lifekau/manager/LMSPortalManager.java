@@ -5,10 +5,9 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.franmontiel.persistentcookiejar.ClearableCookieJar;
-import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.lifekau.android.lifekau.PersistentLoadCookieJar;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.AccumulatedGrade;
 import com.lifekau.android.lifekau.model.AccumulatedGradeSummary;
@@ -22,9 +21,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
+import okhttp3.Cookie;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -45,6 +46,7 @@ public class LMSPortalManager {
     private ArrayList<AccumulatedGradeSummary> mAccumulatedGradeSummaryArray;
     private TotalAccumulatedGrade mTotalAccumulatedGrade;
     private String[][] mExaminationTimeTable;
+    private PersistentLoadCookieJar mCookieJar;
     private OkHttpClient mClient;
     private String mSSOToken;
     private String mStudentId;
@@ -69,12 +71,13 @@ public class LMSPortalManager {
 
     public synchronized OkHttpClient getClient(Context context) {
         if (mClient == null) {
-            ClearableCookieJar cookieJar =
-                    new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+            mCookieJar =
+                    new PersistentLoadCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
             ConnectionPool connectionPool = new ConnectionPool();
             mClient = new OkHttpClient.Builder()
                     .connectionPool(connectionPool)
-                    .cookieJar(cookieJar)
+                    .cookieJar(mCookieJar)
+                    .retryOnConnectionFailure(true)
                     .build();
         }
         return mClient;
@@ -89,11 +92,11 @@ public class LMSPortalManager {
                 .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301)
-                return resources.getInteger(resources.getInteger(R.integer.server_error));
+            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(resources.getInteger(R.integer.server_error));
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -115,6 +118,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_lms_check_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .post(body)
                 .build();
         call = client.newCall(request);
@@ -139,6 +143,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -159,6 +164,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_portal_check_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -177,6 +183,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         call = client.newCall(request);
         String newId, newPassword;
@@ -200,6 +207,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .post(body)
                 .build();
         call = client.newCall(request);
@@ -219,6 +227,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -241,6 +250,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.lms_my_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -248,7 +258,7 @@ public class LMSPortalManager {
                 return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             mStudentId = doc.select("#loggedin-user").get(0).getElementsByAttributeValue("class", "dropdown-toggle").text().replaceAll("[^0-9]", "");
-        } catch (NullPointerException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
         } catch (Exception e) {
@@ -269,6 +279,7 @@ public class LMSPortalManager {
                 .addHeader("User-Agent", resources.
                         getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -286,7 +297,7 @@ public class LMSPortalManager {
                 insert.amount = Integer.valueOf(TextUtils.join("", infomation.get(3).text().split(",")));
                 mScholarshipArray.add(insert);
             }
-        } catch (NullPointerException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
         } catch (Exception e) {
@@ -306,6 +317,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -343,7 +355,7 @@ public class LMSPortalManager {
             mTotalCurrentGrade.GPA = Double.valueOf(totalGradeSummary.get(3).text());
             mTotalCurrentGrade.semesterRanking = totalGradeSummary.get(4).text();
             mTotalCurrentGrade.remarks = totalGradeSummary.get(5).text();
-        } catch (NullPointerException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
         } catch (Exception e) {
@@ -367,6 +379,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -414,6 +427,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
@@ -442,7 +456,7 @@ public class LMSPortalManager {
             mTotalAccumulatedGrade.acquiredCredits = Integer.valueOf(totalGradeSummary.get(4).text());
             mTotalAccumulatedGrade.totalGrades = Double.valueOf(totalGradeSummary.get(6).text());
             mTotalAccumulatedGrade.GPA = Double.valueOf(totalGradeSummary.get(8).text());
-        } catch (NullPointerException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
         } catch (Exception e) {
@@ -467,6 +481,7 @@ public class LMSPortalManager {
                 .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .post(body)
                 .build();
         Call call = client.newCall(request);
@@ -485,7 +500,7 @@ public class LMSPortalManager {
                     mExaminationTimeTable[i][j] = dataElements.get(j).text();
                 }
             }
-        } catch (NullPointerException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
         } catch (Exception e) {
@@ -551,4 +566,8 @@ public class LMSPortalManager {
         mAccumulatedGradeSummaryArray.clear();
     }
 
+    public List<Cookie> getCookie(Context context){
+        if(mCookieJar == null) return null;
+        else return mCookieJar.LoadCookies();
+    }
 }

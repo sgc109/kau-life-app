@@ -8,21 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,7 +23,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -41,8 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import com.lifekau.android.lifekau.AdvancedEncryptionStandard;
@@ -50,7 +38,8 @@ import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
 import com.lifekau.android.lifekau.manager.LoginManager;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import static android.os.SystemClock.sleep;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -105,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
         });
         mPasswordView.setSelection(0);
 
-        Button midSignInButton = findViewById(R.id.id_sign_in_button);
-        midSignInButton.setOnClickListener(new OnClickListener() {
+        Button mIdSignInButton = findViewById(R.id.id_sign_in_button);
+        mIdSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(
@@ -222,13 +211,13 @@ public class LoginActivity extends AppCompatActivity {
 
         private WeakReference<LoginActivity> activityReference;
         private WeakReference<Application> applicationWeakReference;
-        private final String mid;
+        private final String mId;
         private final String mPassword;
 
         UserLoginTask(Application application, LoginActivity loginActivity, String id, String password) {
             applicationWeakReference = new WeakReference<>(application);
             activityReference = new WeakReference<>(loginActivity);
-            mid = id;
+            mId = id;
             mPassword = password;
         }
 
@@ -238,10 +227,18 @@ public class LoginActivity extends AppCompatActivity {
             LoginActivity activitiy = activityReference.get();
             if (activityReference == null || activitiy.isFinishing())
                 return resources.getInteger(R.integer.unexpected_error);
-            Integer result = activitiy.mLMSPortalManager.pullSession(activitiy, mid, mPassword);
-            if (result != resources.getInteger(R.integer.no_error)) return result;
-            result = activitiy.mLMSPortalManager.pullStudentId(activitiy);
-            if (result != resources.getInteger(R.integer.no_error)) return result;
+            int result;
+            int count = 0;
+            while ((result = activitiy.mLMSPortalManager.pullSession(applicationWeakReference.get(), mId, mPassword)) != resources.getInteger(R.integer.no_error)) {
+                sleep(2000);
+                count++;
+                if(count == resources.getInteger(R.integer.maximum_retry_num)) return result;
+            }
+            while ((result = activitiy.mLMSPortalManager.pullStudentId(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
+                sleep(2000);
+                count++;
+                if(count == resources.getInteger(R.integer.maximum_retry_num)) return result;
+            }
             return resources.getInteger(R.integer.no_error);
         }
 
@@ -263,13 +260,13 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString(SAVE_GUID, uniqueID);
                     }
                     AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
-                    editor.putString(SAVE_ID, advancedEncryptionStandard.encrypt(mid, uniqueID));
+                    editor.putString(SAVE_ID, advancedEncryptionStandard.encrypt(mId, uniqueID));
                     editor.putString(SAVE_PASSWORD, advancedEncryptionStandard.encrypt(mPassword, uniqueID));
                     editor.putBoolean(SAVE_CHECKED_AUTO_LOGIN, true);
                     editor.apply();
                 }
                 LoginManager loginManager = LoginManager.get(activityReference.get());
-                loginManager.setUserId(mid);
+                loginManager.setUserId(mId);
                 loginManager.setPassword(mPassword);
                 loginManager.setStudentId(activitiy.mLMSPortalManager.getStudentId());
                 Intent intent = HomeActivity.newIntent(activityReference.get());
@@ -294,7 +291,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
         toast.show();
     }
 

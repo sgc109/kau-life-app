@@ -153,7 +153,7 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
                 return resources.getInteger(R.integer.unexpected_error);
             }
             int count = 0;
-            int result = accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(activityReference.get());
+            int result = accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(applicationWeakReference.get());
             while (!accumulatedGradeSummaryActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 if (result == resources.getInteger(R.integer.network_error)) {
                     sleep(3000);
@@ -197,7 +197,7 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
     }
 
     public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
         toast.show();
     }
 }

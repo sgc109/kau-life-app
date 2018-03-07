@@ -4,6 +4,8 @@
 
     <!-- 파싱을 위한 인터넷 권한 요구 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 웹뷰에서 파일 다운로드를 위한 권한 요구 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:largeHeap="true"
@@ -90,6 +92,8 @@
         <activity android:name=".activity.AccumulatedGradeActivity">
         </activity>
         <activity android:name=".activity.CurrentGradeActivity">
+        </activity>
+        <activity android:name=".activity.LMSActivity">
         </activity>
     </application>
 

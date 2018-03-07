@@ -171,7 +171,7 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
             int count = 0;
             int year = accumulatedGradeActivity.mYear;
             int semesterCode = accumulatedGradeActivity.mSemesterCode;
-            int result = accumulatedGradeActivity.mLMSPortalManager.pullAccumulatedGrade(activityReference.get(), year, semesterCode);
+            int result = accumulatedGradeActivity.mLMSPortalManager.pullAccumulatedGrade(applicationWeakReference.get(), year, semesterCode);
             while (!accumulatedGradeActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 if (result == resources.getInteger(R.integer.network_error)) {
                     sleep(3000);
@@ -218,7 +218,7 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
     }
 
     public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
         toast.show();
     }
 }
