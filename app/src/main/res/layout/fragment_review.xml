@@ -89,6 +89,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="112dp"
-            android:background="@color/color_tab_1"/>
+            android:background="@color/default_background_color"/>
     </LinearLayout>
 </FrameLayout>
