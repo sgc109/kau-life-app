@@ -85,11 +85,6 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_menu_5);
         navigationAdapter.setupWithBottomNavigation(bottomNavigation, tabColors);
 
-        bottomNavigation.manageFloatingActionButtonBehavior(mFab);
-        bottomNavigation.setTranslucentNavigationEnabled(true);
-
-        bottomNavigation.setOnTabSelectedListener(this);
-
         viewPager.setOffscreenPageLimit(4);
         adapter = new HomeViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
@@ -99,11 +94,16 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         updateBottomNavigationItems();
 
         mFab = findViewById(R.id.new_post_fab);
+
+        bottomNavigation.manageFloatingActionButtonBehavior(mFab);
+        bottomNavigation.setTranslucentNavigationEnabled(true);
+        bottomNavigation.setOnTabSelectedListener(this);
+
         CoordinatorLayout.LayoutParams params =
                 (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
         params.setBehavior(new FABHideOnScrollBehavior(viewPager));
-        mFab.requestLayout();
         setFabOnClickListenerToWritePost();
+        mFab.requestLayout();
     }
 
     public void updateBottomNavigationColor(boolean isColored) {
