@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#8aacc8</color>
     <color name="colorAccent">#bbdefb</color>
     <color name="colorPrimaryLight">#eeffff</color>
+    <color name="default_background_color">#efefef</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
     <color name="yellow">#fdd835</color>

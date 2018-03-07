@@ -82,7 +82,6 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
                         getPosts();
                     }
                 }
-
                 if (mLayoutManager.findFirstVisibleItemPosition() != 0) {
 
                 }

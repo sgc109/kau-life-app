@@ -168,10 +168,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
         if (requestCode == REQUEST_POST_WRITE) {
             fragment.initPostList();
-        } else if(requestCode == REQUEST_POST_DETAIL){
+        } else if (requestCode == REQUEST_POST_DETAIL) {
             boolean wasPostDeleted = data.getBooleanExtra(EXTRA_WAS_POST_DELETED, false);
             int itemPosition = data.getIntExtra(EXTRA_ITEM_POSITION, 0);
-            if(wasPostDeleted){
+            if (wasPostDeleted) {
                 PostRecyclerAdapter adapter = fragment.getAdapter();
                 adapter.mPosts.remove(itemPosition);
                 adapter.mPostKeys.remove(itemPosition);
@@ -241,6 +241,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                     .start();
 
         } else {
+            mAppBarLayout.setExpanded(true, true);
             if (mFab.getVisibility() == View.VISIBLE) {
                 mFab.setVisibility(View.INVISIBLE);
             }
@@ -251,14 +252,14 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            if(viewPager.getCurrentItem() != 0) {
+            if (viewPager.getCurrentItem() != 0) {
                 return super.onKeyDown(keyCode, event);
             }
             final CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
             final RecyclerView recyclerView = fragment.getRecyclerView();
-            LinearLayoutManager manager = (LinearLayoutManager)recyclerView.getLayoutManager();
+            LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
             int first = manager.findFirstCompletelyVisibleItemPosition();
-            if(first == 0) {
+            if (first == 0) {
                 return super.onKeyDown(keyCode, event);
             }
             final SwipeRefreshLayout swipeRefreshLayout = fragment.getSwipeRefreshLayout();
