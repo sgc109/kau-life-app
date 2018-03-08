@@ -134,7 +134,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder implements View.O
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo MenuInfo) {
-        if (mPostAuthor.equals(LoginManager.get(mContext).getStudentId())) {
+        if (mComment.author.equals(LoginManager.get(mContext).getStudentId())) {
             menu.add(0, ITEM_ID_DELETE_COMMENT, getAdapterPosition(), mContext.getString(R.string.dialog_delete));
             menu.add(0, ITEM_ID_CANCEL_COMMENT, getAdapterPosition(), mContext.getString(R.string.dialog_cancel));
         }
