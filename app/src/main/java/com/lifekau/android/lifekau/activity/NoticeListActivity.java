@@ -2,6 +2,7 @@ package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,7 +31,7 @@ public class NoticeListActivity extends AppCompatActivity {
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_PROGRESS = 1;
 
-    private static NoticeManager mNoticeManager = NoticeManager.getInstance();
+    private NoticeManager mNoticeManager = NoticeManager.getInstance();
 
     private boolean mLoading;
     private int mNoticeType;
@@ -54,7 +55,7 @@ public class NoticeListActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mNoticeManager.reset(mNoticeType);
+                mNoticeManager.clear(mNoticeType);
                 mRecyclerAdapter.notifyDataSetChanged();
                 executeAsyncTask();
                 new Handler().postDelayed(new Runnable() {
@@ -187,29 +188,35 @@ public class NoticeListActivity extends AppCompatActivity {
         private WeakReference<Application> applicationWeakReference;
         private int prevPageSize;
 
-        NoticeManagerAsyncTask(Application application, NoticeListActivity NoticeListActivity) {
+        NoticeManagerAsyncTask(Application application, NoticeListActivity noticeListActivity) {
             applicationWeakReference = new WeakReference<>(application);
-            activityReference = new WeakReference<>(NoticeListActivity);
+            activityReference = new WeakReference<>(noticeListActivity);
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            NoticeListActivity NoticeListActivity = activityReference.get();
-            if (NoticeListActivity == null || NoticeListActivity.isFinishing()) return;
-            prevPageSize = mNoticeManager.getListCount(NoticeListActivity.mNoticeType);
+            NoticeListActivity noticeListActivity = activityReference.get();
+            if (noticeListActivity == null || noticeListActivity.isFinishing()) return;
+            prevPageSize = noticeListActivity.mNoticeManager.getListCount(noticeListActivity.mNoticeType);
         }
 
         @Override
         protected Integer doInBackground(Integer... params) {
-            NoticeListActivity NoticeListActivity = activityReference.get();
+            NoticeListActivity noticeListActivity = activityReference.get();
+            Resources resources = applicationWeakReference.get().getResources();
+            if (noticeListActivity == null || noticeListActivity.isFinishing()) return resources.getInteger(R.integer.unexpected_error);
+            int result;
+            int noticeType = noticeListActivity.mNoticeType;
             int count = 0;
-            while ((NoticeListActivity != null && !NoticeListActivity.isFinishing()) &&
-                    mNoticeManager.getNoticeList(activityReference.get().mNoticeType) == -1 && !isCancelled()) {
-                Log.e("ERROR", "페이지 불러오기 실패!");
-                sleep(3000);
-                count++;
-                if (count == 5) return -1;
+            NoticeManager nm = noticeListActivity.mNoticeManager;
+            while ((result = nm.pullNoticeList(applicationWeakReference.get(), noticeType)) != resources.getInteger(R.integer.no_error) && !isCancelled()) {
+                if (result == resources.getInteger(R.integer.network_error)) {
+                    sleep(3000);
+                    count++;
+                } else return result;
+                if (count == resources.getInteger(R.integer.maximum_retry_num))
+                    return resources.getInteger(R.integer.network_error);
             }
             return 0;
         }
@@ -219,17 +226,18 @@ public class NoticeListActivity extends AppCompatActivity {
             super.onPostExecute(result);
             final NoticeListActivity noticeListActivity = activityReference.get();
             if (noticeListActivity == null || noticeListActivity.isFinishing()) return;
+            NoticeManager nm = noticeListActivity.mNoticeManager;
             int noticeType = noticeListActivity.mNoticeType;
             if (result != -1) {
-                if (mNoticeManager.getAllPageFetched(noticeType)) {
-                    noticeListActivity.mRecyclerAdapter.notifyItemRemoved(mNoticeManager.getListCount(noticeType) + 1);
+                if (nm.getAllPageFetched(noticeType)) {
+                    noticeListActivity.mRecyclerAdapter.notifyItemRemoved(nm.getListCount(noticeType) + 1);
                 } else {
                     noticeListActivity.mLoading = false;
-                    noticeListActivity.mRecyclerAdapter.notifyItemRangeChanged(prevPageSize - 1, mNoticeManager.getListCount(noticeListActivity.mNoticeType));
+                    noticeListActivity.mRecyclerAdapter.notifyItemRangeChanged(prevPageSize - 1, nm.getListCount(noticeListActivity.mNoticeType));
                 }
             } else {
                 //예외 처리
-                if (!mNoticeManager.getAllPageFetched(noticeType))
+                if (!nm.getAllPageFetched(noticeType))
                     noticeListActivity.mLoading = false;
                 noticeListActivity.showErrorMessage();
                 new Handler().postDelayed(new Runnable() {
