@@ -64,7 +64,7 @@
                 android:alpha="0.80"
                 android:background="@drawable/rounded_corner_login_button"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <CheckBox
                 android:id="@+id/auto_login_check_box"

@@ -1,7 +1,10 @@
 package com.lifekau.android.lifekau.manager;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
+import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.Notice;
 
 import org.jsoup.Connection;
@@ -50,15 +53,16 @@ public class NoticeManager {
         return LazyHolder.INSTANCE;
     }
 
-    public int getNoticeList(int noticeType) {
-        if (getNoticeList(noticeType, mLoadedListNum[noticeType] + 1) == 0) {
+    public int pullNoticeList(Context context, int noticeType) {
+        if (pullNoticeList(context, noticeType, mLoadedListNum[noticeType] + 1) == 0) {
             mLoadedListNum[noticeType]++;
             return 0;
         }
         return -1;
     }
 
-    public int getNoticeList(int noticeType, int listNum) {
+    public int pullNoticeList(Context context, int noticeType, int listNum) {
+        Resources resources = context.getResources();
         Hashtable<Integer, Notice> currNoticeList = null;
         for (int i = 0; i < TOTAL_NOTICE_NUM; i++) {
             if (noticeType != i) continue;
@@ -90,13 +94,13 @@ public class NoticeManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return -1;
+            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             Elements postElements = doc.getElementsByAttributeValue("id", "board_form").select("tbody").select("tr");
             int postElementsSize = postElements.size();
             if (postElementsSize == 1 && postElements.get(0).select("td").get(0).text().equals("등록된 글이 없습니다.")) {
                 mAllPageFetched[noticeType] = true;
-                return 0;
+                return resources.getInteger(R.integer.missing_data_error);
             }
             for (int i = 0; i < postElementsSize; i++) {
                 Elements pageDataElements = postElements.get(i).select("td");
@@ -111,14 +115,14 @@ public class NoticeManager {
                     mImportantNoticeList[noticeType].add(insertedNotice);
                 else currNoticeList.put(insertedNotice.postNum, insertedNotice);
             }
-            return 0;
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return resources.getInteger(R.integer.network_error);
         }
+        return resources.getInteger(R.integer.no_error);
     }
 
-    public void reset(int noticeType) {
+    public void clear(int noticeType) {
         mLatestPageNum[noticeType] = 0;
         mLoadedListNum[noticeType] = 0;
         mImportantNoticeList[noticeType].clear();
