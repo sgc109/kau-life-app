@@ -3,6 +3,7 @@ package com.lifekau.android.lifekau.activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.graphics.ColorUtils;
@@ -20,12 +21,15 @@ import android.widget.Toast;
 
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LibraryManager;
+import com.lifekau.android.lifekau.manager.NoticeManager;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 
-public class LibraryListActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
+import static android.os.SystemClock.sleep;
+
+public class LibraryListActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     private static final String EXTRA_ROOM_TYPE = "extra_room_type";
     public static final int TYPE_READING_ROOM = 0;
     public static final int TYPE_STUDY_ROOM = 1;
@@ -33,7 +37,7 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
     private static final int TOTAL_READING_ROOM_NUM = 5;
     private static final int TOTAL_STUDY_ROOM_NUM = 6;
 
-    private static LibraryManager mLibraryManager = LibraryManager.getInstance();
+    private LibraryManager mLibraryManager = LibraryManager.getInstance();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mRecyclerAdapter;
@@ -121,10 +125,10 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
                     mDetailTextView.setTextColor(getResources().getColor(R.color.room_available_color));
                 }
                 mDetailTextView.setText(statusString);
-            } else if(mRoomType == TYPE_STUDY_ROOM) {
-                mNameTextView.setText(mLibraryManager.getStudyRoomName(position));
+            } else if (mRoomType == TYPE_STUDY_ROOM) {
+                mNameTextView.setText(getResources().getStringArray(R.array.library_study_room_list)[position]);
                 boolean isAvailableNow = mLibraryManager.isStudyRoomAvailableNow(position);
-                Log.e("ERROR", "position" + position + " " + "이용 가능 여부 "+ isAvailableNow);
+                Log.e("ERROR", "position" + position + " " + "이용 가능 여부 " + isAvailableNow);
                 String format = getString(R.string.library_study_room_detail_format);
                 if (!isAvailableNow) {
                     mDetailTextView.setText(String.format(format, getString(R.string.not_available_now)));
@@ -144,12 +148,11 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
 
         @Override
         public void onClick(View view) {
-            if(mRoomType == TYPE_READING_ROOM){
+            if (mRoomType == TYPE_READING_ROOM) {
                 Intent intent = ReadingRoomDetailActivity.newIntent(view.getContext());
                 intent.putExtra("roomNum", getAdapterPosition());
                 startActivity(intent);
-            }
-            else{
+            } else {
                 mLibraryManager.showStudyRoomStatus(view.getContext(), getAdapterPosition());
             }
         }
@@ -176,25 +179,43 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
 
         @Override
         protected Integer doInBackground(Void... params) {
+            LibraryListActivity libraryListActivity = activityReference.get();
+            Resources resources = applicationWeakReference.get().getResources();
+            if (libraryListActivity == null || libraryListActivity.isFinishing())
+                return resources.getInteger(R.integer.unexpected_error);
+            LibraryManager lm = libraryListActivity.mLibraryManager;
+            int result;
+            int count = 0;
             for (int i = 0; i < TOTAL_STUDY_ROOM_NUM; i++) {
-                if (mLibraryManager.getStudyRoomDetailStatus(applicationWeakReference.get(), i) == -1)
-                    return -1;
+                while (!isCancelled() && (result = lm.pullStudyRoomDetailStatus(applicationWeakReference.get(), i)) != resources.getInteger(R.integer.no_error)) {
+                    if (result == resources.getInteger(R.integer.network_error)) {
+                        sleep(2000);
+                        count++;
+                    } else return result;
+                    if (count == resources.getInteger(R.integer.maximum_retry_num))
+                        return resources.getInteger(R.integer.network_error);
+                }
             }
-            if (mLibraryManager.getStudyRoomStatus(applicationWeakReference.get()) == -1) return -1;
-            if (mLibraryManager.getReadingRoomStatus(applicationWeakReference.get()) == -1)
-                return -1;
-            return 0;
+            while (!isCancelled() && (result = lm.pullReadingRoomStatus(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
+                if (result == resources.getInteger(R.integer.network_error)) {
+                    sleep(2000);
+                    count++;
+                } else return result;
+                if (count == resources.getInteger(R.integer.maximum_retry_num))
+                    return resources.getInteger(R.integer.network_error);
+            }
+            return resources.getInteger(R.integer.no_error);
         }
 
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             LibraryListActivity libraryListActivity = activityReference.get();
+            Resources resources = applicationWeakReference.get().getResources();
             if (libraryListActivity == null || libraryListActivity.isFinishing()) return;
-            if (result != -1) {
+            if (result == resources.getInteger(R.integer.no_error)) {
                 libraryListActivity.mRecyclerAdapter.notifyDataSetChanged();
-            } else {
-                //예외 처리
+            } else if(result == resources.getInteger(R.integer.network_error)){
                 libraryListActivity.showErrorMessage();
             }
             ProgressBar progressBar = libraryListActivity.findViewById(R.id.library_list_progress_bar);
@@ -205,7 +226,7 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
     }
 
     public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(this, "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
         toast.show();
     }
 
