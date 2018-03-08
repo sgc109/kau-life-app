@@ -40,7 +40,6 @@
                 android:singleLine="true"
                 android:text="2012122327"/>
 
-
             <EditText
                 android:id="@+id/password"
                 android:layout_width="280dp"
@@ -57,7 +56,6 @@
                 android:singleLine="true"
                 android:text="qqqqqq"/>
 
-
             <Button
                 android:id="@+id/id_sign_in_button"
                 style="?android:textAppearanceSmall"
@@ -68,6 +66,16 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold"/>
 
+            <CheckBox
+                android:id="@+id/auto_login_check_box"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:alpha="0.80"
+                android:text="자동로그인"
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
+
 </RelativeLayout>

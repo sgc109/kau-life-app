@@ -1,6 +1,6 @@
 package com.lifekau.android.lifekau.model;
 
-public class TotalCurrGrade {
+public class TotalCurrentGrade {
     public int registeredCredits;
     public int acquiredCredits;
     public double totalGrades;
