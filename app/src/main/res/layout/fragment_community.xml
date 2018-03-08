@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:paddingBottom="@dimen/toolbar_height_times_2"/>
+            android:paddingBottom="@dimen/toolbar_height"/>
 
         <TextView
             android:id="@+id/post_list_empty_message_text_view"

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -81,12 +82,12 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private ProgressBar mMoreCommentsProgressBar;
     private LinearLayout mMoreCommentsLinearLayout;
     private RelativeLayout mWriteCommentBar;
-    private boolean mIsWritingComment;
     private boolean mWasPostDeleted;
     private boolean mHasClickedComment;
     private boolean mJustWroteComment;
     private ContextMenu.ContextMenuInfo mMenuInfo;
     private int mItemPosition;
+    private long mLastClickTime = 0;
 
 
     public static Intent newIntent(Context context, String postKey, boolean hasClickedComment, int itemPosition) {
@@ -329,13 +330,13 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
 
     @Override
     public void onClick(View view) {
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+            return;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
         switch (view.getId()) {
             case R.id.post_detail_comment_send_image_view:
-                if(mIsWritingComment) return;
-                mIsWritingComment = true;
-                if(mCommentEditText.getText().length() == 0) return; // 레이스컨디션때문
                 writeComment(new Comment(LoginManager.get(this).getStudentId(), mCommentEditText.getText().toString()));
-                mIsWritingComment = false;
                 break;
             case R.id.more_comments_refresh_image_view:
                 pressedMoreComments();
@@ -457,7 +458,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         changeCommentCount(-1);
-                        Toast.makeText(PostDetailActivity.this, "", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(PostDetailActivity.this, "댓글이 삭제되었습니다", Toast.LENGTH_SHORT).show();
                     }
                 });
         mAdapter.mComments.remove(position);
