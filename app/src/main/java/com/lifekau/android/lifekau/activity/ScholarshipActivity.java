@@ -140,8 +140,10 @@ public class ScholarshipActivity extends AppCompatActivity {
             if (scholarshipActivity == null || scholarshipActivity.isFinishing())
                 return resources.getInteger(R.integer.unexpected_error);
             int count = 0;
-            int result = scholarshipActivity.mLMSPortalManager.pullScholarship(applicationWeakReference.get());
-            while (!scholarshipActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
+            int result;
+            LMSPortalManager lm = scholarshipActivity.mLMSPortalManager;
+            while (!scholarshipActivity.isFinishing() && !isCancelled()
+                    && (result = lm.pullScholarship(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error) ) {
                 if (result == resources.getInteger(R.integer.network_error)) {
                     sleep(3000);
                     count++;
@@ -155,9 +157,9 @@ public class ScholarshipActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
+            Resources resources = applicationWeakReference.get().getResources();
             ScholarshipActivity scholarshipActivity = activityReference.get();
             if (scholarshipActivity == null || scholarshipActivity.isFinishing()) return;
-            Resources resources = scholarshipActivity.getResources();
             if (result == resources.getInteger(R.integer.no_error)) {
                 scholarshipActivity.mProgressBarLayout.setVisibility(View.GONE);
                 scholarshipActivity.mMainLayout.setVisibility(View.VISIBLE);
