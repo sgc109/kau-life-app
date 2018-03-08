@@ -23,6 +23,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.lifekau.android.lifekau.PxDpConverter;
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.activity.HomeActivity;
 import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
 import com.lifekau.android.lifekau.model.Post;
 
@@ -88,7 +89,18 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
             }
         };
 
-        mRecyclerView.addOnScrollListener(scrollListener);
+//        mRecyclerView.addOnScrollListener(scrollListener);
+        mRecyclerView.addOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                ((HomeActivity)getActivity()).hideViews();
+            }
+
+            @Override
+            public void onShow() {
+                ((HomeActivity)getActivity()).showViews();
+            }
+        });
         setHasOptionsMenu(true);
 
 
@@ -96,6 +108,50 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
         return view;
     }
+
+    public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
+        private static final int HIDE_THRESHOLD = 100;
+        private static final int SHOW_THRESHOLD = 20;
+        private int scrolledDistance = 0;
+        private boolean controlsVisible = true;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            if (scrolledDistance > HIDE_THRESHOLD && controlsVisible) {
+                onHide();
+                controlsVisible = false;
+                scrolledDistance = 0;
+            } else if (scrolledDistance < -SHOW_THRESHOLD && !controlsVisible) {
+                onShow();
+                controlsVisible = true;
+                scrolledDistance = 0;
+            }
+
+            if((controlsVisible && dy>0) || (!controlsVisible && dy<0)) {
+                scrolledDistance += dy;
+            }
+
+            mTotalItemCount = mLayoutManager.getItemCount();
+            mLastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
+
+            if (!mIsLoading && mTotalItemCount <= (mLastVisibleItemPosition + NUM_OF_POST_PER_PAGE)) {
+                if (!mIsLoading) {
+                    mIsLoading = true;
+                    getPosts();
+                }
+            }
+
+            if (mLayoutManager.findFirstVisibleItemPosition() != 0) {
+
+            }
+        }
+
+        public abstract void onHide();
+        public abstract void onShow();
+    }
+
 
     private void initializeViews(View view) {
         mRecyclerView = view.findViewById(R.id.community_recycler_view);

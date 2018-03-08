@@ -17,16 +17,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginBottom="72dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginBottom="96dp"
+        android:layout_marginRight="8dp"
         android:src="@drawable/ic_create"
         android:visibility="visible"
         app:useCompatPadding="true"/>
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/home_app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/home_toolbar"
@@ -34,9 +29,7 @@
             android:layout_height="@dimen/toolbar_height"
             android:background="@color/colorPrimary"
             android:elevation="4dp"
-            android:theme="@style/ToolBarStyle"
-            app:layout_scrollFlags="scroll|enterAlways|snap"/>
-    </android.support.design.widget.AppBarLayout>
+            android:theme="@style/ToolBarStyle"/>
 
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
         android:id="@+id/home_bottom_navigation_bar"

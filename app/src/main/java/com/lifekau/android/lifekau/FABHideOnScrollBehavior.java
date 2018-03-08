@@ -49,3 +49,4 @@ public class FABHideOnScrollBehavior extends FloatingActionButton.Behavior {
                 || super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes, type);
     }
 }
+

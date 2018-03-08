@@ -33,7 +33,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostViewHolder> {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_post, parent, false);
         if (viewType == UPPER_MOST_POST) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            params.setMargins(0, PxDpConverter.convertDpToPx(8), 0, 0);
+            params.setMargins(0, (int)mContext.getResources().getDimension(R.dimen.toolbar_height) + PxDpConverter.convertDpToPx(4), 0, 0);
         }
         return new PostViewHolder(view, mContext, this, false);
     }

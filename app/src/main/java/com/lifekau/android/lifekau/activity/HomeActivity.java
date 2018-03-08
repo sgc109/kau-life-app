@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,13 +17,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
-import com.lifekau.android.lifekau.FABHideOnScrollBehavior;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.adapter.HomeViewPagerAdapter;
 import com.lifekau.android.lifekau.adapter.PostRecyclerAdapter;
@@ -72,12 +72,11 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     }
 
     private void initUI() {
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         }
 
-        mAppBarLayout = findViewById(R.id.home_app_bar_layout);
+//        mAppBarLayout = findViewById(R.id.home_app_bar_layout);
         bottomNavigation = findViewById(R.id.home_bottom_navigation_bar);
         viewPager = findViewById(R.id.home_view_pager);
 
@@ -94,16 +93,14 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         updateBottomNavigationItems();
 
         mFab = findViewById(R.id.new_post_fab);
-
+        setFabOnClickListenerToWritePost();
         bottomNavigation.manageFloatingActionButtonBehavior(mFab);
         bottomNavigation.setTranslucentNavigationEnabled(true);
         bottomNavigation.setOnTabSelectedListener(this);
-
-        CoordinatorLayout.LayoutParams params =
-                (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
-        params.setBehavior(new FABHideOnScrollBehavior(viewPager));
-        setFabOnClickListenerToWritePost();
-        mFab.requestLayout();
+//        CoordinatorLayout.LayoutParams params =
+//                (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
+//        params.setBehavior(new FABHideOnScrollBehavior(viewPager));
+//        mFab.requestLayout();
     }
 
     public void updateBottomNavigationColor(boolean isColored) {
@@ -168,10 +165,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
         if (requestCode == REQUEST_POST_WRITE) {
             fragment.initPostList();
-        } else if (requestCode == REQUEST_POST_DETAIL) {
+        } else if(requestCode == REQUEST_POST_DETAIL){
             boolean wasPostDeleted = data.getBooleanExtra(EXTRA_WAS_POST_DELETED, false);
             int itemPosition = data.getIntExtra(EXTRA_ITEM_POSITION, 0);
-            if (wasPostDeleted) {
+            if(wasPostDeleted){
                 PostRecyclerAdapter adapter = fragment.getAdapter();
                 adapter.mPosts.remove(itemPosition);
                 adapter.mPostKeys.remove(itemPosition);
@@ -213,7 +210,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                     .alpha(1)
                     .scaleX(1)
                     .scaleY(1)
-                    .setDuration(150)
+                    .setDuration(300)
                     .setInterpolator(new OvershootInterpolator())
                     .setListener(new Animator.AnimatorListener() {
                         @Override
@@ -241,7 +238,8 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                     .start();
 
         } else {
-            mAppBarLayout.setExpanded(true, true);
+            mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+//            mAppBarLayout.setExpanded(true, true);
             if (mFab.getVisibility() == View.VISIBLE) {
                 mFab.setVisibility(View.INVISIBLE);
             }
@@ -252,14 +250,14 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            if (viewPager.getCurrentItem() != 0) {
+            if(viewPager.getCurrentItem() != 0) {
                 return super.onKeyDown(keyCode, event);
             }
             final CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
             final RecyclerView recyclerView = fragment.getRecyclerView();
-            LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            LinearLayoutManager manager = (LinearLayoutManager)recyclerView.getLayoutManager();
             int first = manager.findFirstCompletelyVisibleItemPosition();
-            if (first == 0) {
+            if(first == 0) {
                 return super.onKeyDown(keyCode, event);
             }
             final SwipeRefreshLayout swipeRefreshLayout = fragment.getSwipeRefreshLayout();
@@ -269,7 +267,8 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                     swipeRefreshLayout.setRefreshing(true);
                     fragment.onRefreshManually();
                     recyclerView.smoothScrollToPosition(0);
-                    mAppBarLayout.setExpanded(true, true);
+//                    mAppBarLayout.setExpanded(true, true);
+                    mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
                 }
             });
             return true;
@@ -281,5 +280,28 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    public void hideViews() {
+        mToolbar.animate().translationY(-mToolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+
+//        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
+//        int fabBottomMargin = lp.bottomMargin;
+//        mFab.animate().translationY(mFab.getHeight()+fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
+
+        mFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+            @Override
+            public void onHidden(FloatingActionButton fab) {
+                super.onHidden(fab);
+                fab.setVisibility(View.INVISIBLE);
+            }
+        });
+
+    }
+
+    public void showViews() {
+        mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+//        mFab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+        mFab.show();
     }
 }
