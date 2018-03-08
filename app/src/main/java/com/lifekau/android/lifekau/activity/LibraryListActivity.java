@@ -30,6 +30,7 @@ import java.util.Calendar;
 import static android.os.SystemClock.sleep;
 
 public class LibraryListActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+
     private static final String EXTRA_ROOM_TYPE = "extra_room_type";
     public static final int TYPE_READING_ROOM = 0;
     public static final int TYPE_STUDY_ROOM = 1;
@@ -150,11 +151,9 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
         public void onClick(View view) {
             if (mRoomType == TYPE_READING_ROOM) {
                 Intent intent = ReadingRoomDetailActivity.newIntent(view.getContext());
-                intent.putExtra("roomNum", getAdapterPosition());
+                intent.putExtra(EXTRA_ROOM_TYPE, getAdapterPosition() + 1);
                 startActivity(intent);
-            } else {
-                mLibraryManager.showStudyRoomStatus(view.getContext(), getAdapterPosition());
-            }
+            } else mLibraryManager.showStudyRoomStatus(view.getContext(), getAdapterPosition());
         }
     }
 
@@ -215,7 +214,7 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
             if (libraryListActivity == null || libraryListActivity.isFinishing()) return;
             if (result == resources.getInteger(R.integer.no_error)) {
                 libraryListActivity.mRecyclerAdapter.notifyDataSetChanged();
-            } else if(result == resources.getInteger(R.integer.network_error)){
+            } else if (result == resources.getInteger(R.integer.network_error)) {
                 libraryListActivity.showErrorMessage();
             }
             ProgressBar progressBar = libraryListActivity.findViewById(R.id.library_list_progress_bar);
