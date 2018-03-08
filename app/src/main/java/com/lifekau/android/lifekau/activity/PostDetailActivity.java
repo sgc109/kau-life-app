@@ -81,6 +81,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     private ProgressBar mMoreCommentsProgressBar;
     private LinearLayout mMoreCommentsLinearLayout;
     private RelativeLayout mWriteCommentBar;
+    private boolean mIsWritingComment;
     private boolean mWasPostDeleted;
     private boolean mHasClickedComment;
     private boolean mJustWroteComment;
@@ -245,8 +246,8 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 mPostViewHolder.mCommentButtonContainer.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        focusCommentEditText();
                         showSoftKeyboard();
+                        focusCommentEditText();
                     }
                 });
                 mPostViewHolder.mCommentCountTextView.setOnClickListener(new OnClickListener() {
@@ -330,7 +331,11 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.post_detail_comment_send_image_view:
+                if(mIsWritingComment) return;
+                mIsWritingComment = true;
+                if(mCommentEditText.getText().length() == 0) return; // 레이스컨디션때문
                 writeComment(new Comment(LoginManager.get(this).getStudentId(), mCommentEditText.getText().toString()));
+                mIsWritingComment = false;
                 break;
             case R.id.more_comments_refresh_image_view:
                 pressedMoreComments();
@@ -349,7 +354,10 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     }
 
     private void writeComment(Comment comment) {
-        mCommentsRef.push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mCommentsRef
+                .push()
+                .setValue(comment)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 changeCommentCount(1);
@@ -449,6 +457,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         changeCommentCount(-1);
+                        Toast.makeText(PostDetailActivity.this, "", Toast.LENGTH_SHORT).show();
                     }
                 });
         mAdapter.mComments.remove(position);
