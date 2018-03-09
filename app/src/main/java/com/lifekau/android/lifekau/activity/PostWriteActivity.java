@@ -89,7 +89,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        int textLen = mPostEditText.getText().length();
+        int textLen = getValidCharCount(mPostEditText.toString());
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             if (textLen != 0) {
                 askDiscardTextOrNot();
@@ -125,7 +125,6 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
             String toastMsg = String.format(getString(R.string.text_limit_message), limitTextCnt);
             DialogMaker.showOkButtonDialog(this, toastMsg);
             editable.delete(limitTextCnt, editable.length());
-            return;
         }
     }
 
