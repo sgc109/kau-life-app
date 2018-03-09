@@ -134,6 +134,13 @@
     <string name="library_study_room_name_06">스터디룸C3</string>
     <string name="library_study_room_detail_format">%s</string>
 
+    <string name="time_table_day_01">월</string>
+    <string name="time_table_day_02">화</string>
+    <string name="time_table_day_03">수</string>
+    <string name="time_table_day_04">목</string>
+    <string name="time_table_day_05">금</string>
+
+
     <string name="available_now">이용 가능</string>
     <string name="not_available_now">이용 불가</string>
     <string name="no_seat_now">여석 없음</string>

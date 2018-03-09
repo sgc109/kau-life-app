@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.activity.AccumulatedGradeSummaryActivity;
 import com.lifekau.android.lifekau.activity.CurrentGradeActivity;
+import com.lifekau.android.lifekau.activity.ExaminationTimeTableActivity;
 import com.lifekau.android.lifekau.activity.LMSActivity;
 import com.lifekau.android.lifekau.activity.ScholarshipActivity;
 
@@ -35,6 +36,8 @@ public class LmsAndInfoFragment extends PagerFragment implements View.OnClickLis
         showCurrentGradeButton.setOnClickListener(this);
         ViewGroup showLMSButton = view.findViewById(R.id.fragment_show_LMS_button);
         showLMSButton.setOnClickListener(this);
+        ViewGroup showExaminationTimeTableButton = view.findViewById(R.id.fragment_show_examination_time_table_button);
+        showExaminationTimeTableButton.setOnClickListener(this);
         setHasOptionsMenu(true);
         return view;
     }
@@ -73,6 +76,10 @@ public class LmsAndInfoFragment extends PagerFragment implements View.OnClickLis
                 break;
             case R.id.fragment_show_LMS_button:
                 intent = new Intent(view.getContext(), LMSActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.fragment_show_examination_time_table_button:
+                intent = new Intent(view.getContext(), ExaminationTimeTableActivity.class);
                 startActivity(intent);
                 break;
         }

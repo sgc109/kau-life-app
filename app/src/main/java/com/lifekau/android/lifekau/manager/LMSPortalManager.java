@@ -12,6 +12,7 @@ import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.AccumulatedGrade;
 import com.lifekau.android.lifekau.model.AccumulatedGradeSummary;
 import com.lifekau.android.lifekau.model.CurrentGrade;
+import com.lifekau.android.lifekau.model.ExaminationTimeTable;
 import com.lifekau.android.lifekau.model.Scholarship;
 import com.lifekau.android.lifekau.model.TotalAccumulatedGrade;
 import com.lifekau.android.lifekau.model.TotalCurrentGrade;
@@ -35,9 +36,8 @@ import okhttp3.Response;
 
 public class LMSPortalManager {
 
-    private static final int EXAMIANATION_TIME_TABLE_ROW = 13;
-    private static final int EXAMIANATION_TIME_TABLE_COL = 7;
-    private static final int MAX_SUBJECT_NUM = 21;
+    private static final int EXAMINATION_TIME_TABLE_HEADER_NUM = 0;
+    private static final int EXAMINATION_TIME_TABLE_DAY_NUM = 0;
 
     private ArrayList<Scholarship> mScholarshipArray;
     private ArrayList<CurrentGrade> mCurrentGrade;
@@ -45,20 +45,20 @@ public class LMSPortalManager {
     private ArrayList<AccumulatedGrade> mAccumulatedGradeArray;
     private ArrayList<AccumulatedGradeSummary> mAccumulatedGradeSummaryArray;
     private TotalAccumulatedGrade mTotalAccumulatedGrade;
-    private String[][] mExaminationTimeTable;
+    private ArrayList<ExaminationTimeTable> mExaminationTimeTable;
     private PersistentLoadCookieJar mCookieJar;
     private OkHttpClient mClient;
     private String mSSOToken;
     private String mStudentId;
 
     private LMSPortalManager() {
-        mScholarshipArray = new ArrayList<Scholarship>();
-        mCurrentGrade = new ArrayList<CurrentGrade>();
+        mScholarshipArray = new ArrayList<>();
+        mCurrentGrade = new ArrayList<>();
         mTotalCurrentGrade = new TotalCurrentGrade();
-        mAccumulatedGradeArray = new ArrayList<AccumulatedGrade>();
-        mAccumulatedGradeSummaryArray = new ArrayList<AccumulatedGradeSummary>();
+        mAccumulatedGradeArray = new ArrayList<>();
+        mAccumulatedGradeSummaryArray = new ArrayList<>();
         mTotalAccumulatedGrade = new TotalAccumulatedGrade();
-        mExaminationTimeTable = new String[EXAMIANATION_TIME_TABLE_ROW][EXAMIANATION_TIME_TABLE_COL];
+        mExaminationTimeTable = new ArrayList<>();
     }
 
     private static class LazyHolder {
@@ -96,7 +96,8 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(resources.getInteger(R.integer.server_error));
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(resources.getInteger(R.integer.server_error));
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -489,15 +490,29 @@ public class LMSPortalManager {
             if (res.code() <= 199 || res.code() >= 301)
                 return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
+            String temp = doc.html().replace("<br>", "%%");
+            doc = Jsoup.parse(temp);
             Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
             if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_titme_table_no_data)))
-                return -1;
+                return resources.getInteger(R.integer.missing_data_error);
             int timeTableElementsSize = timeTableElements.size();
             for (int i = 0; i < timeTableElementsSize; i++) {
                 Elements dataElements = timeTableElements.get(i).select("td");
                 int dataElementsSize = dataElements.size();
                 for (int j = 0; j < dataElementsSize; j++) {
-                    mExaminationTimeTable[i][j] = dataElements.get(j).text();
+                    String string = dataElements.get(j).text();
+                    String[] strings = string.split("%%");
+                    ExaminationTimeTable examinationTimeTable = new ExaminationTimeTable();
+                    if(strings.length == 3) {
+                        examinationTimeTable.subjectTitle = strings[0];
+                        examinationTimeTable.professorName = strings[1];
+                        examinationTimeTable.place = strings[2];
+                    }
+                    if(strings.length == 2){
+                        examinationTimeTable.subjectTitle = strings[0];
+                        examinationTimeTable.professorName = strings[1];
+                    }
+                    mExaminationTimeTable.add(examinationTimeTable);
                 }
             }
         } catch (IndexOutOfBoundsException | NullPointerException e) {
@@ -508,6 +523,18 @@ public class LMSPortalManager {
             return resources.getInteger(R.integer.network_error);
         }
         return resources.getInteger(R.integer.no_error);
+    }
+
+    public int getExaminationTimeTableSize() {
+        return mExaminationTimeTable.size();
+    }
+
+    public ExaminationTimeTable getExaminationTimeTable(int index){
+        return index < getExaminationTimeTableSize() ? mExaminationTimeTable.get(index) : null;
+    }
+
+    public void clearExaminationTimeTable(){
+        mExaminationTimeTable.clear();
     }
 
     public String getStudentId() {
@@ -534,13 +561,17 @@ public class LMSPortalManager {
         return index < getCurrentGradeSize() ? mCurrentGrade.get(index) : null;
     }
 
-    public void clearTotalCurrentGrade() { mTotalCurrentGrade = new TotalCurrentGrade(); }
+    public void clearTotalCurrentGrade() {
+        mTotalCurrentGrade = new TotalCurrentGrade();
+    }
 
     public TotalCurrentGrade getTotalCurrentGrade() {
         return mTotalCurrentGrade;
     }
 
-    public void clearCurrentGrade() { mCurrentGrade.clear(); }
+    public void clearCurrentGrade() {
+        mCurrentGrade.clear();
+    }
 
     public int getAccumulatedGradeSize() {
         return mAccumulatedGradeArray.size();
@@ -566,8 +597,8 @@ public class LMSPortalManager {
         mAccumulatedGradeSummaryArray.clear();
     }
 
-    public List<Cookie> getCookie(Context context){
-        if(mCookieJar == null) return null;
+    public List<Cookie> getCookie(Context context) {
+        if (mCookieJar == null) return null;
         else return mCookieJar.LoadCookies();
     }
 }

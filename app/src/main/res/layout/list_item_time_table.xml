@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="1dp">
+
+    <TextView
+        android:id="@+id/list_item_time_table_subject_title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_margin="2dp"
+        android:layout_weight="0.4"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text="인간과교육"
+        android:textColor="@color/black"
+        android:textSize="8sp" />
+
+    <TextView
+        android:id="@+id/list_item_time_table_professor_name_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_margin="2dp"
+        android:layout_weight="0.3"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text="김영숙"
+        android:textColor="@color/black"
+        android:textSize="8sp" />
+
+    <TextView
+        android:id="@+id/list_item_time_table_place_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_margin="2dp"
+        android:layout_weight="0.3"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text="전자관200호"
+        android:textColor="@color/black"
+        android:textSize="8sp" />
+</LinearLayout>
