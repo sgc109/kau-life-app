@@ -38,9 +38,6 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
 
     private static final int DEFAULT_SEMESTER_CODE = 10;
 
-    private static final int UNEXPECTED_ERROR = -100;
-    private static final int MAXIMUM_RETRY_NUM = 5;
-
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
@@ -159,7 +156,7 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
             super.onPreExecute();
             AccumulatedGradeActivity accumulatedGradeActivity = activityReference.get();
             if (accumulatedGradeActivity == null || accumulatedGradeActivity.isFinishing()) return;
-            accumulatedGradeActivity.mLMSPortalManager.clearScholarship();
+            accumulatedGradeActivity.mLMSPortalManager.clearAccumulatedGrade();
         }
 
         @Override
@@ -171,8 +168,10 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
             int count = 0;
             int year = accumulatedGradeActivity.mYear;
             int semesterCode = accumulatedGradeActivity.mSemesterCode;
-            int result = accumulatedGradeActivity.mLMSPortalManager.pullAccumulatedGrade(applicationWeakReference.get(), year, semesterCode);
-            while (!accumulatedGradeActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
+            int result;
+            LMSPortalManager lm = accumulatedGradeActivity.mLMSPortalManager;
+            while (!accumulatedGradeActivity.isFinishing() && !isCancelled() &&
+                    (result = lm.pullAccumulatedGrade(applicationWeakReference.get(), year, semesterCode)) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
                     sleep(3000);
                     count++;

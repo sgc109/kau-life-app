@@ -24,7 +24,6 @@ import java.lang.ref.WeakReference;
 
 public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
 
-
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
@@ -153,8 +152,10 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
                 return resources.getInteger(R.integer.unexpected_error);
             }
             int count = 0;
-            int result = accumulatedGradeSummaryActivity.mLMSPortalManager.pullAccumulatedGradeSummary(applicationWeakReference.get());
-            while (!accumulatedGradeSummaryActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
+            int result;
+            LMSPortalManager lm = accumulatedGradeSummaryActivity.mLMSPortalManager;
+            while (!accumulatedGradeSummaryActivity.isFinishing() && !isCancelled() &&
+                    (result = lm.pullAccumulatedGradeSummary(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
                     sleep(3000);
                     count++;

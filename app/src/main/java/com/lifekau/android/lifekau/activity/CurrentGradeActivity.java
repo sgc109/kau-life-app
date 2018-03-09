@@ -26,7 +26,6 @@ import java.util.Calendar;
 
 public class CurrentGradeActivity extends AppCompatActivity {
 
-    private static final int UNEXPECTED_ERROR = -100;
     private static final int MAXIMUM_RETRY_NUM = 5;
 
     private LMSPortalManager mLMSPortalManager = LMSPortalManager.getInstance();
@@ -136,23 +135,26 @@ public class CurrentGradeActivity extends AppCompatActivity {
             super.onPreExecute();
             CurrentGradeActivity currentGradeActivity = activityReference.get();
             if (currentGradeActivity == null || currentGradeActivity.isFinishing()) return;
-            currentGradeActivity.mLMSPortalManager.clearScholarship();
+            currentGradeActivity.mLMSPortalManager.clearCurrentGrade();
         }
 
         @Override
         protected Integer doInBackground(Void... params) {
+            Resources resources = applicationWeakReference.get().getResources();
             CurrentGradeActivity currentGradeActivity = activityReference.get();
-            if (currentGradeActivity == null || currentGradeActivity.isFinishing()) return UNEXPECTED_ERROR;
-            Resources resources = currentGradeActivity.getResources();
+            if (currentGradeActivity == null || currentGradeActivity.isFinishing())
+                return resources.getInteger(R.integer.unexpected_error);
             int count = 0;
-            int result = currentGradeActivity.mLMSPortalManager.pullCurrentGrade(activityReference.get());
-            while (!currentGradeActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
-                if(result == resources.getInteger(R.integer.network_error)){
+            int result;
+            LMSPortalManager lm = currentGradeActivity.mLMSPortalManager;
+            while (!currentGradeActivity.isFinishing() && !isCancelled() &&
+                    (result = lm.pullCurrentGrade(activityReference.get())) != resources.getInteger(R.integer.no_error)) {
+                if (result == resources.getInteger(R.integer.network_error)) {
                     sleep(3000);
                     count++;
-                }
-                else return result;
-                if(count == MAXIMUM_RETRY_NUM) return resources.getInteger(R.integer.network_error);
+                } else return result;
+                if (count == MAXIMUM_RETRY_NUM)
+                    return resources.getInteger(R.integer.network_error);
             }
             return resources.getInteger(R.integer.no_error);
         }
@@ -176,19 +178,15 @@ public class CurrentGradeActivity extends AppCompatActivity {
                 currentGradeActivity.mProgressBarLayout.setVisibility(View.GONE);
                 currentGradeActivity.mMainLayout.setVisibility(View.VISIBLE);
                 currentGradeActivity.mRecyclerAdapter.notifyDataSetChanged();
-            }
-            else if(result == resources.getInteger(R.integer.missing_data_error)){
+            } else if (result == resources.getInteger(R.integer.missing_data_error)) {
                 Toast toast = Toast.makeText(currentGradeActivity.getApplicationContext(), "아직 학기 성적이 등록되지 않았습니다.", Toast.LENGTH_SHORT);
                 currentGradeActivity.mProgressBarLayout.setVisibility(View.GONE);
                 currentGradeActivity.mMainLayout.setVisibility(View.VISIBLE);
                 toast.show();
-//                currentGradeActivity.finish();
-            }
-            else if(result == resources.getInteger(R.integer.network_error)){
+            } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 문제
                 currentGradeActivity.showErrorMessage();
-            }
-            else if(result == resources.getInteger(R.integer.session_error)){
+            } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 문제
                 Intent intent = LoginActivity.newIntent(currentGradeActivity);
                 currentGradeActivity.startActivity(intent);
@@ -206,7 +204,7 @@ public class CurrentGradeActivity extends AppCompatActivity {
     }
 
     public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
         toast.show();
     }
 }
