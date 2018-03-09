@@ -1,17 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:id="@+id/lecture_review_write_linear_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lecture_review_write_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bar_height"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/write_lecture_review_back_image_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_back_arrow"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:gravity="center_vertical"
+            android:paddingLeft="6dp"
+            android:text="@string/write_new_review"
+            android:textColor="@android:color/white"
+            android:textSize="8pt"/>
+
+        <TextView
+            android:id="@+id/write_lecture_review_submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:focusable="false"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/submit_post_button"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="7pt"/>
+    </LinearLayout>
 
     <RatingBar
         android:id="@+id/lecture_review_write_rating_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="16dp"
         android:progressTint="@color/yellow"
         android:textAlignment="center"/>
 
@@ -19,8 +53,10 @@
     <EditText
         android:id="@+id/lecture_review_write_comment_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_margin="8dp"
+        android:gravity="top"
+        android:hint="@string/how_was_your_class"
         />
 
     <LinearLayout
@@ -29,20 +65,6 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="16dp">
-
-        <Button
-            android:id="@+id/lecture_review_write_cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="@string/cancel_button_string"/>
-
-        <Button
-            android:id="@+id/lecture_review_write_submit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="@string/submit_button_string"/>
     </LinearLayout>
 </LinearLayout>
 

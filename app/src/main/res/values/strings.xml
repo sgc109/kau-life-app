@@ -38,6 +38,7 @@
     <string name="review_gone_warning_message">작성 중인 리뷰가 사라집니다.\n계속 하시겠습니까?</string>
     <string name="review_edit_cancel_alert_message">수정을 취소해도 전에 작성했던 리뷰는 그대로 남습니다. 수정을 취소하시습니까?</string>
     <string name="how_was_your_food">이 메뉴가 어땠나요?</string>
+    <string name="how_was_your_class">이 강의가 어땠나요?</string>
     <string name="yes">예</string>
     <string name="no">아니오</string>
     <string name="post_comment_count">댓글 %1$s개</string>

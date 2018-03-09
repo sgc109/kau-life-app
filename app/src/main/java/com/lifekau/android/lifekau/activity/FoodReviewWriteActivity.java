@@ -41,7 +41,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
     private RatingBar mRatingBar;
     private int mFoodCornerType;
     private FirebaseDatabase mDatabase;
-    private boolean mIsEditting;
+    private boolean mIsEditing;
     private ImageButton mBackButton;
     private boolean mPushed;
     private long mLastWritePostTime;
@@ -60,13 +60,12 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
 
 
         if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().hide();
         }
 
         mDatabase = FirebaseDatabase.getInstance();
         mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
-        mIsEditting = getIntent().getBooleanExtra(EXTRA_ALREADY_WRITTEN, false);
+        mIsEditing = getIntent().getBooleanExtra(EXTRA_ALREADY_WRITTEN, false);
 
         mBackButton = findViewById(R.id.write_food_review_back_image_button);
         mRatingBar = findViewById(R.id.food_review_write_rating_bar);
@@ -115,7 +114,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
             case MotionEvent.ACTION_UP:
                 if (!mPushed) break;
                 if (id == R.id.write_food_review_back_image_button) {
-                    if (!mIsEditting) {
+                    if (!mIsEditing) {
                         if (getValidCharCount(mCommentEditText.getText().toString()) != 0) {
                             askDiscardTextOrNot();
                         } else {
@@ -198,7 +197,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            if (!mIsEditting) {
+            if (!mIsEditing) {
                 int textLen = mCommentEditText.getText().length();
                 if (textLen != 0) {
                     askDiscardTextOrNot();
