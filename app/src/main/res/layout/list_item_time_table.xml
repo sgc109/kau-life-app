@@ -18,7 +18,7 @@
         android:singleLine="true"
         android:text="인간과교육"
         android:textColor="@color/black"
-        android:textSize="8sp" />
+        android:textSize="8dp" />
 
     <TextView
         android:id="@+id/list_item_time_table_place_text_view"
@@ -32,5 +32,5 @@
         android:singleLine="true"
         android:text="우주동 200호"
         android:textColor="@color/black"
-        android:textSize="8sp" />
+        android:textSize="8dp" />
 </LinearLayout>
