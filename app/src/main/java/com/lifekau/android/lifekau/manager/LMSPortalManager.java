@@ -467,13 +467,50 @@ public class LMSPortalManager {
         return resources.getInteger(R.integer.no_error);
     }
 
-    public int pullExaminationTimeTable(Context context, int year, int semesterCode, int examCode) {
+    public int pullExaminationTimeTable(Context context) {
         Resources resources = context.getResources();
         OkHttpClient client = getClient(context);
         FormBody body = new FormBody.Builder()
-                .add("year", String.valueOf(year))
-                .add("hakgi", String.valueOf(semesterCode))
-                .add("junggi_gb", String.valueOf(examCode))
+                .build();
+        Request request = new Request.Builder()
+                .url(resources.getString(R.string.portal_examination_time_table_page))
+                .addHeader("Accept", resources.getString(R.string.header_accept))
+                .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
+                .addHeader("Accept-Language", resources.getString(R.string.header_accpet_language))
+                .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
+                .addHeader("Referer", resources.getString(R.string.portal_my_menu_b_page))
+                .addHeader("keep-alive", resources.getString(R.string.header_connection))
+                .post(body)
+                .build();
+        Call call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
+            Document doc = Jsoup.parse(res.body().string());
+            Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
+            String year = doc.getElementsByAttributeValue("class", "input").get(0).attr("value");
+            String semester = doc.getElementsByAttributeValue("name", "hakgi").get(0).getElementsByAttribute("selected").attr("value");
+            String termType = doc.getElementsByAttributeValue("name", "junggi_gb").get(0).getElementsByAttribute("selected").attr("value");
+            pullExaminationTimeTable(context, year, semester, termType);
+            if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_titme_table_no_data)))
+                return resources.getInteger(R.integer.missing_data_error);
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            e.printStackTrace();
+            return resources.getInteger(R.integer.session_error);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return resources.getInteger(R.integer.network_error);
+        }
+        return resources.getInteger(R.integer.no_error);
+    }
+
+    public int pullExaminationTimeTable(Context context, String year, String semesterCode, String examCode) {
+        Resources resources = context.getResources();
+        OkHttpClient client = getClient(context);
+        FormBody body = new FormBody.Builder()
+                .add("year", year)
+                .add("hakgi", semesterCode)
+                .add("junggi_gb", examCode)
                 .build();
         Request request = new Request.Builder()
                 .url(resources.getString(R.string.portal_examination_time_table_page) + "?" + year + "hakgi=" + examCode)
@@ -493,8 +530,6 @@ public class LMSPortalManager {
             String temp = doc.html().replace("<br>", "%%");
             doc = Jsoup.parse(temp);
             Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
-            if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_titme_table_no_data)))
-                return resources.getInteger(R.integer.missing_data_error);
             int timeTableElementsSize = timeTableElements.size();
             for (int i = 0; i < timeTableElementsSize; i++) {
                 Elements dataElements = timeTableElements.get(i).select("td");

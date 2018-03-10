@@ -40,6 +40,9 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_examination_time_table);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         mLMSPortalManager = LMSPortalManager.getInstance();
         mLMSPortalManager.clearExaminationTimeTable();
         mRecyclerView = findViewById(R.id.examination_time_table_recycler_view);
@@ -88,14 +91,12 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
         private ExaminationTimeTableItemViewHolder(View itemView) {
             super(itemView);
             mTimeTableSubjectTitleTextView = itemView.findViewById(R.id.list_item_time_table_subject_title_text_view);
-//            mTimeTableProfessorNameTextView = itemView.findViewById(R.id.list_item_time_table_professor_name_text_view);
             mTimeTablePlaceTextView = itemView.findViewById(R.id.list_item_time_table_place_text_view);
         }
 
         public void bind(int position) {
             ExaminationTimeTable examinationTimeTable = mLMSPortalManager.getExaminationTimeTable(position);
             mTimeTableSubjectTitleTextView.setText(examinationTimeTable.subjectTitle);
-//            mTimeTableProfessorNameTextView.setText(examinationTimeTable.professorName);
             if(position % TABLE_COL_SIZE == FIRST_ROW || position < FIRST_LINE) mTimeTablePlaceTextView.setText(examinationTimeTable.professorName);
             else mTimeTablePlaceTextView.setText(examinationTimeTable.place);
         }
@@ -131,7 +132,7 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
             int result;
             LMSPortalManager lm = examinationTimeTableActivity.mLMSPortalManager;
             while (!examinationTimeTableActivity.isFinishing() && !isCancelled() &&
-                    (result = lm.pullExaminationTimeTable(applicationWeakReference.get(), 2017, 10, 1)) != resources.getInteger(R.integer.no_error)) {
+                    (result = lm.pullExaminationTimeTable(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
                     sleep(3000);
                     count++;
@@ -153,9 +154,14 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
                 examinationTimeTableActivity.mRecyclerAdapter.notifyDataSetChanged();
                 examinationTimeTableActivity.mProgressBarLayout.setVisibility(View.GONE);
                 examinationTimeTableActivity.mMainLayout.setVisibility(View.VISIBLE);
-            } else if (result == resources.getInteger(R.integer.network_error)) {
+            } else if(result == resources.getInteger(R.integer.missing_data_error)){
+                examinationTimeTableActivity.showErrorMessage("시험시간표가 등록되지 않았습니다.");
+                examinationTimeTableActivity.mProgressBarLayout.setVisibility(View.GONE);
+                examinationTimeTableActivity.mMainLayout.setVisibility(View.VISIBLE);
+            }
+            else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 예외 처리
-                examinationTimeTableActivity.showErrorMessage();
+                examinationTimeTableActivity.showErrorMessage("네트워크 오류가 발생하였습니다.");
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 예외 처리
                 Intent intent = LoginActivity.newIntent(examinationTimeTableActivity);
@@ -173,8 +179,8 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
         }
     }
 
-    public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+    public void showErrorMessage(String errorMessage) {
+        Toast toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
         toast.show();
     }
 }
