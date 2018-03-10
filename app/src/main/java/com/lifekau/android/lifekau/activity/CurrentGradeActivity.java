@@ -179,13 +179,12 @@ public class CurrentGradeActivity extends AppCompatActivity {
                 currentGradeActivity.mMainLayout.setVisibility(View.VISIBLE);
                 currentGradeActivity.mRecyclerAdapter.notifyDataSetChanged();
             } else if (result == resources.getInteger(R.integer.missing_data_error)) {
-                Toast toast = Toast.makeText(currentGradeActivity.getApplicationContext(), "아직 학기 성적이 등록되지 않았습니다.", Toast.LENGTH_SHORT);
                 currentGradeActivity.mProgressBarLayout.setVisibility(View.GONE);
                 currentGradeActivity.mMainLayout.setVisibility(View.VISIBLE);
-                toast.show();
+                currentGradeActivity.showToast(resources.getString(R.string.portal_no_current_grade_error_message));
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 문제
-                currentGradeActivity.showErrorMessage();
+                currentGradeActivity.showToast(resources.getString(R.string.portal_network_error_message));
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 문제
                 Intent intent = LoginActivity.newIntent(currentGradeActivity);
@@ -203,8 +202,8 @@ public class CurrentGradeActivity extends AppCompatActivity {
         }
     }
 
-    public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+    public void showToast(String message) {
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
     }
 }

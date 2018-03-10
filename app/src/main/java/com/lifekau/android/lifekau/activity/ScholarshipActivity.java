@@ -166,7 +166,7 @@ public class ScholarshipActivity extends AppCompatActivity {
                 scholarshipActivity.mRecyclerAdapter.notifyDataSetChanged();
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 문제
-                scholarshipActivity.showErrorMessage();
+                scholarshipActivity.showToast(resources.getString(R.string.portal_network_error_message));
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 문제
                 Intent intent = LoginActivity.newIntent(scholarshipActivity);
@@ -184,8 +184,8 @@ public class ScholarshipActivity extends AppCompatActivity {
         }
     }
 
-    public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+    public void showToast(String message) {
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
     }
 }
