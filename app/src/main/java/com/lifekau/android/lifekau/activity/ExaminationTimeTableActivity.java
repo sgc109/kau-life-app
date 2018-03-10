@@ -26,6 +26,9 @@ import java.lang.ref.WeakReference;
 
 public class ExaminationTimeTableActivity extends AppCompatActivity {
 
+    private static final int TABLE_COL_SIZE = 6;
+    private static final int FIRST_LINE = 6;
+    private static final int FIRST_ROW = 0;
     private LMSPortalManager mLMSPortalManager;
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView mRecyclerView;
@@ -85,15 +88,16 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
         private ExaminationTimeTableItemViewHolder(View itemView) {
             super(itemView);
             mTimeTableSubjectTitleTextView = itemView.findViewById(R.id.list_item_time_table_subject_title_text_view);
-            mTimeTableProfessorNameTextView = itemView.findViewById(R.id.list_item_time_table_professor_name_text_view);
+//            mTimeTableProfessorNameTextView = itemView.findViewById(R.id.list_item_time_table_professor_name_text_view);
             mTimeTablePlaceTextView = itemView.findViewById(R.id.list_item_time_table_place_text_view);
         }
 
         public void bind(int position) {
             ExaminationTimeTable examinationTimeTable = mLMSPortalManager.getExaminationTimeTable(position);
             mTimeTableSubjectTitleTextView.setText(examinationTimeTable.subjectTitle);
-            mTimeTableProfessorNameTextView.setText(examinationTimeTable.professorName);
-            mTimeTablePlaceTextView.setText(examinationTimeTable.place);
+//            mTimeTableProfessorNameTextView.setText(examinationTimeTable.professorName);
+            if(position % TABLE_COL_SIZE == FIRST_ROW || position < FIRST_LINE) mTimeTablePlaceTextView.setText(examinationTimeTable.professorName);
+            else mTimeTablePlaceTextView.setText(examinationTimeTable.place);
         }
     }
 

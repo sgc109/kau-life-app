@@ -505,8 +505,8 @@ public class LMSPortalManager {
                     ExaminationTimeTable examinationTimeTable = new ExaminationTimeTable();
                     if(strings.length == 3) {
                         examinationTimeTable.subjectTitle = strings[0];
-                        examinationTimeTable.professorName = strings[1];
-                        examinationTimeTable.place = strings[2];
+                        examinationTimeTable.professorName = strings[1].split(":")[1];
+                        examinationTimeTable.place = strings[2].split(":")[1];
                     }
                     if(strings.length == 2){
                         examinationTimeTable.subjectTitle = strings[0];
