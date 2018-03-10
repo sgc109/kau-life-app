@@ -85,18 +85,18 @@
     <string name="portal_examination_time_table_page">https://portal.kau.ac.kr/sugang/SugangExamList.jsp</string>
     <string name="portal_get_student_id_page">https://lib.kau.ac.kr/HAULMS/sso/LoginPortalSSO.csp</string>
     <string name="portal_curr_grade_no_data">데이터 없음</string>
-    <string name="portal_titme_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
+    <string name="portal_time_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
     <string name="portal_login_failed">아이디 또는 비밀번호 오류입니다.</string>
     <string name="portal_session_disconnect">세션이 끊겼습니다. 다시 로그인 하시기 바랍니다.</string>
+    <string name="portal_network_error_message">네트워크 오류가 발생하였습니다.</string>
+    <string name="portal_no_current_grade_error_message">학기 성적이 등록되지 않았습니다.</string>
+    <string name="portal_no_time_table_error_message">시험시간표가 등록되지 않았습니다.</string>
 
     <!--LMS 관련 스트링 정의-->
     <string name="lms_sso_page">http://lms.kau.ac.kr/local/ssotm/sso_chk.php</string>
     <string name="lms_login_page">http://lms.kau.ac.kr/login/</string>
     <string name="lms_login_index_page">http://lms.kau.ac.kr/login/index.php</string>
     <string name="lms_my_page">http://lms.kau.ac.kr/my/</string>
-    <string name="lms_curr_grade_no_data">데이터 없음</string>
-    <string name="lms_time_table_no_data">#.입력된 데이터가 존재하지 않습니다.</string>
-    <string name="lms_session_disconnect">한국항공대학에 오신 것을 환영합니다</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

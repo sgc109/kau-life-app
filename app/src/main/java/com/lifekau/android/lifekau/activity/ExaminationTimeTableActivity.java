@@ -155,13 +155,13 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
                 examinationTimeTableActivity.mProgressBarLayout.setVisibility(View.GONE);
                 examinationTimeTableActivity.mMainLayout.setVisibility(View.VISIBLE);
             } else if(result == resources.getInteger(R.integer.missing_data_error)){
-                examinationTimeTableActivity.showErrorMessage("시험시간표가 등록되지 않았습니다.");
                 examinationTimeTableActivity.mProgressBarLayout.setVisibility(View.GONE);
                 examinationTimeTableActivity.mMainLayout.setVisibility(View.VISIBLE);
+                examinationTimeTableActivity.showToast(resources.getString(R.string.portal_examination_time_table_page));
             }
             else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 예외 처리
-                examinationTimeTableActivity.showErrorMessage("네트워크 오류가 발생하였습니다.");
+                examinationTimeTableActivity.showToast(resources.getString(R.string.portal_network_error_message));
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 예외 처리
                 Intent intent = LoginActivity.newIntent(examinationTimeTableActivity);
@@ -179,8 +179,8 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
         }
     }
 
-    public void showErrorMessage(String errorMessage) {
-        Toast toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
+    public void showToast(String message) {
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
     }
 }

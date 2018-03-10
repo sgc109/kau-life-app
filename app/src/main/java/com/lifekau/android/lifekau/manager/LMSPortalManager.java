@@ -492,7 +492,7 @@ public class LMSPortalManager {
             String semester = doc.getElementsByAttributeValue("name", "hakgi").get(0).getElementsByAttribute("selected").attr("value");
             String termType = doc.getElementsByAttributeValue("name", "junggi_gb").get(0).getElementsByAttribute("selected").attr("value");
             pullExaminationTimeTable(context, year, semester, termType);
-            if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_titme_table_no_data)))
+            if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_time_table_no_data)))
                 return resources.getInteger(R.integer.missing_data_error);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
