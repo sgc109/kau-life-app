@@ -2,9 +2,8 @@ package com.lifekau.android.lifekau.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -29,6 +28,11 @@ public class ReadingRoomDetailActivity extends AppCompatActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading_room_detail);
+
+        if(getSupportActionBar() != null){
+//            getSupportActionBar().hide();
+            getSupportActionBar().setTitle("열람실 상세 정보");
+        }
         mWebView = findViewById(R.id.activity_reading_room_detail_web_view);
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);
