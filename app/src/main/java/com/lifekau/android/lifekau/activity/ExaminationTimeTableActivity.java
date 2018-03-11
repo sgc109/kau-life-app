@@ -164,6 +164,7 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
                 examinationTimeTableActivity.showToast(resources.getString(R.string.portal_network_error_message));
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 예외 처리
+                examinationTimeTableActivity.showToast(resources.getString(R.string.portal_session_disconnect_error_message));
                 Intent intent = LoginActivity.newIntent(examinationTimeTableActivity);
                 examinationTimeTableActivity.startActivity(intent);
                 examinationTimeTableActivity.finish();

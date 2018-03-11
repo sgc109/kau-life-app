@@ -157,9 +157,10 @@ public class LMSActivity extends AppCompatActivity {
                 lmsActivity.mWebView.loadUrl(resources.getString(R.string.lms_my_page));
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 예외 처리
-                lmsActivity.showErrorMessage();
+                lmsActivity.showToast(resources.getString(R.string.portal_network_error_message));
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 예외 처리
+                lmsActivity.showToast(resources.getString(R.string.portal_session_disconnect_error_message));
                 Intent intent = LoginActivity.newIntent(lmsActivity);
                 lmsActivity.startActivity(intent);
                 lmsActivity.finish();
@@ -175,8 +176,8 @@ public class LMSActivity extends AppCompatActivity {
         }
     }
 
-    public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+    public void showToast(String message) {
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
     }
 
