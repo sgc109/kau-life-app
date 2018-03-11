@@ -187,6 +187,7 @@ public class CurrentGradeActivity extends AppCompatActivity {
                 currentGradeActivity.showToast(resources.getString(R.string.portal_network_error_message));
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 문제
+                currentGradeActivity.showToast(resources.getString(R.string.portal_session_disconnect_error_message));
                 Intent intent = LoginActivity.newIntent(currentGradeActivity);
                 currentGradeActivity.startActivity(intent);
                 currentGradeActivity.finish();

@@ -100,6 +100,7 @@
     <string name="portal_network_error_message">네트워크 오류가 발생하였습니다.</string>
     <string name="portal_no_current_grade_error_message">학기 성적이 등록되지 않았습니다.</string>
     <string name="portal_no_time_table_error_message">시험시간표가 등록되지 않았습니다.</string>
+    <string name="portal_session_disconnect_error_message">세션이 끊겼습니다. 다시 로그인합니다.</string>
 
     <!--LMS 관련 스트링 정의-->
     <string name="lms_sso_page">http://lms.kau.ac.kr/local/ssotm/sso_chk.php</string>
