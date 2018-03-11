@@ -89,7 +89,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        int textLen = getValidCharCount(mPostEditText.toString());
+        int textLen = getValidCharCount(mPostEditText.getText().toString());
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             if (textLen != 0) {
                 askDiscardTextOrNot();

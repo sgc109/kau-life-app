@@ -198,7 +198,7 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             if (!mIsEditing) {
-                int textLen = mCommentEditText.getText().length();
+                int textLen = getValidCharCount(mCommentEditText.getText().toString());
                 if (textLen != 0) {
                     askDiscardTextOrNot();
                 } else {

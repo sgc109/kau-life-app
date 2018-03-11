@@ -125,7 +125,6 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                 swipeRefreshLayout.post(new Runnable() {
                     @Override
                     public void run() {
-                        swipeRefreshLayout.setRefreshing(true);
                         fragment.onRefreshManually();
                         recyclerView.smoothScrollToPosition(0);
 //                    mAppBarLayout.setExpanded(true, true);
