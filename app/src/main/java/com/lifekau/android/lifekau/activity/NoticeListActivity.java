@@ -4,13 +4,12 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,8 @@ import com.lifekau.android.lifekau.manager.NoticeManager;
 import com.lifekau.android.lifekau.model.Notice;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class NoticeListActivity extends AppCompatActivity {
 
@@ -50,6 +50,7 @@ public class NoticeListActivity extends AppCompatActivity {
         mLoading = false;
         Intent intent = getIntent();
         mNoticeType = intent.getIntExtra("noticeType", 0);
+        mNoticeManager.clear(mNoticeType);
         mSwipeRefreshLayout = findViewById(R.id.notice_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -141,12 +142,17 @@ public class NoticeListActivity extends AppCompatActivity {
         private TextView mTitleTextView;
         private TextView mWriterTextView;
         private TextView RegistrationTextView;
+        private TextView mIsNewTextView;
+        private TextView mIsTopNoticeTextView;
 
         public NoticeListItemViewHolder(View itemView) {
             super(itemView);
             mTitleTextView = itemView.findViewById(R.id.list_item_notice_title);
             mWriterTextView = itemView.findViewById(R.id.list_item_notice_writer);
             RegistrationTextView = itemView.findViewById(R.id.list_item_notice_registration_date);
+            mIsNewTextView = itemView.findViewById(R.id.list_item_notice_is_new_text_view);
+            mIsTopNoticeTextView = itemView.findViewById(R.id.list_item_notice_top_notice);
+
             itemView.setOnClickListener(this);
         }
 
@@ -155,6 +161,15 @@ public class NoticeListActivity extends AppCompatActivity {
             mTitleTextView.setText(notice.postTitle);
             mWriterTextView.setText(notice.writer);
             RegistrationTextView.setText(notice.RegistrationDate);
+
+            Date today = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            if(notice.RegistrationDate.equals(dateFormat.format(today).toString())){
+                mIsNewTextView.setVisibility(View.VISIBLE);
+            }
+            if(notice.postNum == 0){
+                mIsTopNoticeTextView.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override

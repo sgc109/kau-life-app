@@ -148,12 +148,13 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
                         finish();
                     }
                 } else if (id == R.id.write_post_submit_button) {
-                    if(false) {
+                    long lastTime = mLastWritePostTime;
+                    mLastWritePostTime = new Date().getTime();
+                    if(new Date().getTime() - lastTime < 60 * 1000) {
                         new AlertDialog.Builder(this).setMessage("1분이 지나야 글을 쓸 수가 있습니다.").show();
                         return true;
                     }
                     mSubmitButton.setFocusable(false);
-                    mLastWritePostTime = new Date().getTime();
                     writePost(new Post(LoginManager.get(this).getStudentId(), mPostEditText.getText().toString()));
                     Toast.makeText(this, getString(R.string.post_write_success_message), Toast.LENGTH_SHORT).show();
                     finish();
@@ -169,10 +170,6 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
                 break;
         }
         return true;
-    }
-
-    boolean hasTimePassed(long seconds){
-        return new Date().getTime() - mLastWritePostTime > seconds;
     }
 
     private int getValidCharCount(String str) {
