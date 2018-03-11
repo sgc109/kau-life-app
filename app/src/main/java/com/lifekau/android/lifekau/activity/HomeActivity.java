@@ -1,7 +1,6 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.animation.Animator;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -12,10 +11,8 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -34,7 +31,6 @@ import com.lifekau.android.lifekau.fragment.CommunityFragment;
 import com.lifekau.android.lifekau.fragment.PagerFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements AHBottomNavigation.OnTabSelectedListener {
 
@@ -102,10 +98,6 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         bottomNavigation.manageFloatingActionButtonBehavior(mFab);
         bottomNavigation.setTranslucentNavigationEnabled(true);
         bottomNavigation.setOnTabSelectedListener(this);
-//        CoordinatorLayout.LayoutParams params =
-//                (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
-//        params.setBehavior(new FABHideOnScrollBehavior(viewPager));
-//        mFab.requestLayout();
     }
 
     public void updateBottomNavigationColor(boolean isColored) {
@@ -126,15 +118,29 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
-            case R.id.menu_alarm:
-                intent = AlarmsListActivity.newIntent(this);
+            case R.id.menu_refresh:
+                final CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
+                final RecyclerView recyclerView = fragment.getRecyclerView();
+                final SwipeRefreshLayout swipeRefreshLayout = fragment.getSwipeRefreshLayout();
+                swipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(true);
+                        fragment.onRefreshManually();
+                        recyclerView.smoothScrollToPosition(0);
+//                    mAppBarLayout.setExpanded(true, true);
+                        mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+                    }
+                });
+                return true;
+            case R.id.menu_community_setting:
+                intent = SettingsActivity.newIntent(this);
                 startActivity(intent);
                 return true;
             case R.id.menu_setting:
                 intent = SettingsActivity.newIntent(this);
                 startActivity(intent);
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -251,54 +257,6 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         }
         return true;
     }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            if(viewPager.getCurrentItem() != 0) {
-                return super.onKeyDown(keyCode, event);
-            }
-            final CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
-            final RecyclerView recyclerView = fragment.getRecyclerView();
-            LinearLayoutManager manager = (LinearLayoutManager)recyclerView.getLayoutManager();
-            int first = manager.findFirstCompletelyVisibleItemPosition();
-            if(first == 0) {
-                return super.onKeyDown(keyCode, event);
-            }
-            final SwipeRefreshLayout swipeRefreshLayout = fragment.getSwipeRefreshLayout();
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(true);
-                    fragment.onRefreshManually();
-                    recyclerView.smoothScrollToPosition(0);
-//                    mAppBarLayout.setExpanded(true, true);
-                    mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
-                }
-            });
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
-
-//    @Override
-//    public void onBackPressed() {
-//        if (mPressedTime == 0 ) {
-//            Toast.makeText(this, " 한 번 더 누르면 종료됩니다." , Toast.LENGTH_LONG).show();
-//            mPressedTime = System.currentTimeMillis();
-//        }
-//        else {
-//            int seconds = (int) (System.currentTimeMillis() - mPressedTime);
-//            if (seconds > 2000) {
-//                Toast.makeText(this, " 한 번 더 누르면 종료됩니다.", Toast.LENGTH_LONG).show();
-//                mPressedTime = 0;
-//            } else {
-//                super.onBackPressed();
-//                finish();
-//            }
-//        }
-//    }
 
     @Override
     public void onBackPressed() {

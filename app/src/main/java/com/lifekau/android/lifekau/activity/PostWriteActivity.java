@@ -155,7 +155,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
                         return true;
                     }
                     mSubmitButton.setFocusable(false);
-                    writePost(new Post(LoginManager.get(this).getStudentId(), mPostEditText.getText().toString()));
+                    writePost(new Post(LoginManager.get(this).getStudentId(), compressText(mPostEditText.getText().toString())));
                     Toast.makeText(this, getString(R.string.post_write_success_message), Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -170,6 +170,22 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
                 break;
         }
         return true;
+    }
+
+    private String compressText(String s) {
+        String ret = "";
+        boolean charAppear = false;
+        for(int i = 0; i < s.length(); i++){
+            char ch = s.charAt(i);
+            if(ch != ' ' && ch != '\n') {
+                charAppear = true;
+            } else if(!charAppear) {
+                continue;
+            }
+            ret += ch;
+        }
+        ret = ret.replaceAll("\n{3,}", "\n\n");
+        return ret;
     }
 
     private int getValidCharCount(String str) {

@@ -111,9 +111,10 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         if(mIsInDetail || !shouldItBeFolded(mPost.text)){
             mTextView.setText(mPost.text);
         } else {
-            String left = Html.toHtml(new SpannableString(cutString(mPost.text)));
-            left = left.replace("<p dir=\"ltr\">", "");
-            left = left.replace("</p>", "");
+            String cut = cutString(mPost.text);
+            SpannableString spannableString = new SpannableString(cut);
+            String left = Html.toHtml(spannableString);
+            left = left.replace("<p dir=\"ltr\">[\\s\\S]*</p>", "$1<br/>");
             String right = "...<font color='#A0A0A0'>계속 읽기</font>";
             mTextView.setText(Html.fromHtml(left + right));
         }

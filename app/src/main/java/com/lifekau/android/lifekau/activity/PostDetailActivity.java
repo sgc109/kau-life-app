@@ -336,7 +336,7 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mLastClickTime = SystemClock.elapsedRealtime();
         switch (view.getId()) {
             case R.id.post_detail_comment_send_image_view:
-                writeComment(new Comment(LoginManager.get(this).getStudentId(), mCommentEditText.getText().toString()));
+                writeComment(new Comment(LoginManager.get(this).getStudentId(), compressText(mCommentEditText.getText().toString())));
                 break;
             case R.id.more_comments_refresh_image_view:
                 pressedMoreComments();
@@ -345,6 +345,22 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 pressedMoreComments();
                 break;
         }
+    }
+
+    private String compressText(String s) {
+        String ret = "";
+        boolean charAppear = false;
+        for(int i = 0; i < s.length(); i++){
+            char ch = s.charAt(i);
+            if(ch != ' ' && ch != '\n') {
+                charAppear = true;
+            } else if(!charAppear) {
+                continue;
+            }
+            ret += ch;
+        }
+        ret = ret.replaceAll("\n{3,}", "\n\n");
+        return ret;
     }
 
     private void pressedMoreComments() {
