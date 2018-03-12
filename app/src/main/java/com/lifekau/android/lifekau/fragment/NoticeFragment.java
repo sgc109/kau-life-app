@@ -14,6 +14,8 @@ import com.lifekau.android.lifekau.activity.NoticeListActivity;
 
 public class NoticeFragment extends PagerFragment implements View.OnClickListener{
 
+    private static String NOTICE_TYPE = "notice_type";
+
     public static NoticeFragment newInstance(){
         NoticeFragment fragment = new NoticeFragment();
         return fragment;
@@ -60,27 +62,27 @@ public class NoticeFragment extends PagerFragment implements View.OnClickListene
         switch (view.getId()){
             case R.id.fragment_notice_show_general_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 0);
+                intent.putExtra(NOTICE_TYPE, 0);
                 startActivity(intent);
                 break;
             case R.id.fragment_notice_show_academic_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 1);
+                intent.putExtra(NOTICE_TYPE, 1);
                 startActivity(intent);
                 break;
             case R.id.fragment_notice_show_scholarship_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 2);
+                intent.putExtra(NOTICE_TYPE, 2);
                 startActivity(intent);
                 break;
             case R.id.fragment_notice_show_career_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 3);
+                intent.putExtra(NOTICE_TYPE, 3);
                 startActivity(intent);
                 break;
             case R.id.fragment_notice_show_event_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 4);
+                intent.putExtra(NOTICE_TYPE, 4);
                 startActivity(intent);
                 break;
         }

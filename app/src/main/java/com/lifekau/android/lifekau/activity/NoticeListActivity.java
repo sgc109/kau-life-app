@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -27,7 +28,7 @@ import java.util.Arrays;
 
 public class NoticeListActivity extends AppCompatActivity {
 
-    private static final String LOADED_PAGE_NUM = "loadedPageNum";
+    private static final String NOTICE_TYPE = "notice_type";
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_PROGRESS = 1;
 
@@ -40,6 +41,12 @@ public class NoticeListActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private NoticeManagerAsyncTask mNoticeManagerAsyncTask;
 
+    public static Intent newIntent(Context context, int noticeType) {
+        Intent intent = new Intent(context, ExaminationTimeTableActivity.class);
+        intent.putExtra(NOTICE_TYPE, noticeType);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +56,7 @@ public class NoticeListActivity extends AppCompatActivity {
         }
         mLoading = false;
         Intent intent = getIntent();
-        mNoticeType = intent.getIntExtra("noticeType", 0);
+        mNoticeType = intent.getIntExtra(NOTICE_TYPE, 0);
         mSwipeRefreshLayout = findViewById(R.id.notice_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

@@ -3,10 +3,12 @@ package com.lifekau.android.lifekau.activity;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 
@@ -34,6 +36,7 @@ import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 import com.lifekau.android.lifekau.AdvancedEncryptionStandard;
+import com.lifekau.android.lifekau.AlarmJobService;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
 import com.lifekau.android.lifekau.manager.LoginManager;
@@ -46,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String SAVE_GUID = "shared_preferences_globally_unique_identifier";
     private static final String SAVE_ID = "shared_preferences_save_id";
     private static final String SAVE_PASSWORD = "shared_preferences_save_password";
+    private static final String SAVE_STUDENT_ID = "shared_preferences_save_student_id";
     private static final String SAVE_CHECKED_AUTO_LOGIN = "shared_preferences_save_checked_auto_login";
 
     private static final int REQUEST_READ_CONTACTS = 0;
@@ -58,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private ProgressDialog mProgressDialog;
     private View mLoginFormView;
-    private CheckBox mAutoLoginCheckBox;
 
     public LoginActivity() {
     }
@@ -104,8 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin(mIdView.getText().toString(), mPasswordView.getText().toString());
             }
         });
-
-        mAutoLoginCheckBox = findViewById(R.id.auto_login_check_box);
 
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("로그인 중입니다");
@@ -224,20 +225,20 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... params) {
             Resources resources = applicationWeakReference.get().getResources();
-            LoginActivity activitiy = activityReference.get();
-            if (activityReference == null || activitiy.isFinishing())
+            LoginActivity activity = activityReference.get();
+            if (activityReference == null || activity.isFinishing())
                 return resources.getInteger(R.integer.unexpected_error);
             int result;
             int count = 0;
-            while ((result = activitiy.mLMSPortalManager.pullSession(applicationWeakReference.get(), mId, mPassword)) != resources.getInteger(R.integer.no_error)) {
+            while ((result = activity.mLMSPortalManager.pullSession(applicationWeakReference.get(), mId, mPassword)) != resources.getInteger(R.integer.no_error)) {
                 sleep(2000);
                 count++;
-                if(count == resources.getInteger(R.integer.maximum_retry_num)) return result;
+                if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }
-            while ((result = activitiy.mLMSPortalManager.pullStudentId(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
+            while ((result = activity.mLMSPortalManager.pullStudentId(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
                 sleep(2000);
                 count++;
-                if(count == resources.getInteger(R.integer.maximum_retry_num)) return result;
+                if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }
             return resources.getInteger(R.integer.no_error);
         }
@@ -246,37 +247,38 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             if (activityReference == null) return;
             if (applicationWeakReference == null) return;
-            LoginActivity activitiy = activityReference.get();
-            Resources resources = activitiy.getResources();
-            activitiy.mAuthTask = null;
-            activitiy.showProgress(false);
+            LoginActivity activity = activityReference.get();
+            Resources resources = activity.getResources();
+            activity.mAuthTask = null;
+            activity.showProgress(false);
             if (result == resources.getInteger(R.integer.no_error)) {
-                if (activitiy.mAutoLoginCheckBox.isChecked()) {
-                    SharedPreferences sharedPref = activitiy.getPreferences(Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    String uniqueID = sharedPref.getString(SAVE_GUID, null);
-                    if (uniqueID == null) {
-                        uniqueID = UUID.randomUUID().toString();
-                        editor.putString(SAVE_GUID, uniqueID);
-                    }
-                    AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
-                    editor.putString(SAVE_ID, advancedEncryptionStandard.encrypt(mId, uniqueID));
-                    editor.putString(SAVE_PASSWORD, advancedEncryptionStandard.encrypt(mPassword, uniqueID));
-                    editor.putBoolean(SAVE_CHECKED_AUTO_LOGIN, true);
-                    editor.apply();
+                SharedPreferences sharedPref = activity.getSharedPreferences("LifeKAU", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                String uniqueID = sharedPref.getString(SAVE_GUID, null);
+                if (uniqueID == null) {
+                    uniqueID = UUID.randomUUID().toString();
+                    editor.putString(SAVE_GUID, uniqueID);
                 }
-                LoginManager loginManager = LoginManager.get(activityReference.get());
-                loginManager.setUserId(mId);
-                loginManager.setPassword(mPassword);
-                loginManager.setStudentId(activitiy.mLMSPortalManager.getStudentId());
+                String studentId = activity.mLMSPortalManager.getStudentId();
+                AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
+                editor.putString(SAVE_ID, advancedEncryptionStandard.encrypt(mId, uniqueID));
+                editor.putString(SAVE_PASSWORD, advancedEncryptionStandard.encrypt(mPassword, uniqueID));
+                editor.putString(SAVE_STUDENT_ID, advancedEncryptionStandard.encrypt(studentId, uniqueID));
+                editor.putBoolean(SAVE_CHECKED_AUTO_LOGIN, true);
+                editor.apply();
+                JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
+                jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(activity, AlarmJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPeriodic(30 * 60 * 1000)
+                        .build());
                 Intent intent = HomeActivity.newIntent(activityReference.get());
-                activitiy.startActivity(intent);
-                activitiy.finish();
+                activity.startActivity(intent);
+                activity.finish();
             } else if (result == resources.getInteger(R.integer.session_error)) {
-                activitiy.mPasswordView.setError(activitiy.getString(R.string.error_incorrect_password));
-                activitiy.mPasswordView.requestFocus();
+                activity.mPasswordView.setError(activity.getString(R.string.error_incorrect_password));
+                activity.mPasswordView.requestFocus();
             } else {
-                activitiy.showErrorMessage();
+                activity.showErrorMessage();
             }
         }
 
@@ -284,9 +286,9 @@ public class LoginActivity extends AppCompatActivity {
         protected void onCancelled() {
             if (activityReference == null) return;
             if (applicationWeakReference == null) return;
-            LoginActivity activitiy = activityReference.get();
-            activitiy.mAuthTask = null;
-            activitiy.showProgress(false);
+            LoginActivity activity = activityReference.get();
+            activity.mAuthTask = null;
+            activity.showProgress(false);
         }
     }
 
@@ -300,15 +302,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         showProgress(false);
         AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("LifeKAU", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         String uniqueID = sharedPref.getString(SAVE_GUID, null);
         if (uniqueID == null) {
             uniqueID = UUID.randomUUID().toString();
             editor.putString(SAVE_GUID, uniqueID);
         }
-        String id = advancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_ID, ""), uniqueID);
-        String password = advancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_PASSWORD, ""), uniqueID);
+        String id = AdvancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_ID, ""), uniqueID);
+        String password = AdvancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_PASSWORD, ""), uniqueID);
         boolean checked = sharedPref.getBoolean(SAVE_CHECKED_AUTO_LOGIN, false);
         if (checked) {
             InputMethodManager imm = (InputMethodManager) getSystemService(

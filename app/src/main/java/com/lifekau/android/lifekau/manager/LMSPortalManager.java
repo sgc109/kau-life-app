@@ -50,6 +50,8 @@ public class LMSPortalManager {
     private OkHttpClient mClient;
     private String mSSOToken;
     private String mStudentId;
+    private int mRegisteredExaminationTimeTableItemNum;
+    private int mRegisteredCurrentGradeItemNum;
 
     private LMSPortalManager() {
         mScholarshipArray = new ArrayList<>();
@@ -59,6 +61,8 @@ public class LMSPortalManager {
         mAccumulatedGradeSummaryArray = new ArrayList<>();
         mTotalAccumulatedGrade = new TotalAccumulatedGrade();
         mExaminationTimeTable = new ArrayList<>();
+        mRegisteredExaminationTimeTableItemNum = 0;
+        mRegisteredCurrentGradeItemNum = 0;
     }
 
     private static class LazyHolder {
@@ -100,6 +104,7 @@ public class LMSPortalManager {
                 return resources.getInteger(resources.getInteger(R.integer.server_error));
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("eee", e.toString());
             return resources.getInteger(R.integer.network_error);
         }
         RequestBody body = new FormBody.Builder()
@@ -324,6 +329,7 @@ public class LMSPortalManager {
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301)
                 return resources.getInteger(R.integer.server_error);
+            mRegisteredCurrentGradeItemNum = 0;
             Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("cellspacing", "1");
             mCurrentGrade.clear();
@@ -347,6 +353,8 @@ public class LMSPortalManager {
                     grade.remarks = infomation.get(7).text();
                     grade.retake = infomation.get(8).text();
                     mCurrentGrade.add(grade);
+                    if (grade.grade.isEmpty() && grade.grade.equals("-"))
+                        mRegisteredCurrentGradeItemNum++;
                 }
             }
             Elements totalGradeSummary = elements.get(1).select("tr").get(1).select("td");
@@ -468,6 +476,7 @@ public class LMSPortalManager {
     }
 
     public int pullExaminationTimeTable(Context context) {
+        mRegisteredExaminationTimeTableItemNum++;
         Resources resources = context.getResources();
         OkHttpClient client = getClient(context);
         FormBody body = new FormBody.Builder()
@@ -526,6 +535,7 @@ public class LMSPortalManager {
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301)
                 return resources.getInteger(R.integer.server_error);
+            mRegisteredExaminationTimeTableItemNum = 0;
             Document doc = Jsoup.parse(res.body().string());
             String temp = doc.html().replace("<br>", "%%");
             doc = Jsoup.parse(temp);
@@ -538,12 +548,13 @@ public class LMSPortalManager {
                     String string = dataElements.get(j).text();
                     String[] strings = string.split("%%");
                     ExaminationTimeTable examinationTimeTable = new ExaminationTimeTable();
-                    if(strings.length == 3) {
+                    if (strings.length == 3) {
+                        mRegisteredExaminationTimeTableItemNum++;
                         examinationTimeTable.subjectTitle = strings[0];
                         examinationTimeTable.professorName = strings[1].split(":")[1];
                         examinationTimeTable.place = strings[2].split(":")[1];
                     }
-                    if(strings.length == 2){
+                    if (strings.length == 2) {
                         examinationTimeTable.subjectTitle = strings[0];
                         examinationTimeTable.professorName = strings[1];
                     }
@@ -560,15 +571,23 @@ public class LMSPortalManager {
         return resources.getInteger(R.integer.no_error);
     }
 
+    public int getRegisteredExaminationTimeTableItemNum(){
+        return mRegisteredExaminationTimeTableItemNum;
+    }
+
+    public int getRegisteredCurrentGradeItemNum(){
+        return mRegisteredCurrentGradeItemNum;
+    }
+
     public int getExaminationTimeTableSize() {
         return mExaminationTimeTable.size();
     }
 
-    public ExaminationTimeTable getExaminationTimeTable(int index){
+    public ExaminationTimeTable getExaminationTimeTable(int index) {
         return index < getExaminationTimeTableSize() ? mExaminationTimeTable.get(index) : null;
     }
 
-    public void clearExaminationTimeTable(){
+    public void clearExaminationTimeTable() {
         mExaminationTimeTable.clear();
     }
 

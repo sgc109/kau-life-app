@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -35,6 +36,11 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
     private ViewGroup mMainLayout;
     private ViewGroup mProgressBarLayout;
     private PullExaminationTimeTableAsyncTask mPullExaminationTimeTableAsyncTask;
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, ExaminationTimeTableActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

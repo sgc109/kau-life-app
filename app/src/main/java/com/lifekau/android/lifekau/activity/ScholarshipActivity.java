@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -36,6 +37,11 @@ public class ScholarshipActivity extends AppCompatActivity {
     private ViewGroup mMainLayout;
     private ViewGroup mProgressBarLayout;
     private GetScholarshipAsyncTask mGetScholarshipAsyncTask;
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, ScholarshipActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +114,7 @@ public class ScholarshipActivity extends AppCompatActivity {
 
         public void bind(int position) {
             Scholarship scholarship = mLMSPortalManager.getScholarship(position);
+            if(scholarship == null) return;
             mTypeTextView.setText(scholarship.type);
             mSemesterTextView.setText(scholarship.semester);
             mCategorizationTextView.setText(scholarship.categorization);
