@@ -24,6 +24,8 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
 import okhttp3.Cookie;
@@ -267,6 +269,9 @@ public class LMSPortalManager {
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
+        } catch (SSLHandshakeException e){
+            e.printStackTrace();
+            return resources.getInteger(R.integer.ssl_hand_shake_error);
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -306,8 +311,12 @@ public class LMSPortalManager {
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
+        } catch (SSLHandshakeException e){
+            e.printStackTrace();
+            return resources.getInteger(R.integer.ssl_hand_shake_error);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("테스트", e.toString());
             return resources.getInteger(R.integer.network_error);
         }
         return resources.getInteger(R.integer.no_error);
@@ -416,9 +425,12 @@ public class LMSPortalManager {
                 accumulatedGrade.remarks = data.get(7 + adjustVal).text();
                 mAccumulatedGradeArray.add(accumulatedGrade);
             }
-        } catch (NullPointerException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
+        } catch (SSLHandshakeException e){
+            e.printStackTrace();
+            return resources.getInteger(R.integer.ssl_hand_shake_error);
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -468,6 +480,9 @@ public class LMSPortalManager {
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
+        } catch (SSLHandshakeException e){
+            e.printStackTrace();
+            return resources.getInteger(R.integer.ssl_hand_shake_error);
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -506,6 +521,9 @@ public class LMSPortalManager {
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
+        } catch (SSLHandshakeException e){
+            e.printStackTrace();
+            return resources.getInteger(R.integer.ssl_hand_shake_error);
         } catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
@@ -564,7 +582,11 @@ public class LMSPortalManager {
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
-        } catch (Exception e) {
+        } catch (SSLHandshakeException e){
+            e.printStackTrace();
+            return resources.getInteger(R.integer.ssl_hand_shake_error);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }

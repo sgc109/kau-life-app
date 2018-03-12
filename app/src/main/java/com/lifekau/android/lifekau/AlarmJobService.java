@@ -12,7 +12,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.lifekau.android.lifekau.activity.CurrentGradeActivity;
+import com.lifekau.android.lifekau.activity.ExaminationTimeTableActivity;
 import com.lifekau.android.lifekau.activity.HomeActivity;
+import com.lifekau.android.lifekau.activity.ScholarshipActivity;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
 import com.lifekau.android.lifekau.manager.NoticeManager;
 
@@ -73,12 +76,13 @@ public class AlarmJobService extends JobService {
                 if (prevLatestNum != -1 && currLatestNum > prevLatestNum) {
                     text = text + NOTICE_NAME[i] + " ";
                 }
-                editor.putInt(SAVE_NOTICE_LIST_NUM[i], currLatestNum);
+                editor.putInt(SAVE_NOTICE_LIST_NUM[i], currLatestNum - 1);
                 editor.apply();
             }
             if (!text.isEmpty()) {
                 text = text.substring(0, text.length() - 2);
-                notificationManager.notify(0, buildNotification(getApplicationContext(), "공지 알람", "새로운" + text + "가 등록되었습니다!"));
+                Intent intent = HomeActivity.newIntent(getApplicationContext(), 2);
+                notificationManager.notify(0, buildNotification(getApplicationContext(), "공지 알람", "새로운 " + text + "가 등록되었습니다!", intent));
             }
             LMSPortalManager pm = LMSPortalManager.getInstance();
             if (true) {
@@ -104,12 +108,14 @@ public class AlarmJobService extends JobService {
             }
             else ;
             if (mResult == 0) {
-                int iItemNum = pm.getScholarshipSize();
+                int currItemNum = pm.getScholarshipSize();
                 int prevItemNum = sharedPreferences.getInt(SAVE_SCHOLARSHIP_ITEM_NUM, -1);
-                if (prevItemNum != -1 && iItemNum > prevItemNum) {
-                    notificationManager.notify(0, buildNotification(getApplicationContext(), "장학금 알람", "새로운 장학금이 등록되었습니다!"));
+                Log.e("비교", currItemNum + " " + prevItemNum);
+                if (prevItemNum != -1 && currItemNum > prevItemNum) {
+                    Intent intent = ScholarshipActivity.newIntent(getApplicationContext());
+                    notificationManager.notify(1, buildNotification(getApplicationContext(), "장학금 알람", "새로운 장학금이 등록되었습니다!", intent));
                 }
-                editor.putInt(SAVE_SCHOLARSHIP_ITEM_NUM, iItemNum);
+                editor.putInt(SAVE_SCHOLARSHIP_ITEM_NUM, currItemNum);
                 editor.apply();
             }
             if(true) {
@@ -119,12 +125,13 @@ public class AlarmJobService extends JobService {
             }
             else ;
             if (mResult != 0) {
-                int iItemNum = pm.getRegisteredCurrentGradeItemNum();
+                int currItemNum = pm.getRegisteredCurrentGradeItemNum();
                 int prevItemNum = sharedPreferences.getInt(SAVE_CURRENT_GRADE_ITEM_NUM, -1);
-                if (prevItemNum != -1 && iItemNum > prevItemNum) {
-                    notificationManager.notify(0, buildNotification(getApplicationContext(), "성적 알람", "새로운 성적이 등록되었습니다!"));
+                if (prevItemNum != -1 && currItemNum > prevItemNum) {
+                    Intent intent = CurrentGradeActivity.newIntent(getApplicationContext());
+                    notificationManager.notify(2, buildNotification(getApplicationContext(), "성적 알람", "새로운 성적이 등록되었습니다!", intent));
                 }
-                editor.putInt(SAVE_CURRENT_GRADE_ITEM_NUM, iItemNum);
+                editor.putInt(SAVE_CURRENT_GRADE_ITEM_NUM, currItemNum);
                 editor.apply();
             }
             if(true) {
@@ -135,12 +142,13 @@ public class AlarmJobService extends JobService {
             }
             else ;
             if (mResult == 0) {
-                int iItemNum = pm.getRegisteredExaminationTimeTableItemNum();
+                int currItemNum = pm.getRegisteredExaminationTimeTableItemNum();
                 int prevItemNum = sharedPreferences.getInt(SAVE_EXAMINATION_TIME_TABLE_ITEM_NUM, -1);
-                if (prevItemNum != -1 && iItemNum > prevItemNum) {
-                    notificationManager.notify(0, buildNotification(getApplicationContext(), "시험시간표 알람", "시험시간표가 등록되었습니다!"));
+                if (prevItemNum != -1 && currItemNum > prevItemNum) {
+                    Intent intent = ExaminationTimeTableActivity.newIntent(getApplicationContext());
+                    notificationManager.notify(3, buildNotification(getApplicationContext(), "시험시간표 알람", "시험시간표가 등록되었습니다!", intent));
                 }
-                editor.putInt(SAVE_EXAMINATION_TIME_TABLE_ITEM_NUM, iItemNum);
+                editor.putInt(SAVE_EXAMINATION_TIME_TABLE_ITEM_NUM, currItemNum);
                 editor.apply();
             }
             return null;
@@ -158,10 +166,9 @@ public class AlarmJobService extends JobService {
         toast.show();
     }
 
-    public Notification buildNotification(Context context, String title, String text) {
-        Intent intent = HomeActivity.newIntent(context);
+    public Notification buildNotification(Context context, String title, String text, Intent intent) {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new Notification.Builder(context)
                 .setContentTitle(title)
                 .setContentText(text)

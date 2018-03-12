@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -152,7 +153,7 @@ public class ScholarshipActivity extends AppCompatActivity {
             while (!scholarshipActivity.isFinishing() && !isCancelled()
                     && (result = lm.pullScholarship(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error) ) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(3000);
+                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -174,7 +175,7 @@ public class ScholarshipActivity extends AppCompatActivity {
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 문제
                 scholarshipActivity.showToast(resources.getString(R.string.portal_network_error_message));
-            } else if (result == resources.getInteger(R.integer.session_error)) {
+            } else if (result == resources.getInteger(R.integer.session_error) || result == resources.getInteger(R.integer.ssl_hand_shake_error)) {
                 //세션 관련 문제
                 scholarshipActivity.showToast(resources.getString(R.string.portal_session_disconnect_error_message));
                 Intent intent = LoginActivity.newIntent(scholarshipActivity);
@@ -195,5 +196,18 @@ public class ScholarshipActivity extends AppCompatActivity {
     public void showToast(String message) {
         Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if(fm.getBackStackEntryCount() > 0) {
+            super.onBackPressed();
+        }
+        else{
+            Intent intent = HomeActivity.newIntent(getApplicationContext(), 4);
+            startActivity(intent);
+            finish();
+        }
     }
 }

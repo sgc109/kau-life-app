@@ -231,12 +231,12 @@ public class LoginActivity extends AppCompatActivity {
             int result;
             int count = 0;
             while ((result = activity.mLMSPortalManager.pullSession(applicationWeakReference.get(), mId, mPassword)) != resources.getInteger(R.integer.no_error)) {
-                sleep(2000);
+                sleep(1000);
                 count++;
                 if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }
             while ((result = activity.mLMSPortalManager.pullStudentId(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
-                sleep(2000);
+                sleep(1000);
                 count++;
                 if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }
@@ -271,7 +271,7 @@ public class LoginActivity extends AppCompatActivity {
                         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                         .setPeriodic(30 * 60 * 1000)
                         .build());
-                Intent intent = HomeActivity.newIntent(activityReference.get());
+                Intent intent = HomeActivity.newIntent(activityReference.get(), 0);
                 activity.startActivity(intent);
                 activity.finish();
             } else if (result == resources.getInteger(R.integer.session_error)) {
