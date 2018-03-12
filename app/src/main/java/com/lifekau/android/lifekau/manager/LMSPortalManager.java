@@ -296,6 +296,7 @@ public class LMSPortalManager {
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301)
                 return resources.getInteger(R.integer.server_error);
+            clearScholarship();
             Document doc = Jsoup.parse(res.body().string());
             Elements elements = doc.getElementsByAttributeValue("class", "table1").select("tr");
             int elementsSize = elements.size();
@@ -316,7 +317,6 @@ public class LMSPortalManager {
             return resources.getInteger(R.integer.ssl_hand_shake_error);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("테스트", e.toString());
             return resources.getInteger(R.integer.network_error);
         }
         return resources.getInteger(R.integer.no_error);
@@ -362,7 +362,7 @@ public class LMSPortalManager {
                     grade.remarks = infomation.get(7).text();
                     grade.retake = infomation.get(8).text();
                     mCurrentGrade.add(grade);
-                    if (grade.grade.isEmpty() && grade.grade.equals("-"))
+                    if (!grade.grade.isEmpty() && !grade.grade.equals("-") && !grade.grade.equals(" "))
                         mRegisteredCurrentGradeItemNum++;
                 }
             }
@@ -491,7 +491,6 @@ public class LMSPortalManager {
     }
 
     public int pullExaminationTimeTable(Context context) {
-        mRegisteredExaminationTimeTableItemNum++;
         Resources resources = context.getResources();
         OkHttpClient client = getClient(context);
         FormBody body = new FormBody.Builder()

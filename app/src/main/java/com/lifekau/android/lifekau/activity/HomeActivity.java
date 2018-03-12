@@ -192,7 +192,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         if (currentFragment == null) {
             currentFragment = adapter.getCurrentFragment();
         }
-        if (currentFragment != null && wasSelected) {
+        if (wasSelected && currentFragment != null) {
             currentFragment.refresh();
             return true;
         }
@@ -315,7 +315,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                 mPressedTime = 0;
             } else {
                 super.onBackPressed();
-                finishAffinity();
+                finish();
             }
         }
     }
@@ -346,8 +346,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     protected void onStart() {
         super.onStart();
         int position = getIntent().getIntExtra(CURRENT_POSITION, -1);
+        getIntent().removeExtra(CURRENT_POSITION);
         if (position != -1){
             bottomNavigation.setCurrentItem(position);
+            if(position != 0) mFab.setVisibility(View.INVISIBLE);
         }
     }
 

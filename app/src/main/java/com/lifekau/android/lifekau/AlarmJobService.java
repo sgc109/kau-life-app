@@ -110,7 +110,6 @@ public class AlarmJobService extends JobService {
             if (mResult == 0) {
                 int currItemNum = pm.getScholarshipSize();
                 int prevItemNum = sharedPreferences.getInt(SAVE_SCHOLARSHIP_ITEM_NUM, -1);
-                Log.e("비교", currItemNum + " " + prevItemNum);
                 if (prevItemNum != -1 && currItemNum > prevItemNum) {
                     Intent intent = ScholarshipActivity.newIntent(getApplicationContext());
                     notificationManager.notify(1, buildNotification(getApplicationContext(), "장학금 알람", "새로운 장학금이 등록되었습니다!", intent));
@@ -148,7 +147,7 @@ public class AlarmJobService extends JobService {
                     Intent intent = ExaminationTimeTableActivity.newIntent(getApplicationContext());
                     notificationManager.notify(3, buildNotification(getApplicationContext(), "시험시간표 알람", "시험시간표가 등록되었습니다!", intent));
                 }
-                editor.putInt(SAVE_EXAMINATION_TIME_TABLE_ITEM_NUM, currItemNum);
+                editor.putInt(SAVE_EXAMINATION_TIME_TABLE_ITEM_NUM, currItemNum - 1);
                 editor.apply();
             }
             return null;

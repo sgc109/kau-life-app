@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -39,6 +40,13 @@ public class CurrentGradeActivity extends AppCompatActivity {
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, CurrentGradeActivity.class);
         return intent;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        if(nm != null) nm.cancel(2);
     }
 
     @Override

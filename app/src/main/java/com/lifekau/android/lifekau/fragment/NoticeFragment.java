@@ -1,5 +1,7 @@
 package com.lifekau.android.lifekau.fragment;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,8 @@ import android.widget.FrameLayout;
 
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.activity.NoticeListActivity;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class NoticeFragment extends PagerFragment implements View.OnClickListener{
 
@@ -49,6 +53,13 @@ public class NoticeFragment extends PagerFragment implements View.OnClickListene
     @Override
     public void findFragmentContainer(View view) {
         mFragmentContainer = view.findViewById(R.id.fragment_seat_container);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        NotificationManager nm = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
+        if(nm != null) nm.cancel(0);
     }
 
     @Override
