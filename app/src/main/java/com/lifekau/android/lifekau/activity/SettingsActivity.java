@@ -114,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.alarm_switch_lms:
                 break;
             case R.id.logout_container:
-                SharedPreferences sharedPref = getSharedPreferences(LoginActivity.sharedPreferenceApp, Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = getSharedPreferences(LoginActivity.mSharedPreferenceApp, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(LoginActivity.SAVE_AUTO_LOGIN, false);
                 editor.apply();

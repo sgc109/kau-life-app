@@ -30,8 +30,6 @@ import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.FoodReview;
 
-import java.util.Date;
-
 public class FoodReviewWriteActivity extends AppCompatActivity implements TextWatcher, View.OnTouchListener {
     private static final String EXTRA_FOOD_CORNER_TYPE = "extra_corner_type";
     private static final String EXTRA_ALREADY_WRITTEN = "extra_already-written";
@@ -44,7 +42,6 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
     private boolean mIsEditing;
     private ImageButton mBackButton;
     private boolean mPushed;
-    private long mLastWritePostTime;
 
     public static Intent newIntent(Context packageContext, int foodCornerType, boolean alreadyWritten) {
         Intent intent = new Intent(packageContext, FoodReviewWriteActivity.class);
@@ -125,11 +122,6 @@ public class FoodReviewWriteActivity extends AppCompatActivity implements TextWa
                         askCancelEditingOrNot();
                     }
                 } else if (id == R.id.write_food_review_submit_button) {
-                    if (false) {
-                        new AlertDialog.Builder(this).setMessage("1분이 지나야 글을 쓸 수가 있습니다.").show();
-                        return true;
-                    }
-                    mLastWritePostTime = new Date().getTime();
                     if (getValidCharCount(mCommentEditText.getText().toString()) != 0) {
                         insertReviewToDB(mFoodCornerType, mRatingBar.getRating(), mCommentEditText.getText().toString()); // 특정 코너
                     } else {

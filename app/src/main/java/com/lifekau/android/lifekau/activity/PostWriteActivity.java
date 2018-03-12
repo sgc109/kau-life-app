@@ -3,6 +3,7 @@ package com.lifekau.android.lifekau.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -29,12 +30,13 @@ import java.util.Date;
 
 public class PostWriteActivity extends AppCompatActivity implements View.OnTouchListener, TextWatcher {
 
+    private static final String SHARED_LAST_WRITE_TIME = "shared_last_write_time";
     private EditText mPostEditText;
     private ImageButton mBackButton;
     private TextView mSubmitButton;
     private DatabaseReference mDatabase;
     private boolean mPushed = false;
-    private long mLastWritePostTime = 0;
+    private String mSharedPreferenceApp;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, PostWriteActivity.class);
@@ -52,6 +54,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
       
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        mSharedPreferenceApp = getString(R.string.shared_preference_app);
         mPostEditText = findViewById(R.id.write_post_edit_text);
         mBackButton = findViewById(R.id.write_post_back_image_button);
         mSubmitButton = findViewById(R.id.write_post_submit_button);
@@ -68,7 +71,13 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
         setResult(RESULT_OK);
         DatabaseReference postsRef = mDatabase.child(getString(R.string.firebase_database_posts));
         String postKey = postsRef.push().getKey();
-        postsRef.child(postKey).setValue(post);
+        postsRef
+                .child(postKey)
+                .setValue(post);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(SHARED_LAST_WRITE_TIME, new Date().getTime());
+        editor.apply();
     }
 
     private void askDiscardTextOrNot() {
@@ -148,8 +157,8 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
                         finish();
                     }
                 } else if (id == R.id.write_post_submit_button) {
-                    long lastTime = mLastWritePostTime;
-                    mLastWritePostTime = new Date().getTime();
+                    SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                    long lastTime = sharedPref.getLong(SHARED_LAST_WRITE_TIME, 0);
                     if(new Date().getTime() - lastTime < 60 * 1000) {
                         new AlertDialog.Builder(this).setMessage("1분이 지나야 글을 쓸 수가 있습니다.").show();
                         return true;

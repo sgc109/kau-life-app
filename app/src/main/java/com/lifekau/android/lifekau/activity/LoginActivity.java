@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private ProgressDialog mProgressDialog;
     private View mLoginFormView;
-    public static String sharedPreferenceApp;
+    public static String mSharedPreferenceApp;
 
     public LoginActivity() {
     }
@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         mIdView.setSelection(0);
 
-        sharedPreferenceApp = getString(R.string.shared_preference_app);
+        mSharedPreferenceApp = getString(R.string.shared_preference_app);
         mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -213,9 +213,9 @@ public class LoginActivity extends AppCompatActivity {
             LoginActivity activity = activityReference.get();
             Resources resources = activity.getResources();
             activity.mAuthTask = null;
-            activity.showProgress(false);
+
             if (result == resources.getInteger(R.integer.no_error)) {
-                SharedPreferences sharedPref = activity.getSharedPreferences(activity.sharedPreferenceApp, Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = activity.getSharedPreferences(activity.mSharedPreferenceApp, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 String uniqueID = sharedPref.getString(SAVE_GUID, null);
                 if (uniqueID == null) {
@@ -240,6 +240,8 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 activity.showErrorMessage();
             }
+
+//            activity.showProgress(false);
         }
 
         @Override
@@ -262,7 +264,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         showProgress(false);
         AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
-        SharedPreferences sharedPref = getSharedPreferences(sharedPreferenceApp, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(mSharedPreferenceApp, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         String uniqueID = sharedPref.getString(SAVE_GUID, null);
         if (uniqueID == null) {

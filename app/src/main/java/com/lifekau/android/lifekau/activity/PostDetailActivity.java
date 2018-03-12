@@ -3,6 +3,7 @@ package com.lifekau.android.lifekau.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -51,12 +52,14 @@ import com.lifekau.android.lifekau.viewholder.PostViewHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class PostDetailActivity extends AppCompatActivity implements OnClickListener, SwipeRefreshLayout.OnRefreshListener, TextWatcher {
     private static final String EXTRA_HAS_CLICKED_COMMENT = "extra_has_clicked_comment";
     private static final String EXTRA_ITEM_POSITION = "extra_item_position";
     private static String EXTRA_POST_KEY = "extra_post_key";
+    private static final String SHARED_LAST_WRITE_TIME = "shared_last_write_time";
     private final int NUM_OF_COMMENT_PER_PAGE = 5;
     private int mTotalItemCount = 0;
     private int mLastVisibleItemPosition;
@@ -336,6 +339,12 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
         mLastClickTime = SystemClock.elapsedRealtime();
         switch (view.getId()) {
             case R.id.post_detail_comment_send_image_view:
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                long lastTime = sharedPref.getLong(SHARED_LAST_WRITE_TIME, 0);
+                if(new Date().getTime() - lastTime < 60 * 1000) {
+                    new AlertDialog.Builder(this).setMessage("1분이 지나야 새로운 댓글을 쓸 수 있습니다.").show();
+                    return;
+                }
                 writeComment(new Comment(LoginManager.get(this).getStudentId(), compressText(mCommentEditText.getText().toString())));
                 break;
             case R.id.more_comments_refresh_image_view:
@@ -371,6 +380,10 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
     }
 
     private void writeComment(Comment comment) {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(SHARED_LAST_WRITE_TIME, new Date().getTime());
+        editor.apply();
         mCommentsRef
                 .push()
                 .setValue(comment)
