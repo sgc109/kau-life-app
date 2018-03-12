@@ -76,7 +76,7 @@ public class AlarmJobService extends JobService {
                 if (prevLatestNum != -1 && currLatestNum > prevLatestNum) {
                     text = text + NOTICE_NAME[i] + " ";
                 }
-                editor.putInt(SAVE_NOTICE_LIST_NUM[i], currLatestNum - 1);
+                editor.putInt(SAVE_NOTICE_LIST_NUM[i], currLatestNum);
                 editor.apply();
             }
             if (!text.isEmpty()) {
