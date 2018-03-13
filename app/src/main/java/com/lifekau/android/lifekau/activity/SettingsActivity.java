@@ -58,9 +58,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("설정");
         }
-
         initUI();
-
         mSwitchEntire.setOnClickListener(this);
         mSwitchNotice.setOnClickListener(this);
         mSwitchNoticeGeneral.setOnClickListener(this);
@@ -73,6 +71,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mSwitchExamTimetable.setOnClickListener(this);
         mSwitchLMS.setOnClickListener(this);
         mLogoutContainer.setOnClickListener(this);
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
+        if(!sharedPref.contains(SAVE_ALARM_STATE)) mSwitchEntire.performClick();
     }
 
     private void initUI() {
@@ -173,7 +173,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 editor.putBoolean(SAVE_SWITCH_LMS_STATE, nowCheck);
                 break;
             case R.id.logout_container:
-                editor.clear();
+                editor.putBoolean(SAVE_ALARM_STATE, false);
+                editor.putBoolean(LoginActivity.SAVE_AUTO_LOGIN, false);
                 editor.apply();
                 Intent intent = LoginActivity.newIntent(this);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
