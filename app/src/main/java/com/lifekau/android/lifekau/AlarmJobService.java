@@ -8,6 +8,7 @@ import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -51,7 +52,7 @@ public class AlarmJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        if(mAlarmAsyncTask != null) mAlarmAsyncTask.cancel(true);
+        if (mAlarmAsyncTask != null) mAlarmAsyncTask.cancel(true);
         return false;
     }
 
@@ -59,6 +60,7 @@ public class AlarmJobService extends JobService {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            Resources resources = getResources();
             SharedPreferences sharedPreferences = getSharedPreferences("LifeKAU", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -68,7 +70,8 @@ public class AlarmJobService extends JobService {
             for (int i = 0; i < TOTAL_NOTICE_NUM; i++) {
                 if (false) continue;
                 for (int count = 0; count < 3; count++) {
-                    if ((mResult = nm.pullNoticeList(getApplicationContext(), i, 1)) == 0) break;
+                    if ((mResult = nm.pullNoticeList(getApplicationContext(), i, 1)) == resources.getInteger(R.integer.no_error))
+                        break;
                 }
                 if (mResult != 0) continue;
                 int currLatestNum = nm.getLatestDetailPageNum(i);
@@ -87,7 +90,8 @@ public class AlarmJobService extends JobService {
             LMSPortalManager pm = LMSPortalManager.getInstance();
             if (true) {
                 for (int count = 0; count < 3; count++) {
-                    if ((mResult = pm.pullStudentId(getApplicationContext())) == 0) break;
+                    if ((mResult = pm.pullStudentId(getApplicationContext())) == resources.getInteger(R.integer.no_error))
+                        break;
                 }
             } else ;
             if (mResult != 0) {
@@ -96,17 +100,17 @@ public class AlarmJobService extends JobService {
                 String password = AdvancedEncryptionStandard.decrypt(sharedPreferences.getString(SAVE_PASSWORD, ""), uniqueID);
                 int mNextResult = 0;
                 for (int count = 0; count < 3; count++) {
-                    if ((mNextResult = pm.pullSession(getApplicationContext(), id, password)) == 0)
+                    if ((mNextResult = pm.pullSession(getApplicationContext(), id, password)) == resources.getInteger(R.integer.no_error))
                         break;
                 }
                 if (mNextResult != 0) return null;
             }
-            if(true) {
+            if (true) {
                 for (int count = 0; count < 3; count++) {
-                    if ((mResult = pm.pullScholarship(getApplicationContext())) == 0) break;
+                    if ((mResult = pm.pullScholarship(getApplicationContext())) == resources.getInteger(R.integer.no_error))
+                        break;
                 }
-            }
-            else ;
+            } else ;
             if (mResult == 0) {
                 int currItemNum = pm.getScholarshipSize();
                 int prevItemNum = sharedPreferences.getInt(SAVE_SCHOLARSHIP_ITEM_NUM, -1);
@@ -117,12 +121,12 @@ public class AlarmJobService extends JobService {
                 editor.putInt(SAVE_SCHOLARSHIP_ITEM_NUM, currItemNum);
                 editor.apply();
             }
-            if(true) {
+            if (true) {
                 for (int count = 0; count < 3; count++) {
-                    if ((mResult = pm.pullCurrentGrade(getApplicationContext())) == 0) break;
+                    if ((mResult = pm.pullCurrentGrade(getApplicationContext())) == resources.getInteger(R.integer.no_error))
+                        break;
                 }
-            }
-            else ;
+            } else ;
             if (mResult != 0) {
                 int currItemNum = pm.getRegisteredCurrentGradeItemNum();
                 int prevItemNum = sharedPreferences.getInt(SAVE_CURRENT_GRADE_ITEM_NUM, -1);
@@ -133,13 +137,12 @@ public class AlarmJobService extends JobService {
                 editor.putInt(SAVE_CURRENT_GRADE_ITEM_NUM, currItemNum);
                 editor.apply();
             }
-            if(true) {
+            if (true) {
                 for (int count = 0; count < 3; count++) {
-                    if ((mResult = pm.pullExaminationTimeTable(getApplicationContext())) == 0)
+                    if ((mResult = pm.pullExaminationTimeTable(getApplicationContext())) == resources.getInteger(R.integer.no_error))
                         break;
                 }
-            }
-            else ;
+            } else ;
             if (mResult == 0) {
                 int currItemNum = pm.getRegisteredExaminationTimeTableItemNum();
                 int prevItemNum = sharedPreferences.getInt(SAVE_EXAMINATION_TIME_TABLE_ITEM_NUM, -1);
@@ -147,7 +150,7 @@ public class AlarmJobService extends JobService {
                     Intent intent = ExaminationTimeTableActivity.newIntent(getApplicationContext());
                     notificationManager.notify(3, buildNotification(getApplicationContext(), "시험시간표 알람", "시험시간표가 등록되었습니다!", intent));
                 }
-                editor.putInt(SAVE_EXAMINATION_TIME_TABLE_ITEM_NUM, currItemNum - 1);
+                editor.putInt(SAVE_EXAMINATION_TIME_TABLE_ITEM_NUM, currItemNum);
                 editor.apply();
             }
             return null;
