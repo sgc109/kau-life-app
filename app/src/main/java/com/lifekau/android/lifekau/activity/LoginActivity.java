@@ -34,6 +34,7 @@ import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.UUID;
 
 import static android.os.SystemClock.sleep;
@@ -45,6 +46,16 @@ public class LoginActivity extends AppCompatActivity {
     private static final String SAVE_ID = "shared_preferences_save_id";
     private static final String SAVE_PASSWORD = "shared_preferences_save_password";
     private static final String SAVE_STUDENT_ID = "shared_preferences_save_student_id";
+    private static final String SAVE_ALARM_STATE = "save_alarm_state";
+    private static final String SAVE_SWITCH_NOTICE_GENERAL_STATE = "save_switch_notice_general_state";
+    private static final String SAVE_SWITCH_NOTICE_ACADEMIC_STATE = "save_switch_notice_academic_state";
+    private static final String SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE = "save_switch_notice_scholarship_state";
+    private static final String SAVE_SWITCH_NOTICE_CAREER_STATE = "save_switch_notice_career_state";
+    private static final String SAVE_SWITCH_NOTICE_EVENT_STATE = "save_switch_notice_event_state";
+    private static final String SAVE_SWITCH_SCHOLARSHIP_STATE = "save_switch_scholarship_state";
+    private static final String SAVE_SWITCH_CURRENT_GRADE_STATE = "save_switch_current_grade_state";
+    private static final String SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE = "save_switch_examination_timetable_state";
+    private static final String SAVE_SWITCH_LMS_STATE = "save_switch_lms_state";
 
     public static final String SAVE_AUTO_LOGIN = "shared_preferences_save_auto_login";
 
@@ -108,7 +119,6 @@ public class LoginActivity extends AppCompatActivity {
         mProgressDialog.setMessage("로그인 중입니다");
         mProgressDialog.setCancelable(false);
         mProgressDialog.setCanceledOnTouchOutside(false);
-
     }
 
 
@@ -231,7 +241,29 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString(SAVE_PASSWORD, advancedEncryptionStandard.encrypt(mPassword, uniqueID));
                 editor.putBoolean(SAVE_AUTO_LOGIN, true);
                 editor.putString(SAVE_STUDENT_ID, advancedEncryptionStandard.encrypt(studentId, uniqueID));
+                if (!sharedPref.contains(SAVE_ALARM_STATE)) {
+                    editor.putBoolean(SAVE_ALARM_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_NOTICE_ACADEMIC_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_NOTICE_CAREER_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_NOTICE_EVENT_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_SCHOLARSHIP_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_CURRENT_GRADE_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE, true);
+                    editor.putBoolean(SAVE_SWITCH_LMS_STATE, true);
+                }
                 editor.apply();
+                JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
+                if (jobScheduler != null) {
+                    List<JobInfo> jobInfos = jobScheduler.getAllPendingJobs();
+                    if(jobInfos.size() == 0) {
+                        jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(activity, AlarmJobService.class))
+                                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                                .setPeriodic(30 * 60 * 1000)
+                                .build());
+                    }
+                }
 //                LoginManager loginManager = LoginManager.get(activityReference.get());
 //                loginManager.setUserId(mId);
 //                loginManager.setPassword(mPassword);

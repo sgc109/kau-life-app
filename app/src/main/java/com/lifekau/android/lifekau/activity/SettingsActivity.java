@@ -15,6 +15,8 @@ import android.widget.Switch;
 import com.lifekau.android.lifekau.AlarmJobService;
 import com.lifekau.android.lifekau.R;
 
+import java.util.List;
+
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String SAVE_ALARM_STATE = "save_alarm_state";
@@ -40,7 +42,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private Switch mSwitchExamTimetable;
     private Switch mSwitchLMS;
     private LinearLayout mLogoutContainer;
-    private boolean mIsRunning;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, SettingsActivity.class);
@@ -183,6 +184,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 setResult(RESULT_OK);
                 JobScheduler jobScheduler = getSystemService(JobScheduler.class);
                 if(jobScheduler != null) jobScheduler.cancel(0);
+                Intent intent = LoginActivity.newIntent(this);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 finish();
                 return;
         }
@@ -199,17 +203,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         JobScheduler jobScheduler = getSystemService(JobScheduler.class);
         if (jobScheduler != null) {
             if (currAlarmState) {
-                mIsRunning = sharedPref.getBoolean(SAVE_ALARM_STATE, false);
-                if(!mIsRunning) {
+                List<JobInfo> jobInfos = jobScheduler.getAllPendingJobs();
+                if(jobInfos.size() == 0){
                     jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(this, AlarmJobService.class))
                             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                             .setPeriodic(30 * 60 * 1000)
                             .build());
                 }
-            } else{
-                mIsRunning = false;
-                jobScheduler.cancel(0);
-            }
+            } else jobScheduler.cancel(0);
         } else {
             //초기화 실패
         }
