@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -138,7 +140,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
                 float sumRating = 0;
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if(snapshot.getKey().equals(LoginManager.get(LectureReviewListActivity.this).getStudentId())){
+                    if (snapshot.getKey().equals(LoginManager.get(LectureReviewListActivity.this).getStudentId())) {
                         mAlreadyWritten = true;
                     }
                     LectureReview review = snapshot.getValue(LectureReview.class);
@@ -159,6 +161,17 @@ public class LectureReviewListActivity extends AppCompatActivity {
 
                 mProgressBar.setVisibility(View.GONE);
                 setVisibilities();
+
+                if (mLectureReviews.size() == 0) {
+                    CollapsingToolbarLayout toolbarLayout = findViewById(R.id.lecture_review_list_collapsing_toolbar_layout);
+                    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbarLayout.getLayoutParams();
+                    params.setScrollFlags(0);
+                } else {
+                    CollapsingToolbarLayout toolbarLayout = findViewById(R.id.lecture_review_list_collapsing_toolbar_layout);
+                    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbarLayout.getLayoutParams();
+                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED); // list other flags here by |
+                    toolbarLayout.setLayoutParams(params);
+                }
             }
 
             @Override
@@ -180,7 +193,7 @@ public class LectureReviewListActivity extends AppCompatActivity {
     }
 
     public void onClickWriteLectureReviewFab(View view) {
-        if(mAlreadyWritten){
+        if (mAlreadyWritten) {
             showEditReviewYesOrNoDialog();
         } else {
             Intent intent = LectureReviewWriteActivity.newIntent(this, mLectureName, mAlreadyWritten);
