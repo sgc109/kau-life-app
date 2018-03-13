@@ -118,10 +118,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(LoginActivity.SAVE_AUTO_LOGIN, false);
                 editor.apply();
-
-                Intent intent = LoginActivity.newIntent(this);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                setResult(RESULT_OK);
+                finish();
                 break;
         }
     }

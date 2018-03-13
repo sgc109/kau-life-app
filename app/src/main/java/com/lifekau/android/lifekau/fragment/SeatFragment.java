@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.activity.LibraryListActivity;
@@ -61,6 +62,9 @@ public class SeatFragment extends PagerFragment implements View.OnClickListener{
             case R.id.fragment_seat_show_study_room_button:
                 intent = LibraryListActivity.newIntent(getActivity(), LibraryListActivity.TYPE_STUDY_ROOM);
                 startActivity(intent);
+                break;
+            case R.id.fragment_seat_show_empty_room_button:
+                Toast.makeText(getActivity(), "빠른 시일 내에 추가될 예정입니다.", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

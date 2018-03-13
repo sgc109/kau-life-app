@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -47,21 +45,14 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
     private final String SAVED_ORDERED_BY_RATING_ASC = "saved_order_by_rating_asc";
     private final String SAVED_ORDERED_BY_TIME_ASC = "saved_order_by_time_asc";
     private final String SAVED_FOOD_CORNER_TYPE = "saved_food_corner_type";
-//    private final String SAVED_IS_CHECK_FINISHED = "saved_is_check_finished";
     private final int REQUEST_FOOD_REVIEW = 0;
-    public final static int RESTAURENT_TYPE_STUDENT = 0;
-    public final static int RESTAURENT_TYPE_DORM = 1;
 
-    private Button mOrderByTimeButton;
-    private Button mOrderByRatingButton;
     private RecyclerView mRecyclerView;
     private TextView mEmptyListMessage;
     private ProgressBar mProgressBar;
-    private ActionBar mActionBar;
-    private TextView mToolbarTextView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AlertDialog mOrderByAlertDialog;
-    private FoodReview mMyFoodReview;
+    private TextView mCornerTextView;
     private int mFoodCornerType;
     private int mOrderedByRatingAsc; // -1 or 0 or 1
     private int mOrderedByTimeAsc; // -1 or 0 or 1
@@ -89,9 +80,10 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
 //            mIsCheckFinished = savedInstanceState.getBoolean(SAVED_IS_CHECK_FINISHED);
         }
 
+        mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
+
         mDatabase = FirebaseDatabase.getInstance();
 
-        mFoodCornerType = getIntent().getIntExtra(EXTRA_FOOD_CORNER_TYPE, 0);
 
 //        checkIfAlreadyWritten();
 
@@ -106,6 +98,8 @@ public class FoodReviewListActivity extends AppCompatActivity implements View.On
             mOrderedByTimeAsc = -1;
         }
 
+        mCornerTextView = findViewById(R.id.food_review_list_corner_text_view);
+        mCornerTextView.setText(getResources().getStringArray(R.array.food_corner_list)[mFoodCornerType]);
         mSwipeRefreshLayout = findViewById(R.id.food_review_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mProgressBar = findViewById(R.id.food_review_list_progress_bar);
