@@ -160,4 +160,6 @@
     <string name="shared_preference_app">LIFEKAU</string>
     <string name="can_write_post_after_1_minute">1분이 지나야 새로운 글을 쓸 수가 있습니다.</string>
     <string name="can_write_comment_after_1_minute">1분이 지나야 새로운 댓글을 쓸 수가 있습니다.</string>
+    <string name="logout_dialog_title">로그아웃</string>
+    <string name="really_logout">정말 로그아웃 하시겠습니까?</string>
 </resources>
