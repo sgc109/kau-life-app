@@ -44,8 +44,9 @@ public class LoginActivity extends AppCompatActivity {
     private static final String SAVE_GUID = "shared_preferences_globally_unique_identifier";
     private static final String SAVE_ID = "shared_preferences_save_id";
     private static final String SAVE_PASSWORD = "shared_preferences_save_password";
-    public static final String SAVE_AUTO_LOGIN = "shared_preferences_save_auto_login";
     private static final String SAVE_STUDENT_ID = "shared_preferences_save_student_id";
+
+    public static final String SAVE_AUTO_LOGIN = "shared_preferences_save_auto_login";
 
     private static final int REQUEST_READ_CONTACTS = 0;
     private static final int UNEXPECTED_ERROR = -100;
@@ -236,11 +237,6 @@ public class LoginActivity extends AppCompatActivity {
 //                loginManager.setPassword(mPassword);
 //                loginManager.setStudentId(activity.mLMSPortalManager.getStudentId());
 //                Intent intent = HomeActivity.newIntent(activityReference.get());
-                JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
-                jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(activity, AlarmJobService.class))
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setPeriodic(30 * 60 * 1000)
-                        .build());
                 Intent intent = HomeActivity.newIntent(activityReference.get(), 0);
                 activity.startActivity(intent);
                 activity.finish();

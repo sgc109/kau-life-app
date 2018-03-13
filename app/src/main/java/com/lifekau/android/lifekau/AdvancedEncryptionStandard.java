@@ -1,7 +1,6 @@
 package com.lifekau.android.lifekau;
 
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -39,8 +38,7 @@ public class AdvancedEncryptionStandard {
         return localCipher.doFinal(paramArrayOfByte1);
     }
 
-    public static String decrypt(String value, String key)
-    {
+    public static String decrypt(String value, String key){
         try {
             byte[] value_bytes = Base64.decode(value, 0);
             byte[] key_bytes = getKeyBytes(key);

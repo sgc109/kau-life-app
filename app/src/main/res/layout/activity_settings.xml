@@ -20,7 +20,6 @@
             android:textSize="22sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_entire"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +28,6 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +37,6 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_notice_general"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,8 +46,7 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
-            android:id="@+id/alarm_switch_notice_bachelor"
+            android:id="@+id/alarm_switch_notice_academic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -59,7 +55,6 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_notice_scholarship"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,8 +64,7 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
-            android:id="@+id/alarm_switch_notice_job"
+            android:id="@+id/alarm_switch_notice_career"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -79,7 +73,6 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_notice_event"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,7 +82,6 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_grade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -99,7 +91,6 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_scholarship"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -109,7 +100,6 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_exam_timetable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,7 +109,6 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:checked="true"
             android:id="@+id/alarm_switch_lms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -156,7 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="로그 아웃"
+                android:text="로그아웃"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="18sp"/>
         </LinearLayout>
