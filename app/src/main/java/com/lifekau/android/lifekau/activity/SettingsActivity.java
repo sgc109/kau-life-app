@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.lifekau.android.lifekau.AlarmJobService;
 import com.lifekau.android.lifekau.R;
@@ -19,8 +18,6 @@ import com.lifekau.android.lifekau.R;
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String SAVE_ALARM_STATE = "save_alarm_state";
-    private static final String SAVE_SWITCH_ENTIRE_STATE = "save_switch_entire_state";
-    private static final String SAVE_SWITCH_NOTICE_STATE = "save_switch_notice_state";
     private static final String SAVE_SWITCH_NOTICE_GENERAL_STATE = "save_switch_notice_general_state";
     private static final String SAVE_SWITCH_NOTICE_ACADEMIC_STATE = "save_switch_notice_academic_state";
     private static final String SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE = "save_switch_notice_scholarship_state";
@@ -109,8 +106,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 mSwitchCurrGrade.setChecked(nowCheck);
                 mSwitchExamTimetable.setChecked(nowCheck);
                 mSwitchLMS.setChecked(nowCheck);
-                editor.putBoolean(SAVE_SWITCH_ENTIRE_STATE, nowCheck);
-                editor.putBoolean(SAVE_SWITCH_NOTICE_STATE, nowCheck);
                 editor.putBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, nowCheck);
                 editor.putBoolean(SAVE_SWITCH_NOTICE_ACADEMIC_STATE, nowCheck);
                 editor.putBoolean(SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE, nowCheck);
@@ -129,7 +124,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 mSwitchNoticeScholarship.setChecked(nowCheck);
                 mSwitchNoticeCareer.setChecked(nowCheck);
                 mSwitchNoticeEvent.setChecked(nowCheck);
-                editor.putBoolean(SAVE_SWITCH_NOTICE_STATE, nowCheck);
+                checkParitialSwitched();
                 editor.putBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, nowCheck);
                 editor.putBoolean(SAVE_SWITCH_NOTICE_ACADEMIC_STATE, nowCheck);
                 editor.putBoolean(SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE, nowCheck);
@@ -138,56 +133,61 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.alarm_switch_notice_general:
                 nowCheck = mSwitchNoticeGeneral.isChecked();
+                checkPartialNoticeSwitched();
                 editor.putBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, nowCheck);
                 break;
             case R.id.alarm_switch_notice_academic:
                 nowCheck = mSwitchNoticeAcademic.isChecked();
+                checkPartialNoticeSwitched();
                 editor.putBoolean(SAVE_SWITCH_NOTICE_ACADEMIC_STATE, nowCheck);
                 break;
             case R.id.alarm_switch_notice_scholarship:
                 nowCheck = mSwitchNoticeScholarship.isChecked();
+                checkPartialNoticeSwitched();
                 editor.putBoolean(SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE, nowCheck);
                 break;
             case R.id.alarm_switch_notice_career:
                 nowCheck = mSwitchNoticeCareer.isChecked();
+                checkPartialNoticeSwitched();
                 editor.putBoolean(SAVE_SWITCH_NOTICE_CAREER_STATE, nowCheck);
                 break;
             case R.id.alarm_switch_notice_event:
                 nowCheck = mSwitchNoticeEvent.isChecked();
+                checkPartialNoticeSwitched();
                 editor.putBoolean(SAVE_SWITCH_NOTICE_EVENT_STATE, nowCheck);
                 break;
             case R.id.alarm_switch_scholarship:
                 nowCheck = mSwitchScholarship.isChecked();
+                checkParitialSwitched();
                 editor.putBoolean(SAVE_SWITCH_SCHOLARSHIP_STATE, nowCheck);
                 break;
             case R.id.alarm_switch_grade:
                 nowCheck = mSwitchCurrGrade.isChecked();
+                checkParitialSwitched();
                 editor.putBoolean(SAVE_SWITCH_CURRENT_GRADE_STATE, nowCheck);
                 break;
             case R.id.alarm_switch_exam_timetable:
                 nowCheck = mSwitchExamTimetable.isChecked();
+                checkParitialSwitched();
                 editor.putBoolean(SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE, nowCheck);
                 break;
             case R.id.alarm_switch_lms:
                 nowCheck = mSwitchLMS.isChecked();
+                checkParitialSwitched();
                 editor.putBoolean(SAVE_SWITCH_LMS_STATE, nowCheck);
                 break;
             case R.id.logout_container:
                 editor.putBoolean(SAVE_ALARM_STATE, false);
                 editor.putBoolean(LoginActivity.SAVE_AUTO_LOGIN, false);
                 editor.apply();
-                Intent intent = LoginActivity.newIntent(this);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                setResult(RESULT_OK);
                 JobScheduler jobScheduler = getSystemService(JobScheduler.class);
                 if(jobScheduler != null) jobScheduler.cancel(0);
-                startActivity(intent);
                 finish();
                 return;
         }
         editor.apply();
-        boolean currAlarmState = sharedPref.getBoolean(SAVE_SWITCH_ENTIRE_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_NOTICE_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, false) ||
+        boolean currAlarmState = sharedPref.getBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, false) ||
                 sharedPref.getBoolean(SAVE_SWITCH_NOTICE_ACADEMIC_STATE, false) ||
                 sharedPref.getBoolean(SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE, false) ||
                 sharedPref.getBoolean(SAVE_SWITCH_NOTICE_CAREER_STATE, false) ||
@@ -201,7 +201,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             if (currAlarmState) {
                 mIsRunning = sharedPref.getBoolean(SAVE_ALARM_STATE, false);
                 if(!mIsRunning) {
-                    showToast("알람 서비스를 시작합니다!");
                     jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(this, AlarmJobService.class))
                             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                             .setPeriodic(30 * 60 * 1000)
@@ -210,7 +209,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             } else{
                 mIsRunning = false;
                 jobScheduler.cancel(0);
-                showToast("알람 서비스를 종료합니다!");
             }
         } else {
             //초기화 실패
@@ -223,8 +221,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     protected void onStart() {
         super.onStart();
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
-        mSwitchEntire.setChecked(sharedPref.getBoolean(SAVE_SWITCH_ENTIRE_STATE, false));
-        mSwitchNotice.setChecked(sharedPref.getBoolean(SAVE_SWITCH_NOTICE_STATE, false));
         mSwitchNoticeGeneral.setChecked(sharedPref.getBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, false));
         mSwitchNoticeAcademic.setChecked(sharedPref.getBoolean(SAVE_SWITCH_NOTICE_ACADEMIC_STATE, false));
         mSwitchNoticeScholarship.setChecked(sharedPref.getBoolean(SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE, false));
@@ -234,10 +230,61 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mSwitchCurrGrade.setChecked(sharedPref.getBoolean(SAVE_SWITCH_CURRENT_GRADE_STATE, false));
         mSwitchExamTimetable.setChecked(sharedPref.getBoolean(SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE, false));
         mSwitchLMS.setChecked(sharedPref.getBoolean(SAVE_SWITCH_LMS_STATE, false));
+        if(!isAllOff()) {
+            mSwitchEntire.setChecked(true);
+        } else {
+            mSwitchEntire.setChecked(false);
+        }
+        if(!isAllNoticeOff()){
+            mSwitchNotice.setChecked(true);
+        } else {
+            mSwitchNotice.setChecked(false);
+        }
     }
 
-    public void showToast(String message) {
-        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
-        toast.show();
+    private void checkPartialNoticeSwitched(){
+        if(isAllOff()){
+            mSwitchEntire.setChecked(false);
+        } else {
+            mSwitchEntire.setChecked(true);
+        }
+        if(isAllNoticeOff()){
+            mSwitchNotice.setChecked(false);
+        } else {
+            mSwitchNotice.setChecked(true);
+        }
+    }
+
+    private void checkParitialSwitched(){
+        if(isAllOff()){
+            mSwitchEntire.setChecked(false);
+        } else if(!isAllOff()){
+            mSwitchEntire.setChecked(true);
+        }
+    }
+
+    boolean isAllOff(){
+        boolean ret = true;
+        ret = ret && !mSwitchNotice.isChecked();
+        ret = ret && !mSwitchNoticeGeneral.isChecked();
+        ret = ret && !mSwitchNoticeAcademic.isChecked();
+        ret = ret && !mSwitchNoticeScholarship.isChecked();
+        ret = ret && !mSwitchNoticeCareer.isChecked();
+        ret = ret && !mSwitchNoticeEvent.isChecked();
+        ret = ret && !mSwitchScholarship.isChecked();
+        ret = ret && !mSwitchCurrGrade.isChecked();
+        ret = ret && !mSwitchExamTimetable.isChecked();
+        ret = ret && !mSwitchLMS.isChecked();
+        return ret;
+    }
+
+    boolean isAllNoticeOff(){
+        boolean ret = true;
+        ret = ret && !mSwitchNoticeGeneral.isChecked();
+        ret = ret && !mSwitchNoticeAcademic.isChecked();
+        ret = ret && !mSwitchNoticeScholarship.isChecked();
+        ret = ret && !mSwitchNoticeCareer.isChecked();
+        ret = ret && !mSwitchNoticeEvent.isChecked();
+        return ret;
     }
 }

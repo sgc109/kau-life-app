@@ -34,6 +34,18 @@
                     android:src="@drawable/ic_back_arrow"/>
 
                 <TextView
+                    android:id="@+id/food_review_list_corner_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/food_review_list_back_image_view"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="A 코너"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"/>
+
+                <TextView
                     android:id="@+id/food_review_list_order_by_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"

@@ -13,8 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -38,6 +36,8 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
     private static final int REQUEST_POST_WRITE = 0;
     public static final int REQUEST_POST_DETAIL = 1;
+    public static final int REQUEST_SETTINGS = 2;
+    public static final String EXTRA_HAS_PUSHED_LOGOUT = "extra_has_pushed_logout";
     public static final String EXTRA_WAS_POST_DELETED = "extra_was_post_deleted";
     public static final String EXTRA_ITEM_POSITION = "extra_item_position";
     private static final String CURRENT_POSITION = "current_position";
@@ -138,11 +138,11 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                 return true;
             case R.id.menu_community_setting:
                 intent = SettingsActivity.newIntent(this);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_SETTINGS);
                 return true;
             case R.id.menu_setting:
                 intent = SettingsActivity.newIntent(this);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_SETTINGS);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -190,6 +190,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             } else {
                 fragment.updatePost(itemPosition);
             }
+        } else if (requestCode == REQUEST_SETTINGS) {
+            Intent intent = LoginActivity.newIntent(this);
+            startActivity(intent);
+            finish();
         }
     }
 
@@ -305,9 +309,9 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         super.onStart();
         int position = getIntent().getIntExtra(CURRENT_POSITION, -1);
         getIntent().removeExtra(CURRENT_POSITION);
-        if (position != -1){
+        if (position != -1) {
             bottomNavigation.setCurrentItem(position);
-            if(position != 0) mFab.setVisibility(View.INVISIBLE);
+            if (position != 0) mFab.setVisibility(View.INVISIBLE);
         }
     }
 
