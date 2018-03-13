@@ -1,5 +1,7 @@
 package com.lifekau.android.lifekau.fragment;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +14,11 @@ import android.widget.FrameLayout;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.activity.NoticeListActivity;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 public class NoticeFragment extends PagerFragment implements View.OnClickListener{
+
+    private static String NOTICE_TYPE = "notice_type";
 
     public static NoticeFragment newInstance(){
         NoticeFragment fragment = new NoticeFragment();
@@ -50,6 +56,13 @@ public class NoticeFragment extends PagerFragment implements View.OnClickListene
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        NotificationManager nm = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
+        if(nm != null) nm.cancel(0);
+    }
+
+    @Override
     public void refresh() {
 
     }
@@ -60,27 +73,27 @@ public class NoticeFragment extends PagerFragment implements View.OnClickListene
         switch (view.getId()){
             case R.id.fragment_notice_show_general_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 0);
+                intent.putExtra(NOTICE_TYPE, 0);
                 startActivity(intent);
                 break;
             case R.id.fragment_notice_show_academic_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 1);
+                intent.putExtra(NOTICE_TYPE, 1);
                 startActivity(intent);
                 break;
             case R.id.fragment_notice_show_scholarship_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 2);
+                intent.putExtra(NOTICE_TYPE, 2);
                 startActivity(intent);
                 break;
             case R.id.fragment_notice_show_career_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 3);
+                intent.putExtra(NOTICE_TYPE, 3);
                 startActivity(intent);
                 break;
             case R.id.fragment_notice_show_event_list_button:
                 intent = new Intent(view.getContext(), NoticeListActivity.class);
-                intent.putExtra("noticeType", 4);
+                intent.putExtra(NOTICE_TYPE, 4);
                 startActivity(intent);
                 break;
         }

@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -129,7 +130,7 @@ public class LMSActivity extends AppCompatActivity {
             int result = lmsActivity.mLMSPortalManager.pullStudentId(applicationWeakReference.get());
             while (!lmsActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(3000);
+                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -158,7 +159,7 @@ public class LMSActivity extends AppCompatActivity {
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 예외 처리
                 lmsActivity.showToast(resources.getString(R.string.portal_network_error_message));
-            } else if (result == resources.getInteger(R.integer.session_error)) {
+            } else if (result == resources.getInteger(R.integer.session_error) || result == resources.getInteger(R.integer.ssl_hand_shake_error)) {
                 //세션 관련 예외 처리
                 lmsActivity.showToast(resources.getString(R.string.portal_session_disconnect_error_message));
                 Intent intent = LoginActivity.newIntent(lmsActivity);
@@ -188,5 +189,18 @@ public class LMSActivity extends AppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if(fm.getBackStackEntryCount() > 0) {
+            super.onBackPressed();
+        }
+        else{
+            Intent intent = HomeActivity.newIntent(getApplicationContext(), 4);
+            startActivity(intent);
+            finish();
+        }
     }
 }

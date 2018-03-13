@@ -1,10 +1,12 @@
 package com.lifekau.android.lifekau.activity;
 
 import android.app.Application;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,6 +43,13 @@ public class CurrentGradeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        if(nm != null) nm.cancel(2);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_grade);
@@ -67,7 +76,7 @@ public class CurrentGradeActivity extends AppCompatActivity {
             }
         };
 
-        mLMSPortalManager.clearAccumulatedGrade();
+        mLMSPortalManager.clearCurrentGrade();
         mRecyclerView = findViewById(R.id.current_grade_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
@@ -150,7 +159,7 @@ public class CurrentGradeActivity extends AppCompatActivity {
             while (!currentGradeActivity.isFinishing() && !isCancelled() &&
                     (result = lm.pullCurrentGrade(activityReference.get())) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(3000);
+                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == MAXIMUM_RETRY_NUM)
@@ -185,7 +194,7 @@ public class CurrentGradeActivity extends AppCompatActivity {
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 문제
                 currentGradeActivity.showToast(resources.getString(R.string.portal_network_error_message));
-            } else if (result == resources.getInteger(R.integer.session_error)) {
+            } else if (result == resources.getInteger(R.integer.session_error) || result == resources.getInteger(R.integer.ssl_hand_shake_error)) {
                 //세션 관련 문제
                 currentGradeActivity.showToast(resources.getString(R.string.portal_session_disconnect_error_message));
                 Intent intent = LoginActivity.newIntent(currentGradeActivity);
@@ -206,5 +215,18 @@ public class CurrentGradeActivity extends AppCompatActivity {
     public void showToast(String message) {
         Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if(fm.getBackStackEntryCount() > 0) {
+            super.onBackPressed();
+        }
+        else{
+            Intent intent = HomeActivity.newIntent(getApplicationContext(), 4);
+            startActivity(intent);
+            finish();
+        }
     }
 }

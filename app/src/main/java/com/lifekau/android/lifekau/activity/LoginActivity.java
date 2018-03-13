@@ -3,6 +3,9 @@ package com.lifekau.android.lifekau.activity;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lifekau.android.lifekau.AdvancedEncryptionStandard;
+import com.lifekau.android.lifekau.AlarmJobService;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
 import com.lifekau.android.lifekau.manager.LoginManager;
@@ -42,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String SAVE_ID = "shared_preferences_save_id";
     private static final String SAVE_PASSWORD = "shared_preferences_save_password";
     public static final String SAVE_AUTO_LOGIN = "shared_preferences_save_auto_login";
+    private static final String SAVE_STUDENT_ID = "shared_preferences_save_student_id";
 
     private static final int REQUEST_READ_CONTACTS = 0;
     private static final int UNEXPECTED_ERROR = -100;
@@ -194,12 +199,12 @@ public class LoginActivity extends AppCompatActivity {
             int result;
             int count = 0;
             while ((result = activity.mLMSPortalManager.pullSession(applicationWeakReference.get(), mId, mPassword)) != resources.getInteger(R.integer.no_error)) {
-                sleep(2000);
+                sleep(1000);
                 count++;
                 if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }
             while ((result = activity.mLMSPortalManager.pullStudentId(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
-                sleep(2000);
+                sleep(1000);
                 count++;
                 if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }
@@ -227,11 +232,17 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString(SAVE_PASSWORD, advancedEncryptionStandard.encrypt(mPassword, uniqueID));
                 editor.putBoolean(SAVE_AUTO_LOGIN, true);
                 editor.apply();
-                LoginManager loginManager = LoginManager.get(activityReference.get());
-                loginManager.setUserId(mId);
-                loginManager.setPassword(mPassword);
-                loginManager.setStudentId(activity.mLMSPortalManager.getStudentId());
-                Intent intent = HomeActivity.newIntent(activityReference.get());
+//                LoginManager loginManager = LoginManager.get(activityReference.get());
+//                loginManager.setUserId(mId);
+//                loginManager.setPassword(mPassword);
+//                loginManager.setStudentId(activity.mLMSPortalManager.getStudentId());
+//                Intent intent = HomeActivity.newIntent(activityReference.get());
+                JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
+                jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(activity, AlarmJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPeriodic(30 * 60 * 1000)
+                        .build());
+                Intent intent = HomeActivity.newIntent(activityReference.get(), 0);
                 activity.startActivity(intent);
                 activity.finish();
             } else if (result == resources.getInteger(R.integer.session_error)) {
