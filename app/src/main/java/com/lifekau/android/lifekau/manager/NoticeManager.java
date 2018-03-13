@@ -32,6 +32,7 @@ public class NoticeManager {
     private boolean[] mAllPageFetched;
     private int[] mLatestPageNum;
     private int[] mLoadedListNum;
+    private int[] mLatestDetailPageNum;
     private Hashtable<Integer, Notice>[] mNoticeListMap;
     private ArrayList<Notice>[] mImportantNoticeList;
 
@@ -39,6 +40,7 @@ public class NoticeManager {
         mAllPageFetched = new boolean[TOTAL_NOTICE_NUM];
         mLatestPageNum = new int[TOTAL_NOTICE_NUM];
         mLoadedListNum = new int[TOTAL_NOTICE_NUM];
+        mLatestDetailPageNum = new int[TOTAL_NOTICE_NUM];
         mNoticeListMap = new Hashtable[TOTAL_NOTICE_NUM];
         mImportantNoticeList = new ArrayList[TOTAL_NOTICE_NUM];
         for (int i = 0; i < TOTAL_NOTICE_NUM; i++) mNoticeListMap[i] = new Hashtable<>();
@@ -110,6 +112,7 @@ public class NoticeManager {
                 insertedNotice.postTitle = pageDataElements.get(1).text();
                 insertedNotice.writer = pageDataElements.get(2).text();
                 insertedNotice.RegistrationDate = pageDataElements.get(3).text();
+                mLatestDetailPageNum[noticeType] = Math.max(mLatestDetailPageNum[noticeType], insertedNotice.postDetailNum);
                 mLatestPageNum[noticeType] = Math.max(mLatestPageNum[noticeType], insertedNotice.postNum);
                 if (insertedNotice.postNum == 0)
                     mImportantNoticeList[noticeType].add(insertedNotice);
@@ -123,11 +126,16 @@ public class NoticeManager {
     }
 
     public void clear(int noticeType) {
+        mLatestDetailPageNum[noticeType] = 0;
         mLatestPageNum[noticeType] = 0;
         mLoadedListNum[noticeType] = 0;
         mImportantNoticeList[noticeType].clear();
         mNoticeListMap[noticeType].clear();
         mAllPageFetched[noticeType] = false;
+    }
+
+    public int getLatestDetailPageNum(int noticeType){
+        return mLatestDetailPageNum[noticeType];
     }
 
     public int getListCount(int noticeType) {

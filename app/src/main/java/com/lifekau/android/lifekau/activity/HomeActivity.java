@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -38,6 +40,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     public static final int REQUEST_POST_DETAIL = 1;
     public static final String EXTRA_WAS_POST_DELETED = "extra_was_post_deleted";
     public static final String EXTRA_ITEM_POSITION = "extra_item_position";
+    private static final String CURRENT_POSITION = "current_position";
     private Toolbar mToolbar;
     private AppBarLayout mAppBarLayout;
     private PagerFragment currentFragment;
@@ -51,8 +54,9 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     private FloatingActionButton mFab;
     private long mPressedTime;
 
-    public static Intent newIntent(Context context) {
+    public static Intent newIntent(Context context, int position) {
         Intent intent = new Intent(context, HomeActivity.class);
+        intent.putExtra(CURRENT_POSITION, position);
         return intent;
     }
 
@@ -175,10 +179,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         CommunityFragment fragment = (CommunityFragment) adapter.getCurrentFragment();
         if (requestCode == REQUEST_POST_WRITE) {
             fragment.initPostList();
-        } else if(requestCode == REQUEST_POST_DETAIL){
+        } else if (requestCode == REQUEST_POST_DETAIL) {
             boolean wasPostDeleted = data.getBooleanExtra(EXTRA_WAS_POST_DELETED, false);
             int itemPosition = data.getIntExtra(EXTRA_ITEM_POSITION, 0);
-            if(wasPostDeleted){
+            if (wasPostDeleted) {
                 PostRecyclerAdapter adapter = fragment.getAdapter();
                 adapter.mPosts.remove(itemPosition);
                 adapter.mPostKeys.remove(itemPosition);
@@ -194,7 +198,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         if (currentFragment == null) {
             currentFragment = adapter.getCurrentFragment();
         }
-        if (wasSelected) {
+        if (wasSelected && currentFragment != null) {
             currentFragment.refresh();
             return true;
         }
@@ -259,11 +263,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
 
     @Override
     public void onBackPressed() {
-        if (mPressedTime == 0 ) {
-            Toast.makeText(this, " 한 번 더 누르면 종료됩니다." , Toast.LENGTH_LONG).show();
+        if (mPressedTime == 0) {
+            Toast.makeText(this, " 한 번 더 누르면 종료됩니다.", Toast.LENGTH_LONG).show();
             mPressedTime = System.currentTimeMillis();
-        }
-        else {
+        } else {
             int seconds = (int) (System.currentTimeMillis() - mPressedTime);
             if (seconds > 2000) {
                 Toast.makeText(this, " 한 번 더 누르면 종료됩니다.", Toast.LENGTH_LONG).show();
@@ -295,6 +298,17 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        int position = getIntent().getIntExtra(CURRENT_POSITION, -1);
+        getIntent().removeExtra(CURRENT_POSITION);
+        if (position != -1){
+            bottomNavigation.setCurrentItem(position);
+            if(position != 0) mFab.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void showViews() {
