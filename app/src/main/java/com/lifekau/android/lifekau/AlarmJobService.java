@@ -117,6 +117,7 @@ public class AlarmJobService extends JobService {
             } else mResult = resources.getInteger(R.integer.missing_data_error);
             if (mResult != resources.getInteger(R.integer.no_error)) {
                 String uniqueID = sharedPref.getString(SAVE_GUID, null);
+                if(uniqueID == null) return null;
                 String id = AdvancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_ID, ""), uniqueID);
                 String password = AdvancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_PASSWORD, ""), uniqueID);
                 int mNextResult = resources.getInteger(R.integer.no_error);
