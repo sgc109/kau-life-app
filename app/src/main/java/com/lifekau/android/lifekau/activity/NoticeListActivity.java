@@ -159,11 +159,12 @@ public class NoticeListActivity extends AppCompatActivity {
             RegistrationTextView = itemView.findViewById(R.id.list_item_notice_registration_date);
             mIsNewTextView = itemView.findViewById(R.id.list_item_notice_is_new_text_view);
             mIsTopNoticeTextView = itemView.findViewById(R.id.list_item_notice_top_notice);
-
             itemView.setOnClickListener(this);
         }
 
         public void bind(int position) {
+            mIsNewTextView.setVisibility(View.GONE);
+            mIsTopNoticeTextView.setVisibility(View.GONE);
             Notice notice = mNoticeManager.getNotice(mNoticeType, position);
             mTitleTextView.setText(notice.postTitle);
             mWriterTextView.setText(notice.writer);

@@ -160,7 +160,7 @@ public class PostWriteActivity extends AppCompatActivity implements View.OnTouch
                     SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
                     long lastTime = sharedPref.getLong(SHARED_LAST_WRITE_TIME, 0);
                     if(new Date().getTime() - lastTime < 60 * 1000) {
-                        new AlertDialog.Builder(this).setMessage("1분이 지나야 글을 쓸 수가 있습니다.").show();
+                        Toast.makeText(this, getString(R.string.can_write_post_after_1_minute), Toast.LENGTH_SHORT).show();
                         return true;
                     }
                     mSubmitButton.setFocusable(false);

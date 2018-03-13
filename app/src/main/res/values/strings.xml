@@ -158,4 +158,6 @@
     <string name="permission_rationale">권한 요청</string>
 
     <string name="shared_preference_app">LIFEKAU</string>
+    <string name="can_write_post_after_1_minute">1분이 지나야 새로운 글을 쓸 수가 있습니다.</string>
+    <string name="can_write_comment_after_1_minute">1분이 지나야 새로운 댓글을 쓸 수가 있습니다.</string>
 </resources>

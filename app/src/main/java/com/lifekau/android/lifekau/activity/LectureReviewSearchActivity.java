@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
@@ -44,6 +45,9 @@ public class LectureReviewSearchActivity extends AppCompatActivity implements Ad
             getSupportActionBar().hide();
         }
         mAutoCompleteSearchBar = findViewById(R.id.lecture_review_search_bar);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mAutoCompleteSearchBar, InputMethodManager.SHOW_IMPLICIT);
+        mAutoCompleteSearchBar.requestFocus();
 
         if (mLectureList == null) mLectureList = new ArrayList<>();
 

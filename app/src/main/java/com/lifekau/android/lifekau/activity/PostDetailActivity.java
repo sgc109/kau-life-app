@@ -342,8 +342,8 @@ public class PostDetailActivity extends AppCompatActivity implements OnClickList
                 SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
                 long lastTime = sharedPref.getLong(SHARED_LAST_WRITE_TIME, 0);
                 if(new Date().getTime() - lastTime < 60 * 1000) {
-                    new AlertDialog.Builder(this).setMessage("1분이 지나야 새로운 댓글을 쓸 수 있습니다.").show();
-                    return;
+//                    Toast.makeText(this, getString(R.string.can_write_comment_after_1_minute), Toast.LENGTH_SHORT).show();
+//                    return;
                 }
                 writeComment(new Comment(LoginManager.get(this).getStudentId(), compressText(mCommentEditText.getText().toString())));
                 break;
