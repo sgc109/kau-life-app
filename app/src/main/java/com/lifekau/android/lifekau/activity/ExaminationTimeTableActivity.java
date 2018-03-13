@@ -133,7 +133,7 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
             ExaminationTimeTableActivity examinationTimeTableActivity = activityReference.get();
             if (examinationTimeTableActivity == null || examinationTimeTableActivity.isFinishing())
                 return;
-            examinationTimeTableActivity.mLMSPortalManager.clearAccumulatedGradeSummary();
+            examinationTimeTableActivity.mLMSPortalManager.clearExaminationTimeTable();
         }
 
         @Override
