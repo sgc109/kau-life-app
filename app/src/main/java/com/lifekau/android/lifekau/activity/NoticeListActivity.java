@@ -56,8 +56,8 @@ public class NoticeListActivity extends AppCompatActivity {
         }
         mLoading = false;
         Intent intent = getIntent();
-//        mNoticeManager.clear(mNoticeType);
         mNoticeType = intent.getIntExtra(NOTICE_TYPE, 0);
+        mNoticeManager.clear(mNoticeType);
         mSwipeRefreshLayout = findViewById(R.id.notice_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -129,9 +129,7 @@ public class NoticeListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!mNoticeManager.getAllPageFetched(mNoticeType)) mLoading = false;
-        if (mRecyclerAdapter != null) {
-            mRecyclerAdapter.notifyItemRangeChanged(0, getResources().getStringArray(R.array.food_corner_list).length);
-        }
+        if (mRecyclerAdapter != null) mRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override

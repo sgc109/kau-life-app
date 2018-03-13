@@ -193,14 +193,10 @@ public class LMSActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        FragmentManager fm = getSupportFragmentManager();
-        if(fm.getBackStackEntryCount() > 0) {
-            super.onBackPressed();
-        }
-        else{
+        if (isTaskRoot()) {
             Intent intent = HomeActivity.newIntent(getApplicationContext(), 4);
             startActivity(intent);
             finish();
-        }
+        } else super.onBackPressed();
     }
 }

@@ -180,8 +180,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 editor.clear();
                 editor.apply();
                 setResult(RESULT_OK);
+                JobScheduler jobScheduler = getSystemService(JobScheduler.class);
+                if(jobScheduler != null) jobScheduler.cancel(0);
                 finish();
-                break;
+                return;
         }
         editor.apply();
         boolean currAlarmState = sharedPref.getBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, false) ||
