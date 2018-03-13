@@ -246,8 +246,7 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 activity.showErrorMessage();
             }
-
-//            activity.showProgress(false);
+            activity.showProgress(false);
         }
 
         @Override
