@@ -46,7 +46,7 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:id="@+id/alarm_switch_notice_bachelor"
+            android:id="@+id/alarm_switch_notice_academic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -64,7 +64,7 @@
             android:textSize="18sp"/>
 
         <Switch
-            android:id="@+id/alarm_switch_notice_job"
+            android:id="@+id/alarm_switch_notice_career"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -145,7 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="로그 아웃"
+                android:text="로그아웃"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="18sp"/>
         </LinearLayout>
