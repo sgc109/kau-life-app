@@ -14,7 +14,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="4dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/list_item_notice_top_notice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[공지]"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/list_item_notice_is_new_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="[NEW]"
+                android:textColor="#baae0d"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/list_item_notice_title"
@@ -26,9 +53,9 @@
             android:textStyle="bold"/>
 
         <LinearLayout
-            android:gravity="right"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="right"
             android:orientation="horizontal">
 
             <TextView

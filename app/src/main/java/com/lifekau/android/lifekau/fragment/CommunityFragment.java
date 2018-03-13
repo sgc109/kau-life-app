@@ -223,7 +223,7 @@ public class CommunityFragment extends PagerFragment implements SwipeRefreshLayo
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_items_alarm, menu);
+        inflater.inflate(R.menu.menu_items_community, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
