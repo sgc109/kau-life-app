@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.lifekau.android.lifekau.activity.CurrentGradeActivity;
@@ -59,7 +58,7 @@ public class AlarmJobService extends JobService {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            SharedPreferences sharedPreferences = getSharedPreferences("LifeKAU", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             NoticeManager nm = NoticeManager.getInstance();

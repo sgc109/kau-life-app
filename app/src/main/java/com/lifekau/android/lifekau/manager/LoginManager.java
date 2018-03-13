@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.lifekau.android.lifekau.AdvancedEncryptionStandard;
+import com.lifekau.android.lifekau.R;
 
 /**
  * Created by sgc109 on 2018-02-09.
@@ -23,7 +24,7 @@ public class LoginManager {
 
     private LoginManager(Context context) {
         mContext = context;
-        mSharedPref = context.getSharedPreferences("LifeKAU", Context.MODE_PRIVATE);
+        mSharedPref = context.getSharedPreferences(mContext.getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
     }
 
     public static synchronized LoginManager get(Context context) {
