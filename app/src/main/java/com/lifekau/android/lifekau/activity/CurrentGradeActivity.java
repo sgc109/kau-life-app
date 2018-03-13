@@ -49,25 +49,25 @@ public class CurrentGradeActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        mRecyclerAdapter = new RecyclerView.Adapter<AccumulatedGradeItemViewHolder>() {
+        mRecyclerAdapter = new RecyclerView.Adapter<CurrentGradeItemViewHolder>() {
             @Override
-            public AccumulatedGradeItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public CurrentGradeItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_current_grade, parent, false);
-                return new AccumulatedGradeItemViewHolder(view);
+                return new CurrentGradeItemViewHolder(view);
             }
 
             @Override
-            public void onBindViewHolder(AccumulatedGradeItemViewHolder holder, int position) {
+            public void onBindViewHolder(CurrentGradeItemViewHolder holder, int position) {
                 holder.bind(position);
             }
 
             @Override
             public int getItemCount() {
-                return mLMSPortalManager.getAccumulatedGradeSize();
+                return mLMSPortalManager.getCurrentGradeSize();
             }
         };
 
-        mLMSPortalManager.clearAccumulatedGrade();
+        mLMSPortalManager.clearCurrentGrade();
         mRecyclerView = findViewById(R.id.current_grade_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mRecyclerAdapter);
@@ -97,13 +97,13 @@ public class CurrentGradeActivity extends AppCompatActivity {
         mGetCurrentGradeAsyncTask.execute();
     }
 
-    public class AccumulatedGradeItemViewHolder extends RecyclerView.ViewHolder {
+    public class CurrentGradeItemViewHolder extends RecyclerView.ViewHolder {
         private TextView mCourseTitleTextView;
         private TextView mMajorTextView;
         private TextView mCreditsTextView;
         private TextView mGradeTextView;
 
-        private AccumulatedGradeItemViewHolder(View itemView) {
+        private CurrentGradeItemViewHolder(View itemView) {
             super(itemView);
             mCourseTitleTextView = itemView.findViewById(R.id.list_item_current_grade_course_title);
             mMajorTextView = itemView.findViewById(R.id.list_item_current_major);
