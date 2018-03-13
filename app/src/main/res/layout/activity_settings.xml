@@ -1,10 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.lifekau.android.lifekau.activity.SettingsActivity">
+    android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:text="알람 설정"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="22sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_entire"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="전체"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_notice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="8dp"
+            android:text="공지 사항"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_notice_general"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="16dp"
+            android:text="일반 공지"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_notice_bachelor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="16dp"
+            android:text="학사 공지"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_notice_scholarship"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="16dp"
+            android:text="장학/대출 공지"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_notice_job"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="16dp"
+            android:text="취업 공지"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_notice_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="16dp"
+            android:text="행사 공지"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_grade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="8dp"
+            android:text="학점 등록"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_scholarship"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="8dp"
+            android:text="장학금 등록"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_exam_timetable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="8dp"
+            android:text="시험 시간표 등록"
+            android:textSize="18sp"/>
+
+        <Switch
+            android:id="@+id/alarm_switch_lms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="8dp"
+            android:text="LMS"
+            android:textSize="18sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray"
+            />
+
+        <LinearLayout
+            android:id="@+id/logout_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_margin="4dp"
+                android:src="@drawable/logout"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="로그 아웃"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="18sp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

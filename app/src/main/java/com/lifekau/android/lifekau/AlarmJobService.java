@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.lifekau.android.lifekau.activity.CurrentGradeActivity;
@@ -61,7 +60,7 @@ public class AlarmJobService extends JobService {
         @Override
         protected Void doInBackground(Void... voids) {
             Resources resources = getResources();
-            SharedPreferences sharedPreferences = getSharedPreferences("LifeKAU", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             NoticeManager nm = NoticeManager.getInstance();
@@ -83,7 +82,7 @@ public class AlarmJobService extends JobService {
                 editor.apply();
             }
             if (!text.isEmpty()) {
-                text = text.substring(0, text.length() - 2);
+                text = text.substring(0, text.length() - 3);
                 Intent intent = HomeActivity.newIntent(getApplicationContext(), 2);
                 notificationManager.notify(0, buildNotification(getApplicationContext(), "공지 알람", "새로운 " + text + "가 등록되었습니다!", intent));
             }

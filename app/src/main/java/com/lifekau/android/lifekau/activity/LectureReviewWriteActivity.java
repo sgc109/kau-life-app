@@ -30,8 +30,6 @@ import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.model.LectureReview;
 
-import java.util.Date;
-
 public class LectureReviewWriteActivity extends AppCompatActivity implements TextWatcher, View.OnTouchListener{
     private static final String EXTRA_LECTURE_NAME = "extra_lecture_name";
     private static final String EXTRA_LECTURE_ALREADY_WRITTEN = "extra_already_written";
@@ -44,7 +42,6 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
     FirebaseDatabase mDatabase;
     private boolean mIsEditing;
     private boolean mPushed;
-    private long mLastWritePostTime;
     private ImageButton mBackButton;
 
     public static Intent newIntent(Context packageContext, String lectureName, boolean alreadyWritten){
@@ -138,7 +135,7 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             if (!mIsEditing) {
-                int textLen = mCommentEditText.getText().length();
+                int textLen = getValidCharCount(mCommentEditText.getText().toString());
                 if (textLen != 0) {
                     askDiscardTextOrNot();
                 } else {
@@ -211,11 +208,6 @@ public class LectureReviewWriteActivity extends AppCompatActivity implements Tex
                         askCancelEditingOrNot();
                     }
                 } else if (id == R.id.write_lecture_review_submit_button) {
-                    if (false) {
-                        new AlertDialog.Builder(this).setMessage("1분이 지나야 글을 쓸 수가 있습니다.").show();
-                        return true;
-                    }
-                    mLastWritePostTime = new Date().getTime();
                     if(commentLength != 0) {
                         insertReviewToDB(mRatingBar.getRating(), mCommentEditText.getText().toString()); // 특정 코너
                     } else {

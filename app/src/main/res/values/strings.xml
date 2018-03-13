@@ -156,4 +156,6 @@
     <string name="no_seat_now">여석 없음</string>
 
     <string name="permission_rationale">권한 요청</string>
+
+    <string name="shared_preference_app">LIFEKAU</string>
 </resources>

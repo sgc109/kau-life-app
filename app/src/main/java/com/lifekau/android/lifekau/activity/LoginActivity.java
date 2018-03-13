@@ -10,14 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.support.v7.app.AppCompatActivity;
-
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,19 +24,17 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.lang.ref.WeakReference;
-import java.util.UUID;
 
 import com.lifekau.android.lifekau.AdvancedEncryptionStandard;
 import com.lifekau.android.lifekau.AlarmJobService;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
-import com.lifekau.android.lifekau.manager.LoginManager;
+
+import java.lang.ref.WeakReference;
+import java.util.UUID;
 
 import static android.os.SystemClock.sleep;
 
@@ -49,8 +44,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String SAVE_GUID = "shared_preferences_globally_unique_identifier";
     private static final String SAVE_ID = "shared_preferences_save_id";
     private static final String SAVE_PASSWORD = "shared_preferences_save_password";
+    public static final String SAVE_AUTO_LOGIN = "shared_preferences_save_auto_login";
     private static final String SAVE_STUDENT_ID = "shared_preferences_save_student_id";
-    private static final String SAVE_CHECKED_AUTO_LOGIN = "shared_preferences_save_checked_auto_login";
 
     private static final int REQUEST_READ_CONTACTS = 0;
     private static final int UNEXPECTED_ERROR = -100;
@@ -126,16 +121,12 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Reset errors.
         mIdView.setError(null);
         mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid id/pw
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.prompt_input_password));
             focusView = mPasswordView;
@@ -157,14 +148,9 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-//            focusView.requestFocus();
             Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
             focusView.startAnimation(shake);
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(getApplication(), this, id, password);
             mAuthTask.execute((Void) null);
@@ -172,40 +158,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isIdValid(String id) {
-        //TODO: Replace this with your own logic
         return true;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return true;
 //        return password.length() > 4;
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-//            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-//
-//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//                }
-//            });
-//
-//            if (show) mProgressDialog.show();
-//            else mProgressDialog.dismiss();
-//        } else {
         if (show) mProgressDialog.show();
         else mProgressDialog.dismiss();
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//        }
     }
 
     public static class UserLoginTask extends AsyncTask<Void, Void, Integer> {
@@ -250,9 +215,9 @@ public class LoginActivity extends AppCompatActivity {
             LoginActivity activity = activityReference.get();
             Resources resources = activity.getResources();
             activity.mAuthTask = null;
-            activity.showProgress(false);
+
             if (result == resources.getInteger(R.integer.no_error)) {
-                SharedPreferences sharedPref = activity.getSharedPreferences("LifeKAU", Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = activity.getSharedPreferences(activity.getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 String uniqueID = sharedPref.getString(SAVE_GUID, null);
                 if (uniqueID == null) {
@@ -263,9 +228,14 @@ public class LoginActivity extends AppCompatActivity {
                 AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
                 editor.putString(SAVE_ID, advancedEncryptionStandard.encrypt(mId, uniqueID));
                 editor.putString(SAVE_PASSWORD, advancedEncryptionStandard.encrypt(mPassword, uniqueID));
+                editor.putBoolean(SAVE_AUTO_LOGIN, true);
                 editor.putString(SAVE_STUDENT_ID, advancedEncryptionStandard.encrypt(studentId, uniqueID));
-                editor.putBoolean(SAVE_CHECKED_AUTO_LOGIN, true);
                 editor.apply();
+//                LoginManager loginManager = LoginManager.get(activityReference.get());
+//                loginManager.setUserId(mId);
+//                loginManager.setPassword(mPassword);
+//                loginManager.setStudentId(activity.mLMSPortalManager.getStudentId());
+//                Intent intent = HomeActivity.newIntent(activityReference.get());
                 JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
                 jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(activity, AlarmJobService.class))
                         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -280,6 +250,8 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 activity.showErrorMessage();
             }
+
+//            activity.showProgress(false);
         }
 
         @Override
@@ -302,17 +274,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         showProgress(false);
         AdvancedEncryptionStandard advancedEncryptionStandard = new AdvancedEncryptionStandard();
-        SharedPreferences sharedPref = getSharedPreferences("LifeKAU", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         String uniqueID = sharedPref.getString(SAVE_GUID, null);
         if (uniqueID == null) {
             uniqueID = UUID.randomUUID().toString();
             editor.putString(SAVE_GUID, uniqueID);
+            editor.apply();
         }
-        String id = AdvancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_ID, ""), uniqueID);
-        String password = AdvancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_PASSWORD, ""), uniqueID);
-        boolean checked = sharedPref.getBoolean(SAVE_CHECKED_AUTO_LOGIN, false);
-        if (checked) {
+        String id = advancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_ID, ""), uniqueID);
+        String password = advancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_PASSWORD, ""), uniqueID);
+        boolean autoLogin = sharedPref.getBoolean(SAVE_AUTO_LOGIN, false);
+        if (autoLogin) {
             InputMethodManager imm = (InputMethodManager) getSystemService(
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
