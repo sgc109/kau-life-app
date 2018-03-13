@@ -194,9 +194,10 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
                 accumulatedGradeActivity.mRecyclerAdapter.notifyDataSetChanged();
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 //네트워크 관련 문제
-                accumulatedGradeActivity.showErrorMessage();
+                accumulatedGradeActivity.showToast(resources.getString(R.string.portal_network_error_message));
             } else if (result == resources.getInteger(R.integer.session_error)) {
                 //세션 관련 문제
+                accumulatedGradeActivity.showToast(resources.getString(R.string.portal_session_disconnect_error_message));
                 Intent intent = LoginActivity.newIntent(accumulatedGradeActivity);
                 accumulatedGradeActivity.startActivity(intent);
                 accumulatedGradeActivity.finish();
@@ -216,8 +217,8 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
         return SEMESTER_STRING[mSemesterCode / 5 - 2];
     }
 
-    public void showErrorMessage() {
-        Toast toast = Toast.makeText(getApplicationContext(), "네트워크 오류가 발생하였습니다.", Toast.LENGTH_SHORT);
+    public void showToast(String message) {
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
     }
 }

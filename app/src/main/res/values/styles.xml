@@ -6,13 +6,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    <!-- 프로그레스 다이얼로그 -->
-    <style name="Custom" parent="android:Theme.DeviceDefault.Dialog">
-        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
-        <item name="DialogTitleText">Loading</item>
-        <item name="DialogSpotColor">@android:color/holo_orange_dark</item>
-        <item name="DialogSpotCount">4</item>
-    </style>
     <!-- 팝업 다이얼로그 -->
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="windowNoTitle">true</item>
@@ -22,7 +15,7 @@
     <!--AlertDialog Colors-->
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <!--text-->
-        <item name="android:textColorPrimary">@android:color/tertiary_text_dark</item>
+         <item name="android:textColorPrimary">@android:color/tertiary_text_dark</item>
         <!--background-->
         <item name="android:background">@android:color/white</item>
         <!--title-->

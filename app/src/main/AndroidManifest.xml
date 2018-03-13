@@ -95,6 +95,8 @@
         </activity>
         <activity android:name=".activity.LMSActivity">
         </activity>
+        <activity android:name=".activity.ExaminationTimeTableActivity">
+        </activity>
     </application>
 
 </manifest>
