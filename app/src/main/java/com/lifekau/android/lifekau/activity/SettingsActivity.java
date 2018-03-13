@@ -177,6 +177,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 editor.apply();
                 Intent intent = LoginActivity.newIntent(this);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                JobScheduler jobScheduler = getSystemService(JobScheduler.class);
+                if(jobScheduler != null) jobScheduler.cancel(0);
                 startActivity(intent);
                 finish();
                 return;
