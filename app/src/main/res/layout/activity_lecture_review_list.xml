@@ -13,10 +13,10 @@
         android:backgroundTint="@android:color/white">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/lecture_review_list_collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
             app:toolbarId="@+id/toolbar">
 
@@ -24,7 +24,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="4dp"
-                android:background="@drawable/kau"
                 android:orientation="vertical">
 
                 <TextView
