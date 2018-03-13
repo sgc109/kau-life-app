@@ -45,8 +45,8 @@ public class CurrentGradeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        if(nm != null) nm.cancel(2);
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (nm != null) nm.cancel(2);
     }
 
     @Override
@@ -219,14 +219,10 @@ public class CurrentGradeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        FragmentManager fm = getSupportFragmentManager();
-        if(fm.getBackStackEntryCount() > 0) {
-            super.onBackPressed();
-        }
-        else{
+        if (isTaskRoot()) {
             Intent intent = HomeActivity.newIntent(getApplicationContext(), 4);
             startActivity(intent);
             finish();
-        }
+        } else super.onBackPressed();
     }
 }
