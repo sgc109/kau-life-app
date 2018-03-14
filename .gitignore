@@ -9,3 +9,6 @@
 .externalNativeBuild
 library/build
 ahbottomnavigation/build
+/release
+lifekau_key.jks
+.gitignore
