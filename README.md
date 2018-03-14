@@ -1,8 +1,29 @@
-# LifeKAU
+# 생활항대
 
-Integrated College Assistant App for KAU student
+한국항공대학교 학교 생활 편의 어플
 
-1. push notification service when new lecture materials or semester grades are updated
-2. push notification service for every announcement from school
-3. review system for lectures and daily menus of student cafeteria
-4. shows all of empty lecture room, study room, and seats of student library in real time
+![예시 사진](http://res.cloudinary.com/sgc109/image/upload/v1521038650/asdf_jrm8i6.jpg)
+
+앱의 기능은 다음과 같습니다.
+
+1. 커뮤니티(익명 SNS)
+2. 학식리뷰(매일 초기화)
+3. 강의리뷰
+4. 학교 공지사항 확인 및 알림
+5. 실시간 열람실 좌석 확인
+6. 실시간 스터디룸 좌석 확인
+7. 실시간 빈 강의실 확인
+8. 학기성적, 누적성적, 장학금수혜내역, 시험시간표 확인 및 알림
+9. LMS 접속 및 알림
+
+처음 앱을 실행하면 로그인 페이지가 뜰 텐데, 여기에 아이디 비밀번호는 본인 학교 계정을 입력하시면 됩니다.
+
+공지사항, 장학금, 학점, 시험 시간표가 새로 등록되면 푸쉬알림을 주고 각 알림을 켜거나 끌 수 있습니다.
+LMS에 강의자료나 과제가 올라올 때 알림을 주는 것은 거의 구현이 완료된 상태이며, 곧 추가될 예정입니다.
+실시간 빈 강의실 확인 기능도 간단하게 구현가능하기 때문에 곧 추가될 예정입니다.
+
+플레이 스토어 주소는 다음과 같습니다.
+play.google.com/store/apps/details?id=com.lifekau.android.lifekau
+
+그리고 학우들 중에 기능을 추가하고 싶은 학우들은 깃헙 주소를 올려 둘테니 이슈나 풀 리퀘스트는 언제든지 환영입니다.
+문의 사항이나 앱에 문제가 있으면 sgc109109@gmail.com 로 문의주세요!
