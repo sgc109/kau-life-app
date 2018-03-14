@@ -8,9 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.util.Log;
 
-import com.lifekau.android.lifekau.activity.SettingsActivity;
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
 public class BootCompletedReceiver extends BroadcastReceiver {
 
@@ -22,7 +21,7 @@ public class BootCompletedReceiver extends BroadcastReceiver {
             Resources resources = context.getResources();
             SharedPreferences sharedPref = context.getSharedPreferences(resources.getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
             boolean alarmState = sharedPref.getBoolean(SAVE_ALARM_STATE, false);
-            JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
+            JobScheduler jobScheduler = (JobScheduler)context.getSystemService(JOB_SCHEDULER_SERVICE);
             if(jobScheduler != null) {
                 if (alarmState) {
                     jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(context, AlarmJobService.class))
