@@ -1,6 +1,7 @@
 package com.lifekau.android.lifekau.manager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -10,13 +11,16 @@ import com.lifekau.android.lifekau.model.Notice;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
 import okhttp3.Call;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -24,7 +28,11 @@ import okhttp3.Response;
 
 public class NoticeManager {
 
+
     private final static int TOTAL_NOTICE_NUM = 5;
+    private final static int TOTAL_CARTE_NUM = 2;
+    private static final String SAVE_STUDENT_RESTAURANT_DETAIL_NUM = "shared_preference_student_restaurant_detail_num";
+    private static final String SAVE_DORMITORY_RESTAURANT_DETAIL_NUM = "shared_preference_dormitory_restaurant_detail_num";
     private final static String[] COMMUNITY_KEY = {"B0146", "B0147", "B0230", "B0259", "B0148"};
     private final static String[] URL_TYPE = {"/page/kauspace/", "/page/kau_media/"};
     private final static String[] NOTICE_LIST = {"general_list", "academicinfo_list", "scholarship_list", "career_list", "event_list"};
@@ -33,8 +41,9 @@ public class NoticeManager {
     private int[] mLatestPageNum;
     private int[] mLoadedListNum;
     private int[] mLatestDetailPageNum;
-    private Hashtable<Integer, Notice>[] mNoticeListMap;
     private ArrayList<Notice>[] mImportantNoticeList;
+    private Hashtable<Integer, Notice>[] mNoticeListMap;
+    private ArrayList<String> mFoodMenuUrl;
 
     private NoticeManager() {
         mAllPageFetched = new boolean[TOTAL_NOTICE_NUM];
@@ -43,6 +52,8 @@ public class NoticeManager {
         mLatestDetailPageNum = new int[TOTAL_NOTICE_NUM];
         mNoticeListMap = new Hashtable[TOTAL_NOTICE_NUM];
         mImportantNoticeList = new ArrayList[TOTAL_NOTICE_NUM];
+        mLatestDetailPageNum = new int[TOTAL_CARTE_NUM];
+        mFoodMenuUrl = new ArrayList<>();
         for (int i = 0; i < TOTAL_NOTICE_NUM; i++) mNoticeListMap[i] = new Hashtable<>();
         for (int i = 0; i < TOTAL_NOTICE_NUM; i++) mImportantNoticeList[i] = new ArrayList<>();
     }
@@ -96,7 +107,8 @@ public class NoticeManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) return resources.getInteger(R.integer.server_error);
+            if (res.code() <= 199 || res.code() >= 301)
+                return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             Elements postElements = doc.getElementsByAttributeValue("id", "board_form").select("tbody").select("tr");
             int postElementsSize = postElements.size();
@@ -134,7 +146,7 @@ public class NoticeManager {
         mAllPageFetched[noticeType] = false;
     }
 
-    public int getLatestDetailPageNum(int noticeType){
+    public int getLatestDetailPageNum(int noticeType) {
         return mLatestDetailPageNum[noticeType];
     }
 
@@ -178,4 +190,70 @@ public class NoticeManager {
         }
         return stringBuffer.toString();
     }
+
+    public int pullStudentRestaurantFoodMenu(Context context) {
+        Resources resources = context.getResources();
+        SharedPreferences sharedPref = context.getSharedPreferences(resources.getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(resources.getString(R.string.food_menu_page))
+                .build();
+        Call call = client.newCall(request);
+        int currIndex = -1;
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) {
+                return resources.getInteger(R.integer.server_error);
+            }
+            Document doc = Jsoup.parse(res.body().string());
+            Elements postElements = doc.getElementsByAttributeValue("id", "content_list").get(0).getElementsByAttributeValue("class", "tb01_3");
+            for (Element e : postElements) {
+                if (e.text().contains("학생식당")) {
+                    String string = e.select("a").get(0).attr("href");
+                    currIndex = Integer.valueOf(string.split("'")[1]);
+                    break;
+                }
+            }
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            e.printStackTrace();
+            return resources.getInteger(R.integer.missing_data_error);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return resources.getInteger(R.integer.network_error);
+        }
+        int prevIndex = sharedPref.getInt(SAVE_STUDENT_RESTAURANT_DETAIL_NUM, -1);
+        if(currIndex == prevIndex) return resources.getInteger(R.integer.no_error);
+        request = new Request.Builder()
+                .url(String.format(resources.getString(R.string.food_menu_view_page), currIndex))
+                .build();
+        call = client.newCall(request);
+        try (Response res = call.execute()) {
+            if (res.code() <= 199 || res.code() >= 301) {
+                return resources.getInteger(R.integer.server_error);
+            }
+            Document doc = Jsoup.parse(res.body().string());
+            Elements fileElements = doc.getElementsByAttributeValue("class", "tb01_3").get(1).select("a");
+            if (fileElements.size() > 0) {
+                for (Element e : fileElements){
+                    mFoodMenuUrl.add(resources.getString(R.string.portal_page) + e .attr("href"));
+                }
+            }
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            e.printStackTrace();
+            return resources.getInteger(R.integer.missing_data_error);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return resources.getInteger(R.integer.network_error);
+        }
+        return 0;
+    }
+
+    public ArrayList<String> getFoodFileUrls() {
+        return mFoodMenuUrl;
+    }
+
+    public void clearFoodFileUrls(){
+        mFoodMenuUrl.clear();
+    }
+
 }
