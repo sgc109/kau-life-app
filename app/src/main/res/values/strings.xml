@@ -164,6 +164,7 @@
     <string name="logout_dialog_title">로그아웃</string>
     <string name="really_logout">정말 로그아웃 하시겠습니까?</string>
 
-    <string name="food_menu_page">http://www.kau.ac.kr/page/onestopservice/soss_schoollife_menu.jsp</string>
-    <string name="food_menu_view_page">http://www.kau.ac.kr/campuslife/menu_view/cms/%d_menu_view.html</string>
+    <string name="food_menu_student_rest_page">http://www.kau.ac.kr/page/onestopservice/soss_schoollife_menu.jsp</string>
+    <string name="food_menu_student_rest_view_page">http://www.kau.ac.kr/campuslife/menu_view/cms/%d_menu_view.html</string>
+    <string name="food_menu_dormitory_rest_page">http://www.kau.ac.kr/page/web/life/community/meal_li.jsp</string>
 </resources>
