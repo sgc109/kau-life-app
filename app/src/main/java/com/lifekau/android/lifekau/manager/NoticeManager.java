@@ -36,7 +36,7 @@ public class NoticeManager {
 
 
     private final static int TOTAL_NOTICE_NUM = 5;
-    private static final String SAVE_STUDENT_REST_FILE_NAME = "shared_preference_dormitory_restaurant_file_name";
+    private static final String SAVE_STUDENT_REST_FILE_NAME = "shared_preference_student_restaurant_file_name";
     private static final String SAVE_STUDENT_REST_DETAIL_NUM = "shared_preference_student_restaurant_detail_num";
     private static final String SAVE_DORMITORY_REST_FILE_NAME = "shared_preference_dormitory_restaurant_file_name";
     private static final String SAVE_DORMITORY_REST_DETAIL_NUM = "shared_preference_dormitory_restaurant_detail_num";
