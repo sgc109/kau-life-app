@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +14,9 @@ import android.view.Menu;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.lifekau.android.lifekau.R;
@@ -31,8 +34,10 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
 
     private NoticeManager mNoticeManager = NoticeManager.getInstance();
     private WebView mFoodMenuWebView;
+    private ProgressBar mProgressBar;
     private Button mShowStudentRestFoodMenuButton;
     private Button mShowDormitoryRestFoodMenuButton;
+    private boolean mIsLoading;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, FoodMenuActivity.class);
@@ -48,21 +53,34 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
 //            getSupportActionBar().hide();
             getSupportActionBar().setTitle("식단표");
         }
-
         mFoodMenuWebView = findViewById(R.id.activity_food_menu_web_view);
+        mFoodMenuWebView.setVisibility(View.GONE);
         mFoodMenuWebView.setInitialScale(1);
+        mFoodMenuWebView.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if(!mIsLoading) {
+                    mIsLoading = true;
+                    mFoodMenuWebView.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
+                }
+            }
+        });
         mFoodMenuWebView.getSettings().setLoadWithOverviewMode(true);
         mFoodMenuWebView.getSettings().setUseWideViewPort(true);
         mFoodMenuWebView.getSettings().setSupportZoom(true);
         mFoodMenuWebView.getSettings().setBuiltInZoomControls(true);
         mFoodMenuWebView.getSettings().setDisplayZoomControls(false);
+        mProgressBar = findViewById(R.id.activity_food_menu_progress_bar);
         mShowStudentRestFoodMenuButton = findViewById(R.id.activity_food_menu_show_student_restaurant_button);
         mShowStudentRestFoodMenuButton.setOnClickListener(this);
         mShowDormitoryRestFoodMenuButton = findViewById(R.id.activity_food_menu_dormitory_restaurant_button);
         mShowDormitoryRestFoodMenuButton.setOnClickListener(this);
+        mIsLoading = false;
         executeGetStudentRestFoodMenu();
         executeGetDormitoryRestFoodMenu();
-        showToast("최신 식단표를 처음 불러오는 경우 시간이 오래 소요됩니다.");
+        showToast("최신 식단표를 처음 불러오는 경우 시간이 오래 소요될 수 있습니다.");
     }
 
     void executeGetStudentRestFoodMenu(){
@@ -92,7 +110,8 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         Arrays.sort(fileNameArray);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<html><table>");
-        stringBuilder.append("<head><style>img{max-width: 100%; width:auto; height: auto;}</style></head>");
+        stringBuilder.append("<head><style>img{max-width: 100%; height: auto;}</style></head>");
+        stringBuilder.append("<head><style>img{max-width: 100%; height: auto;}</style></head>");
         for (String fileName : fileNameArray) {
             stringBuilder.append("<tr><td><img src= 'file://");
             stringBuilder.append(getFilesDir().getAbsolutePath());

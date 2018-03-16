@@ -256,6 +256,7 @@ public class NoticeManager {
         if (currIndex == prevIndex && foodMenuUrls.size() == mStudentRestFileName.size()) return resources.getInteger(R.integer.no_error);
         mStudentRestFileName.clear();
         int count = 0;
+        FileOutputStream fos = null;
         for (String url : foodMenuUrls) {
             request = new Request.Builder()
                     .url(url)
@@ -266,11 +267,13 @@ public class NoticeManager {
                 count++;
                 mStudentRestFileName.add(fileName);
                 byte[] imageBytes = res.body().bytes();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length, options);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 5, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                 File file = new File(context.getFilesDir(), fileName);
-                FileOutputStream fos = new FileOutputStream(file);
+                fos = new FileOutputStream(file);
                 fos.write(baos.toByteArray());
                 fos.close();
             } catch (IOException e) {
@@ -367,21 +370,36 @@ public class NoticeManager {
                     .url(url)
                     .build();
             call = client.newCall(request);
+            FileOutputStream fos = null;
             try (Response res = call.execute()) {
                 String fileName = "d" + count + ".jpg";
                 count++;
                 mDormitoryRestFileName.add(fileName);
                 byte[] imageBytes = res.body().bytes();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 5, imageBytes.length);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length, options);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 0, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                 File file = new File(context.getFilesDir(), fileName);
-                FileOutputStream fos = new FileOutputStream(file);
+                fos = new FileOutputStream(file);
                 fos.write(baos.toByteArray());
                 fos.close();
             } catch (IOException e) {
+                try {
+                    if (fos != null) fos.close();
+                }
+                catch (IOException ioe){
+                    return resources.getInteger(R.integer.file_write_error);
+                }
                 return resources.getInteger(R.integer.file_write_error);
             } catch (Exception e) {
+                try {
+                    if (fos != null) fos.close();
+                }
+                catch (IOException ioe){
+                    return resources.getInteger(R.integer.file_write_error);
+                }
                 return resources.getInteger(R.integer.network_error);
             }
         }
