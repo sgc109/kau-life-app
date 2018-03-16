@@ -49,10 +49,11 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_review_corner_list);
 
-//        if (getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
 //            getSupportActionBar().hide();
-//        }
+            getSupportActionBar().setTitle("");
+        }
 
         mRecyclerAdapter = new RecyclerView.Adapter<FoodCornerViewHolder>() {
             @Override
