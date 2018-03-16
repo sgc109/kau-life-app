@@ -60,17 +60,17 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         mShowStudentRestFoodMenuButton.setOnClickListener(this);
         mShowDormitoryRestFoodMenuButton = findViewById(R.id.activity_food_menu_dormitory_restaurant_button);
         mShowDormitoryRestFoodMenuButton.setOnClickListener(this);
-        showStudentRestFoodMenu();
+        executeGetStudentRestFoodMenu();
+        executeGetDormitoryRestFoodMenu();
+        showToast("최신 식단표를 처음 불러오는 경우 시간이 오래 소요됩니다.");
     }
 
-    void showStudentRestFoodMenu(){
-        mFoodMenuWebView.setInitialScale(1);
+    void executeGetStudentRestFoodMenu(){
         GetStudentRestMenuASyncTask aSyncTask = new GetStudentRestMenuASyncTask(getApplication(), this);
         aSyncTask.execute();
     }
 
-    void showDormitoryRestFoodMenu(){
-        mFoodMenuWebView.setInitialScale(1);
+    void executeGetDormitoryRestFoodMenu(){
         GetDormitoryRestMenuASyncTask aSyncTask = new GetDormitoryRestMenuASyncTask(getApplication(), this);
         aSyncTask.execute();
     }
@@ -79,10 +79,10 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_food_menu_show_student_restaurant_button:
-                showStudentRestFoodMenu();
+                setFoodMenuImage(mNoticeManager.getStudentRestFoodMenuFileName());
                 break;
             case R.id.activity_food_menu_dormitory_restaurant_button:
-                showDormitoryRestFoodMenu();
+                setFoodMenuImage(mNoticeManager.getDormitoryRestFileName());
                 break;
         }
     }
@@ -92,6 +92,7 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         Arrays.sort(fileNameArray);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<html><table>");
+        stringBuilder.append("<head><style>img{max-width: 100%; width:auto; height: auto;}</style></head>");
         for (String fileName : fileNameArray) {
             stringBuilder.append("<tr><td><img src= 'file://");
             stringBuilder.append(getFilesDir().getAbsolutePath());
@@ -100,7 +101,6 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             stringBuilder.append("'/></td></tr>");
         }
         stringBuilder.append("</table></html>");
-        Log.e("얻어지는 것", stringBuilder.toString());
         mFoodMenuWebView.loadDataWithBaseURL("",
                 stringBuilder.toString(),
                 "text/html",
@@ -146,10 +146,10 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             if (foodMenuActivity == null || foodMenuActivity.isFinishing()) return;
             NoticeManager nm = foodMenuActivity.mNoticeManager;
             if (result == resources.getInteger(R.integer.file_write_error)) {
-                foodMenuActivity.showToast("식단표 파일을 저장하는데 실패하였습니다.");
+                foodMenuActivity.showToast("학생식당 식단표 파일을 저장하는데 실패하였습니다.");
                 return;
             } else if (result == resources.getInteger(R.integer.network_error)) {
-                foodMenuActivity.showToast("네트워크 오류로 인해 최신 식단표 파일을 가져오는데 실패하였습니다.");
+                foodMenuActivity.showToast("네트워크 오류로 인해 최신 학생식당 식단표 파일을 가져오는데 실패하였습니다.");
             }
             foodMenuActivity.setFoodMenuImage(nm.getStudentRestFoodMenuFileName());
         }
@@ -193,12 +193,11 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             if (foodMenuActivity == null || foodMenuActivity.isFinishing()) return;
             NoticeManager nm = foodMenuActivity.mNoticeManager;
             if (result == resources.getInteger(R.integer.file_write_error)) {
-                foodMenuActivity.showToast("식단표 파일을 저장하는데 실패하였습니다.");
+                foodMenuActivity.showToast("기숙사 식단표 파일을 저장하는데 실패하였습니다.");
                 return;
             } else if (result == resources.getInteger(R.integer.network_error)) {
-                foodMenuActivity.showToast("네트워크 오류로 인해 최신 식단표 파일을 가져오는데 실패하였습니다.");
+                foodMenuActivity.showToast("네트워크 오류로 인해 최신 기숙사 식단표 파일을 가져오는데 실패하였습니다.");
             }
-            foodMenuActivity.setFoodMenuImage(nm.getDormitoryRestFileName());
         }
     }
 

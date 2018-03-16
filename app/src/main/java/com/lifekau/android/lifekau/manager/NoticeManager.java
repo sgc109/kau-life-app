@@ -268,7 +268,7 @@ public class NoticeManager {
                 byte[] imageBytes = res.body().bytes();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 5, baos);
                 File file = new File(context.getFilesDir(), fileName);
                 FileOutputStream fos = new FileOutputStream(file);
                 fos.write(baos.toByteArray());
@@ -372,9 +372,9 @@ public class NoticeManager {
                 count++;
                 mDormitoryRestFileName.add(fileName);
                 byte[] imageBytes = res.body().bytes();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 5, imageBytes.length);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 0, baos);
                 File file = new File(context.getFilesDir(), fileName);
                 FileOutputStream fos = new FileOutputStream(file);
                 fos.write(baos.toByteArray());
