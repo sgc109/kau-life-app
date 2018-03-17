@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -55,12 +56,11 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         }
         mFoodMenuWebView = findViewById(R.id.activity_food_menu_web_view);
         mFoodMenuWebView.setVisibility(View.GONE);
-        mFoodMenuWebView.setInitialScale(1);
-        mFoodMenuWebView.setWebViewClient(new WebViewClient(){
+        mFoodMenuWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if(!mIsLoading) {
+                if (!mIsLoading) {
                     mIsLoading = true;
                     mFoodMenuWebView.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
@@ -83,12 +83,12 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         showToast("최신 식단표를 처음 불러오는 경우 시간이 오래 소요될 수 있습니다.");
     }
 
-    void executeGetStudentRestFoodMenu(){
+    void executeGetStudentRestFoodMenu() {
         GetStudentRestMenuASyncTask aSyncTask = new GetStudentRestMenuASyncTask(getApplication(), this);
         aSyncTask.execute();
     }
 
-    void executeGetDormitoryRestFoodMenu(){
+    void executeGetDormitoryRestFoodMenu() {
         GetDormitoryRestMenuASyncTask aSyncTask = new GetDormitoryRestMenuASyncTask(getApplication(), this);
         aSyncTask.execute();
     }
@@ -105,13 +105,13 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void setFoodMenuImage(Set<String> fileNames){
+    public void setFoodMenuImage(Set<String> fileNames) {
         String[] fileNameArray = fileNames.toArray(new String[fileNames.size()]);
         Arrays.sort(fileNameArray);
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("<html><table>");
-        stringBuilder.append("<head><style>img{max-width: 100%; height: auto;}</style></head>");
-        stringBuilder.append("<head><style>img{max-width: 100%; height: auto;}</style></head>");
+        stringBuilder.append("<html>");
+        stringBuilder.append("<head><meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1'></head>");
+        stringBuilder.append("<table>");
         for (String fileName : fileNameArray) {
             stringBuilder.append("<tr><td><img src= 'file://");
             stringBuilder.append(getFilesDir().getAbsolutePath());
