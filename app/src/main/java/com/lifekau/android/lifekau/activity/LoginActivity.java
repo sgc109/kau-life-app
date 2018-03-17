@@ -264,11 +264,6 @@ public class LoginActivity extends AppCompatActivity {
                                 .build());
                     }
                 }
-//                LoginManager loginManager = LoginManager.get(activityReference.get());
-//                loginManager.setUserId(mId);
-//                loginManager.setPassword(mPassword);
-//                loginManager.setStudentId(activity.mLMSPortalManager.getStudentId());
-//                Intent intent = HomeActivity.newIntent(activityReference.get());
                 Intent intent = HomeActivity.newIntent(activityReference.get(), 0);
                 activity.startActivity(intent);
                 activity.finish();

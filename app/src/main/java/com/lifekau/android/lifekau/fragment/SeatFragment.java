@@ -30,6 +30,8 @@ public class SeatFragment extends PagerFragment implements View.OnClickListener{
         showReadingRoomButton.setOnClickListener(this);
         FrameLayout showStudyRoomButton = view.findViewById(R.id.fragment_seat_show_study_room_button);
         showStudyRoomButton.setOnClickListener(this);
+        FrameLayout showEmptyRoomButton = view.findViewById(R.id.fragment_seat_show_empty_room_button);
+        showEmptyRoomButton.setOnClickListener(this);
 
         setHasOptionsMenu(true);
         return view;

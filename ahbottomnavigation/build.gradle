@@ -25,12 +25,12 @@ ext {
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 40
         versionName "2.1.0"
     }
@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:design:27.1.0'
 }
 
 // Place it at the end of the file

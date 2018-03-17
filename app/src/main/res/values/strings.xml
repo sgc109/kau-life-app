@@ -81,6 +81,7 @@
     <string name="header_connection">keep-alive</string>
 
     <!-- Portal 관련 스트링 정의-->
+    <string name="portal_page">"http://www.kau.ac.kr"</string>
     <string name="portal_lms_check_page">https://www.kau.ac.kr/page/login.jsp?target_page=act_Lms_Check.jsp@chk1-1</string>
     <string name="portal_act_login_page">https://www.kau.ac.kr/page/act_login.jsp</string>
     <string name="portal_portal_check_page">https://www.kau.ac.kr/page/act_Portal_Check.jsp</string>
@@ -160,4 +161,10 @@
     <string name="shared_preference_app">LIFEKAU</string>
     <string name="can_write_post_after_1_minute">1분이 지나야 새로운 글을 쓸 수가 있습니다.</string>
     <string name="can_write_comment_after_1_minute">1분이 지나야 새로운 댓글을 쓸 수가 있습니다.</string>
+    <string name="logout_dialog_title">로그아웃</string>
+    <string name="really_logout">정말 로그아웃 하시겠습니까?</string>
+
+    <string name="food_menu_student_rest_page">http://www.kau.ac.kr/page/onestopservice/soss_schoollife_menu.jsp</string>
+    <string name="food_menu_student_rest_view_page">http://www.kau.ac.kr/campuslife/menu_view/cms/%d_menu_view.html</string>
+    <string name="food_menu_dormitory_rest_page">http://www.kau.ac.kr/page/web/life/community/meal_li.jsp</string>
 </resources>

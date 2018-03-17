@@ -4,9 +4,11 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -178,17 +180,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 editor.putBoolean(SAVE_SWITCH_LMS_STATE, nowCheck);
                 break;
             case R.id.logout_container:
-                editor.putBoolean(SAVE_ALARM_STATE, false);
-                editor.putBoolean(LoginActivity.SAVE_AUTO_LOGIN, false);
-                editor.apply();
-                setResult(RESULT_OK);
-                JobScheduler jobScheduler = getSystemService(JobScheduler.class);
-                if(jobScheduler != null) jobScheduler.cancel(0);
-                Intent intent = LoginActivity.newIntent(this);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-                return;
+                showLogoutYesOrNoDialog();
+                break;
         }
         editor.apply();
         boolean currAlarmState = sharedPref.getBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, false) ||
@@ -287,5 +280,38 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         ret = ret && !mSwitchNoticeCareer.isChecked();
         ret = ret && !mSwitchNoticeEvent.isChecked();
         return ret;
+    }
+
+    private void showLogoutYesOrNoDialog() {
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+
+        builder.setTitle(getString(R.string.logout_dialog_title));
+        builder.setMessage(getString(R.string.really_logout));
+        builder.setPositiveButton(getString(R.string.dialog_delete), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                editor.putBoolean(SAVE_ALARM_STATE, false);
+                editor.putBoolean(LoginActivity.SAVE_AUTO_LOGIN, false);
+                editor.apply();
+                setResult(RESULT_OK);
+                JobScheduler jobScheduler = getSystemService(JobScheduler.class);
+                if(jobScheduler != null) jobScheduler.cancel(0);
+                Intent intent = LoginActivity.newIntent(SettingsActivity.this);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.dialog_cancel), null);
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+        });
+        dialog.show();
     }
 }
