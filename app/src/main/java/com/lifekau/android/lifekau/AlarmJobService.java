@@ -85,7 +85,6 @@ public class AlarmJobService extends JobService {
             int mResult = resources.getInteger(R.integer.no_error);
             for (int i = 0; i < TOTAL_NOTICE_NUM; i++) {
                 if (!sharedPref.getBoolean(SAVE_SWITCH_NOTICE_LIST[i], false)) continue;
-                Log.e("서비스", NOTICE_NAME[i] + "실행!");
                 for (int count = 0; count < 3; count++) {
                     if ((mResult = nm.pullNoticeList(getApplicationContext(), i, 1)) == resources.getInteger(R.integer.no_error))
                         break;
@@ -128,7 +127,6 @@ public class AlarmJobService extends JobService {
                 if (mNextResult != resources.getInteger(R.integer.no_error)) return null;
             }
             if (sharedPref.getBoolean(SAVE_SWITCH_SCHOLARSHIP_STATE, false)) {
-                Log.e("서비스", "장학금 실행!");
                 for (int count = 0; count < 3; count++) {
                     if ((mResult = pm.pullScholarship(getApplicationContext())) == resources.getInteger(R.integer.no_error))
                         break;
@@ -145,7 +143,6 @@ public class AlarmJobService extends JobService {
                 editor.apply();
             }
             if (sharedPref.getBoolean(SAVE_SWITCH_CURRENT_GRADE_STATE, false)) {
-                Log.e("서비스", "학기 성적 실행!");
                 for (int count = 0; count < 3; count++) {
                     if ((mResult = pm.pullCurrentGrade(getApplicationContext())) == resources.getInteger(R.integer.no_error))
                         break;
@@ -162,7 +159,6 @@ public class AlarmJobService extends JobService {
                 editor.apply();
             }
             if (sharedPref.getBoolean(SAVE_EXAMINATION_TIMETABLE_ITEM_NUM, false)) {
-                Log.e("서비스", "시험시간표 실행!");
                 for (int count = 0; count < 3; count++) {
                     if ((mResult = pm.pullExaminationTimeTable(getApplicationContext())) == resources.getInteger(R.integer.no_error))
                         break;

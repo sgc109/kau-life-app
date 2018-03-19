@@ -316,7 +316,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         View radioButton = mRadioGroupAlarmPeriod.findViewById(radioButtonId);
         int prevIndex = sharedPref.getInt(SAVE_CHECKED_ALARM_PERIOD, -1);
         int periodIndex = mRadioGroupAlarmPeriod.indexOfChild(radioButton);
-        Log.e("테스트", prevIndex + " " + periodIndex);
         JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         if (jobScheduler != null) {
             if (currAlarmState && prevIndex != periodIndex) {
