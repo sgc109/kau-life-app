@@ -8,10 +8,10 @@
         android:titleCondensed="식단표"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/menu_review_setting"
-        android:icon="@drawable/ic_setting"
-        android:title="setting"
-        android:titleCondensed="Setting"
-        app:showAsAction="always"/>
+    <!--<item-->
+        <!--android:id="@+id/menu_review_setting"-->
+        <!--android:icon="@drawable/ic_setting"-->
+        <!--android:title="setting"-->
+        <!--android:titleCondensed="Setting"-->
+        <!--app:showAsAction="always"/>-->
 </menu>

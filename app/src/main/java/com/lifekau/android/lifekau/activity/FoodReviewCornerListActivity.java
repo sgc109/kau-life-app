@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.lifekau.android.lifekau.PxDpConverter;
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.model.FoodReview;
 
@@ -56,15 +55,26 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
         }
 
         mRecyclerAdapter = new RecyclerView.Adapter<FoodCornerViewHolder>() {
+            private final int UPPER_MOST_POST = 1;
+            private final int NOT_UPPER_MOST_POST = 2;
             @Override
             public FoodCornerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_food_review_corner, parent, false);
+                if (viewType == UPPER_MOST_POST) {
+                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+                    params.setMargins(0, PxDpConverter.convertDpToPx(8), 0, 0);
+                }
                 return new FoodCornerViewHolder(view);
             }
 
             @Override
             public void onBindViewHolder(FoodCornerViewHolder holder, int position) {
                 holder.bind(position);
+            }
+            @Override
+            public int getItemViewType(int position) {
+                if (position == 0) return UPPER_MOST_POST;
+                return NOT_UPPER_MOST_POST;
             }
 
             @Override
@@ -183,10 +193,10 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
                 intent = FoodMenuActivity.newIntent(this);
                 startActivity(intent);
                 break;
-            case R.id.menu_review_setting:
-                intent = SettingsActivity.newIntent(this);
-                startActivity(intent);
-                break;
+//            case R.id.menu_review_setting:
+//                intent = SettingsActivity.newIntent(this);
+//                startActivity(intent);
+//                break;
         }
         return super.onOptionsItemSelected(item);
     }
