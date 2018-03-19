@@ -12,9 +12,9 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_margin="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
 
             <ImageView
                 android:id="@+id/profile_picture"
@@ -62,11 +62,12 @@
         </RelativeLayout>
 
         <TextView
-            android:layout_margin="8dp"
             android:id="@+id/list_item_post_content_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:gravity="left|top"
             android:paddingBottom="8dp"
             android:paddingLeft="8dp"

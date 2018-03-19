@@ -6,8 +6,8 @@ android {
         applicationId "com.lifekau.android.lifekau"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 20
-        versionName "1.0"
+        versionCode 22
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
