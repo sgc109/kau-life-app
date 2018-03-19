@@ -115,6 +115,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 mSwitchCurrGrade.setChecked(nowCheck);
                 mSwitchExamTimetable.setChecked(nowCheck);
                 mSwitchLMS.setChecked(nowCheck);
+                for (int i = 0; i < mRadioGroupAlarmPeriod.getChildCount(); i++) {
+                    mRadioGroupAlarmPeriod.getChildAt(i).setEnabled(nowCheck);
+                }
                 editor.putBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, nowCheck);
                 editor.putBoolean(SAVE_SWITCH_NOTICE_ACADEMIC_STATE, nowCheck);
                 editor.putBoolean(SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE, nowCheck);
@@ -210,10 +213,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mSwitchLMS.setChecked(sharedPref.getBoolean(SAVE_SWITCH_LMS_STATE, false));
         if (!isAllOff()) {
             mSwitchEntire.setChecked(true);
-            mRadioGroupAlarmPeriod.setEnabled(true);
+            for (int i = 0; i < mRadioGroupAlarmPeriod.getChildCount(); i++) {
+                mRadioGroupAlarmPeriod.getChildAt(i).setEnabled(true);
+            }
         } else {
             mSwitchEntire.setChecked(false);
-            mRadioGroupAlarmPeriod.setEnabled(false);
+            for (int i = 0; i < mRadioGroupAlarmPeriod.getChildCount(); i++) {
+                mRadioGroupAlarmPeriod.getChildAt(i).setEnabled(false);
+            }
         }
         if (!isAllNoticeOff()) {
             mSwitchNotice.setChecked(true);
@@ -227,10 +234,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private void checkPartialNoticeSwitched() {
         if (isAllOff()) {
             mSwitchEntire.setChecked(false);
-            mRadioGroupAlarmPeriod.setEnabled(false);
+            for (int i = 0; i < mRadioGroupAlarmPeriod.getChildCount(); i++) {
+                mRadioGroupAlarmPeriod.getChildAt(i).setEnabled(false);
+            }
         } else {
             mSwitchEntire.setChecked(true);
-            mRadioGroupAlarmPeriod.setEnabled(true);
+            for (int i = 0; i < mRadioGroupAlarmPeriod.getChildCount(); i++) {
+                mRadioGroupAlarmPeriod.getChildAt(i).setEnabled(true);
+            }
         }
         if (isAllNoticeOff()) {
             mSwitchNotice.setChecked(false);
@@ -242,10 +253,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private void checkParitialSwitched() {
         if (isAllOff()) {
             mSwitchEntire.setChecked(false);
-            mRadioGroupAlarmPeriod.setEnabled(false);
+            for (int i = 0; i < mRadioGroupAlarmPeriod.getChildCount(); i++) {
+                mRadioGroupAlarmPeriod.getChildAt(i).setEnabled(false);
+            }
         } else if (!isAllOff()) {
             mSwitchEntire.setChecked(true);
-            mRadioGroupAlarmPeriod.setEnabled(true);
+            for (int i = 0; i < mRadioGroupAlarmPeriod.getChildCount(); i++) {
+                mRadioGroupAlarmPeriod.getChildAt(i).setEnabled(true);
+            }
         }
     }
 
