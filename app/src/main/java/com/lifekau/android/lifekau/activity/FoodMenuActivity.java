@@ -33,11 +33,8 @@ import static android.os.SystemClock.sleep;
 
 public class FoodMenuActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int FOOD_MENU_NUM = 2;
-    private static final int FOOD_MENU_TYPE_STUDENT_REST = 0;
-    private static final int FOOD_MENU_TYPE_DORMITORY_REST = 1;
     private NoticeManager mNoticeManager = NoticeManager.getInstance();
-    private WebView[] mFoodMenuWebView;
+    private WebView mFoodMenuWebView;
     private ProgressBar mProgressBar;
     private Button mShowStudentRestFoodMenuButton;
     private Button mShowDormitoryRestFoodMenuButton;
@@ -57,11 +54,24 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
 //            getSupportActionBar().hide();
             getSupportActionBar().setTitle("식단표");
         }
-        mFoodMenuWebView = new WebView[FOOD_MENU_NUM];
-        mFoodMenuWebView[FOOD_MENU_TYPE_STUDENT_REST] = findViewById(R.id.activity_food_student_menu_web_view);
-        mFoodMenuWebView[FOOD_MENU_TYPE_DORMITORY_REST] = findViewById(R.id.activity_food_dormitory_menu_web_view);
-        initWebView(FOOD_MENU_TYPE_STUDENT_REST);
-        initWebView(FOOD_MENU_TYPE_DORMITORY_REST);
+        mFoodMenuWebView = findViewById(R.id.activity_food_menu_web_view);
+        mFoodMenuWebView.setVisibility(View.GONE);
+        mFoodMenuWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (!mIsLoading) {
+                    mIsLoading = true;
+                    mFoodMenuWebView.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
+                }
+            }
+        });
+        mFoodMenuWebView.getSettings().setLoadWithOverviewMode(true);
+        mFoodMenuWebView.getSettings().setUseWideViewPort(true);
+        mFoodMenuWebView.getSettings().setSupportZoom(true);
+        mFoodMenuWebView.getSettings().setBuiltInZoomControls(true);
+        mFoodMenuWebView.getSettings().setDisplayZoomControls(false);
         mProgressBar = findViewById(R.id.activity_food_menu_progress_bar);
         mShowStudentRestFoodMenuButton = findViewById(R.id.activity_food_menu_show_student_restaurant_button);
         mShowStudentRestFoodMenuButton.setOnClickListener(this);
@@ -71,28 +81,6 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         executeGetStudentRestFoodMenu();
         executeGetDormitoryRestFoodMenu();
         showToast("최신 식단표를 처음 불러오는 경우 시간이 오래 소요될 수 있습니다.");
-    }
-
-    void initWebView(final int index){
-        mFoodMenuWebView[index].setVisibility(View.GONE);
-        mFoodMenuWebView[index].getSettings().setLoadWithOverviewMode(true);
-        mFoodMenuWebView[index].getSettings().setUseWideViewPort(true);
-        mFoodMenuWebView[index].getSettings().setSupportZoom(true);
-        mFoodMenuWebView[index].getSettings().setBuiltInZoomControls(true);
-        mFoodMenuWebView[index].getSettings().setDisplayZoomControls(false);
-        mFoodMenuWebView[index].setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                if (!mIsLoading) {
-                    mIsLoading = true;
-                    mProgressBar.setVisibility(View.GONE);
-                }
-                mFoodMenuWebView[1 - index].setVisibility(View.GONE);
-                mFoodMenuWebView[index].setVisibility(View.VISIBLE);
-                mFoodMenuWebView[index].zoomBy(0.1f);
-            }
-        });
     }
 
     void executeGetStudentRestFoodMenu() {
@@ -109,21 +97,20 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_food_menu_show_student_restaurant_button:
-                setFoodMenuImage(FOOD_MENU_TYPE_STUDENT_REST, mNoticeManager.getStudentRestFoodMenuFileName());
+                setFoodMenuImage(mNoticeManager.getStudentRestFoodMenuFileName());
                 break;
             case R.id.activity_food_menu_dormitory_restaurant_button:
-                setFoodMenuImage(FOOD_MENU_TYPE_DORMITORY_REST, mNoticeManager.getDormitoryRestFileName());
+                setFoodMenuImage(mNoticeManager.getDormitoryRestFileName());
                 break;
         }
     }
 
-    public void setFoodMenuImage(int index, Set<String> fileNames) {
+    public void setFoodMenuImage(Set<String> fileNames) {
         String[] fileNameArray = fileNames.toArray(new String[fileNames.size()]);
         Arrays.sort(fileNameArray);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<html>");
-        stringBuilder.append("<head><style>img{max-width: 100%; height: auto;}</style></head>");
-        stringBuilder.append("<meta name=viewport' content='width=device-width,initial-scale=1'></head>");
+        stringBuilder.append("<head><meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1'></head>");
         stringBuilder.append("<table>");
         for (String fileName : fileNameArray) {
             stringBuilder.append("<tr><td><img src= 'file://");
@@ -133,7 +120,7 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             stringBuilder.append("'/></td></tr>");
         }
         stringBuilder.append("</table></html>");
-        mFoodMenuWebView[index].loadDataWithBaseURL("",
+        mFoodMenuWebView.loadDataWithBaseURL("",
                 stringBuilder.toString(),
                 "text/html",
                 "utf-8",
@@ -183,7 +170,7 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 foodMenuActivity.showToast("네트워크 오류로 인해 최신 학생식당 식단표 파일을 가져오는데 실패하였습니다.");
             }
-            foodMenuActivity.setFoodMenuImage(FOOD_MENU_TYPE_STUDENT_REST, nm.getStudentRestFoodMenuFileName());
+            foodMenuActivity.setFoodMenuImage(nm.getStudentRestFoodMenuFileName());
         }
     }
 
