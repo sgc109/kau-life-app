@@ -10,8 +10,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 
 import com.lifekau.android.lifekau.AlarmJobService;
@@ -22,6 +24,7 @@ import java.util.List;
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String SAVE_ALARM_STATE = "save_alarm_state";
+    private static final String SAVE_CHECKED_ALARM_PERIOD = "save_checked_alarm_period";
     private static final String SAVE_SWITCH_NOTICE_GENERAL_STATE = "save_switch_notice_general_state";
     private static final String SAVE_SWITCH_NOTICE_ACADEMIC_STATE = "save_switch_notice_academic_state";
     private static final String SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE = "save_switch_notice_scholarship_state";
@@ -31,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private static final String SAVE_SWITCH_CURRENT_GRADE_STATE = "save_switch_current_grade_state";
     private static final String SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE = "save_switch_examination_timetable_state";
     private static final String SAVE_SWITCH_LMS_STATE = "save_switch_lms_state";
+    private static final int[] ALARM_PERIOD_TIME = {30, 60, 60 * 3, 60 * 6, 60 * 24};
 
     private Switch mSwitchEntire;
     private Switch mSwitchNotice;
@@ -43,6 +47,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private Switch mSwitchCurrGrade;
     private Switch mSwitchExamTimetable;
     private Switch mSwitchLMS;
+    private RadioGroup mRadioGroupAlarmPeriod;
     private LinearLayout mLogoutContainer;
 
     public static Intent newIntent(Context context) {
@@ -72,7 +77,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mSwitchLMS.setOnClickListener(this);
         mLogoutContainer.setOnClickListener(this);
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.shared_preference_app), Context.MODE_PRIVATE);
-        if(!sharedPref.contains(SAVE_ALARM_STATE)) mSwitchEntire.performClick();
+        if (!sharedPref.contains(SAVE_ALARM_STATE)) mSwitchEntire.performClick();
     }
 
     private void initUI() {
@@ -88,6 +93,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mSwitchExamTimetable = findViewById(R.id.alarm_switch_exam_timetable);
         mSwitchLMS = findViewById(R.id.alarm_switch_lms);
         mLogoutContainer = findViewById(R.id.logout_container);
+        mRadioGroupAlarmPeriod = findViewById(R.id.alarm_radio_group_alarm_period);
     }
 
     @Override
@@ -184,29 +190,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
         editor.apply();
-        boolean currAlarmState = sharedPref.getBoolean(SAVE_SWITCH_NOTICE_GENERAL_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_NOTICE_ACADEMIC_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_NOTICE_SCHOLARSHIP_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_NOTICE_CAREER_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_NOTICE_EVENT_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_SCHOLARSHIP_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_CURRENT_GRADE_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE, false) ||
-                sharedPref.getBoolean(SAVE_SWITCH_LMS_STATE, false);
-        JobScheduler jobScheduler = getSystemService(JobScheduler.class);
-        if (jobScheduler != null) {
-            if (currAlarmState) {
-                List<JobInfo> jobInfos = jobScheduler.getAllPendingJobs();
-                if(jobInfos.size() == 0){
-                    jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(this, AlarmJobService.class))
-                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                            .setPeriodic(30 * 60 * 1000)
-                            .build());
-                }
-            } else jobScheduler.cancel(0);
-        } else {
-            //초기화 실패
-        }
+        boolean currAlarmState = !isAllOff();
         editor.putBoolean(SAVE_ALARM_STATE, currAlarmState);
         editor.apply();
     }
@@ -224,40 +208,48 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mSwitchCurrGrade.setChecked(sharedPref.getBoolean(SAVE_SWITCH_CURRENT_GRADE_STATE, false));
         mSwitchExamTimetable.setChecked(sharedPref.getBoolean(SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE, false));
         mSwitchLMS.setChecked(sharedPref.getBoolean(SAVE_SWITCH_LMS_STATE, false));
-        if(!isAllOff()) {
+        if (!isAllOff()) {
             mSwitchEntire.setChecked(true);
+            mRadioGroupAlarmPeriod.setEnabled(true);
         } else {
             mSwitchEntire.setChecked(false);
+            mRadioGroupAlarmPeriod.setEnabled(false);
         }
-        if(!isAllNoticeOff()){
+        if (!isAllNoticeOff()) {
             mSwitchNotice.setChecked(true);
         } else {
             mSwitchNotice.setChecked(false);
         }
+        int periodIndex = sharedPref.getInt(SAVE_CHECKED_ALARM_PERIOD, 0);
+        mRadioGroupAlarmPeriod.check(mRadioGroupAlarmPeriod.getChildAt(periodIndex).getId());
     }
 
-    private void checkPartialNoticeSwitched(){
-        if(isAllOff()){
+    private void checkPartialNoticeSwitched() {
+        if (isAllOff()) {
             mSwitchEntire.setChecked(false);
+            mRadioGroupAlarmPeriod.setEnabled(false);
         } else {
             mSwitchEntire.setChecked(true);
+            mRadioGroupAlarmPeriod.setEnabled(true);
         }
-        if(isAllNoticeOff()){
+        if (isAllNoticeOff()) {
             mSwitchNotice.setChecked(false);
         } else {
             mSwitchNotice.setChecked(true);
         }
     }
 
-    private void checkParitialSwitched(){
-        if(isAllOff()){
+    private void checkParitialSwitched() {
+        if (isAllOff()) {
             mSwitchEntire.setChecked(false);
-        } else if(!isAllOff()){
+            mRadioGroupAlarmPeriod.setEnabled(false);
+        } else if (!isAllOff()) {
             mSwitchEntire.setChecked(true);
+            mRadioGroupAlarmPeriod.setEnabled(true);
         }
     }
 
-    boolean isAllOff(){
+    boolean isAllOff() {
         boolean ret = true;
         ret = ret && !mSwitchNotice.isChecked();
         ret = ret && !mSwitchNoticeGeneral.isChecked();
@@ -272,7 +264,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         return ret;
     }
 
-    boolean isAllNoticeOff(){
+    boolean isAllNoticeOff() {
         boolean ret = true;
         ret = ret && !mSwitchNoticeGeneral.isChecked();
         ret = ret && !mSwitchNoticeAcademic.isChecked();
@@ -296,8 +288,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 editor.putBoolean(LoginActivity.SAVE_AUTO_LOGIN, false);
                 editor.apply();
                 setResult(RESULT_OK);
-                JobScheduler jobScheduler = getSystemService(JobScheduler.class);
-                if(jobScheduler != null) jobScheduler.cancel(0);
+                JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                if (jobScheduler != null) jobScheduler.cancel(0);
                 Intent intent = LoginActivity.newIntent(SettingsActivity.this);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -313,5 +305,31 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         dialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        SharedPreferences sharedPref = getSharedPreferences(getResources().getString(R.string.shared_preference_app), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        boolean currAlarmState = isAllOff();
+        int radioButtonId = mRadioGroupAlarmPeriod.getCheckedRadioButtonId();
+        View radioButton = mRadioGroupAlarmPeriod.findViewById(radioButtonId);
+        int prevIndex = sharedPref.getInt(SAVE_CHECKED_ALARM_PERIOD, -1);
+        int periodIndex = mRadioGroupAlarmPeriod.indexOfChild(radioButton);
+        Log.e("테스트", prevIndex + " " + periodIndex);
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        if (jobScheduler != null) {
+            if (currAlarmState && prevIndex != periodIndex) {
+                jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(this, AlarmJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPeriodic(ALARM_PERIOD_TIME[periodIndex] * 60 * 1000)
+                        .build());
+            } else jobScheduler.cancel(0);
+        } else {
+            //초기화 실패
+        }
+        editor.putInt(SAVE_CHECKED_ALARM_PERIOD, periodIndex);
+        editor.apply();
+        super.onDestroy();
     }
 }

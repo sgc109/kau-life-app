@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,7 +16,7 @@
             android:layout_marginTop="8dp"
             android:text="알람 설정"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
 
         <Switch
             android:id="@+id/alarm_switch_entire"
@@ -25,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="전체"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <Switch
             android:id="@+id/alarm_switch_notice"
@@ -34,7 +33,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="8dp"
             android:text="공지 사항"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <Switch
             android:id="@+id/alarm_switch_notice_general"
@@ -43,7 +42,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="16dp"
             android:text="일반 공지"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
 
         <Switch
             android:id="@+id/alarm_switch_notice_academic"
@@ -52,7 +51,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="16dp"
             android:text="학사 공지"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
 
         <Switch
             android:id="@+id/alarm_switch_notice_scholarship"
@@ -61,7 +60,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="16dp"
             android:text="장학/대출 공지"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
 
         <Switch
             android:id="@+id/alarm_switch_notice_career"
@@ -70,7 +69,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="16dp"
             android:text="취업 공지"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
 
         <Switch
             android:id="@+id/alarm_switch_notice_event"
@@ -79,7 +78,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="16dp"
             android:text="행사 공지"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
 
         <Switch
             android:id="@+id/alarm_switch_grade"
@@ -88,7 +87,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="8dp"
             android:text="학점 등록"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <Switch
             android:id="@+id/alarm_switch_scholarship"
@@ -97,7 +96,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="8dp"
             android:text="장학금 등록"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <Switch
             android:id="@+id/alarm_switch_exam_timetable"
@@ -106,7 +105,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="8dp"
             android:text="시험 시간표 등록"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <Switch
             android:id="@+id/alarm_switch_lms"
@@ -115,7 +114,7 @@
             android:layout_margin="16dp"
             android:paddingLeft="8dp"
             android:text="LMS"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
@@ -124,8 +123,67 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
-            android:background="@android:color/darker_gray"
-            />
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:paddingLeft="8dp"
+            android:text="알람 주기"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/alarm_radio_group_alarm_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="2dp"
+                android:text="30분" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="1시간" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="3시간" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="6시간" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="1일" />
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray" />
 
         <LinearLayout
             android:id="@+id/logout_container"
@@ -139,7 +197,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_margin="4dp"
-                android:src="@drawable/logout"/>
+                android:src="@drawable/logout" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -147,7 +205,7 @@
                 android:layout_margin="8dp"
                 android:text="로그아웃"
                 android:textColor="@android:color/holo_red_dark"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
