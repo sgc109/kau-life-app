@@ -40,6 +40,7 @@ public class LMSPortalManager {
 
     private static final int EXAMINATION_TIME_TABLE_HEADER_NUM = 0;
     private static final int EXAMINATION_TIME_TABLE_DAY_NUM = 0;
+    private static final int DUMMY_DATA_NUM = 78;
 
     private ArrayList<Scholarship> mScholarshipArray;
     private ArrayList<CurrentGrade> mCurrentGrade;
@@ -514,9 +515,14 @@ public class LMSPortalManager {
             String year = doc.getElementsByAttributeValue("class", "input").get(0).attr("value");
             String semester = doc.getElementsByAttributeValue("name", "hakgi").get(0).getElementsByAttribute("selected").attr("value");
             String termType = doc.getElementsByAttributeValue("name", "junggi_gb").get(0).getElementsByAttribute("selected").attr("value");
-            pullExaminationTimeTable(context, year, semester, termType);
-            if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_time_table_no_data)))
+            if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_time_table_no_data))) {
+                for(int i = 0; i < DUMMY_DATA_NUM; i++){
+                    ExaminationTimeTable examinationTimeTable = new ExaminationTimeTable();
+                    mExaminationTimeTable.add(examinationTimeTable);
+                }
                 return resources.getInteger(R.integer.missing_data_error);
+            }
+            pullExaminationTimeTable(context, year, semester, termType);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
