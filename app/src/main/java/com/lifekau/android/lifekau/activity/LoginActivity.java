@@ -42,6 +42,7 @@ import static android.os.SystemClock.sleep;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String SAVE_CHECKED_ALARM_PERIOD = "save_checked_alarm_period";
     private static final String SAVE_GUID = "shared_preferences_globally_unique_identifier";
     private static final String SAVE_ID = "shared_preferences_save_id";
     private static final String SAVE_PASSWORD = "shared_preferences_save_password";
@@ -56,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String SAVE_SWITCH_CURRENT_GRADE_STATE = "save_switch_current_grade_state";
     private static final String SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE = "save_switch_examination_timetable_state";
     private static final String SAVE_SWITCH_LMS_STATE = "save_switch_lms_state";
+    private static final int[] ALARM_PERIOD_TIME = {30, 60, 60 * 3, 60 * 6, 60 * 24};
 
     public static final String SAVE_AUTO_LOGIN = "shared_preferences_save_auto_login";
 
@@ -254,13 +256,13 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putBoolean(SAVE_SWITCH_LMS_STATE, true);
                 }
                 editor.apply();
-                JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
+                JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(JOB_SCHEDULER_SERVICE);
                 if (jobScheduler != null) {
                     List<JobInfo> jobInfos = jobScheduler.getAllPendingJobs();
                     if(jobInfos.size() == 0) {
                         jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(activity, AlarmJobService.class))
                                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                                .setPeriodic(30 * 60 * 1000)
+                                .setPeriodic(ALARM_PERIOD_TIME[sharedPref.getInt(SAVE_CHECKED_ALARM_PERIOD, 0)] * 60 * 1000)
                                 .build());
                     }
                 }
