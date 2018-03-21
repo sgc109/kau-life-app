@@ -61,6 +61,12 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_ITEM_POSITION, bottomNavigation.getCurrentItem());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean enabledTranslucentNavigation = getSharedPreferences("shared", Context.MODE_PRIVATE)
@@ -74,6 +80,10 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         }
         mPressedTime = 0;
         initUI();
+        if(savedInstanceState != null) {
+            if(savedInstanceState.getInt(EXTRA_ITEM_POSITION, 0) == 0) mFab.setVisibility(View.VISIBLE);
+            else mFab.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void initUI() {
@@ -314,6 +324,8 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
             if (position != 0) mFab.setVisibility(View.INVISIBLE);
         }
     }
+
+
 
     public void showViews() {
         mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
