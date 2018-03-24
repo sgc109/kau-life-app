@@ -217,6 +217,11 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         currentFragment = adapter.getCurrentFragment();
         currentFragment.willBeDisplayed();
 
+        setFabVisibility(position);
+        return true;
+    }
+
+    private void setFabVisibility(int position) {
         if (position == 0) {
             bottomNavigation.setNotification("", 1);
 
@@ -262,7 +267,6 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
                 mFab.setVisibility(View.INVISIBLE);
             }
         }
-        return true;
     }
 
     @Override
@@ -285,6 +289,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     @Override
     protected void onResume() {
         super.onResume();
+
     }
 
     public void hideViews() {
