@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.Cookie;
+import okhttp3.HttpUrl;
 
 public class PersistentLoadCookieJar extends PersistentCookieJar {
     private SetCookieCache mCache;
@@ -27,5 +28,11 @@ public class PersistentLoadCookieJar extends PersistentCookieJar {
             cookies.add(iter.next());
         }
         return cookies;
+    }
+
+    @Override
+    public synchronized void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+        mCache.addAll(cookies);
+        mPersistor.saveAll(cookies);
     }
 }

@@ -92,6 +92,14 @@ public class LMSPortalManager {
 
     public int pullSession(Context context, String id, String password) {
         Resources resources = context.getResources();
+        int result;
+        if((result = pullPortalSession(context, id, password)) != resources.getInteger(R.integer.no_error)) return result;
+        if((result = pullLmsSession(context)) != resources.getInteger(R.integer.no_error)) return result;
+        return result;
+    }
+
+    public int pullPortalSession(Context context, String id, String password) {
+        Resources resources = context.getResources();
         OkHttpClient client = getClient(context);
         Request request = new Request.Builder()
                 .url(resources.getString(R.string.portal_lms_check_page))
@@ -183,10 +191,16 @@ public class LMSPortalManager {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
-        url = HttpUrl.parse(resources.getString(R.string.lms_sso_page)).newBuilder()
+        return resources.getInteger(R.integer.no_error);
+    }
+
+    public int pullLmsSession(Context context){
+        Resources resources = context.getResources();
+        OkHttpClient client = getClient(context);
+        String url = HttpUrl.parse(resources.getString(R.string.lms_sso_page)).newBuilder()
                 .addQueryParameter("seq_id", mSSOToken)
                 .build().toString();
-        request = new Request.Builder()
+        Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Accept", resources.getString(R.string.header_accept))
                 .addHeader("Accept-Encoding", resources.getString(R.string.header_accept_encoding_with_br))
@@ -194,7 +208,7 @@ public class LMSPortalManager {
                 .addHeader("User-Agent", resources.getString(R.string.header_user_agent))
                 .addHeader("keep-alive", resources.getString(R.string.header_connection))
                 .build();
-        call = client.newCall(request);
+        Call call = client.newCall(request);
         String newId, newPassword;
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301)
@@ -206,7 +220,7 @@ public class LMSPortalManager {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
-        body = new FormBody.Builder()
+        FormBody body = new FormBody.Builder()
                 .add("username", newId)
                 .add("password", newPassword)
                 .build();
@@ -596,6 +610,14 @@ public class LMSPortalManager {
             return resources.getInteger(R.integer.network_error);
         }
         return resources.getInteger(R.integer.no_error);
+    }
+
+    public boolean isSessionValid(Context context){
+        Resources resources = context.getResources();
+        LoginManager loginManager = LoginManager.get(context);
+        if(pullStudentId(context) != resources.getInteger(R.integer.no_error)) return false;
+        if(pullPortalSession(context, loginManager.getUserId(), loginManager.getPassword()) != resources.getInteger(R.integer.no_error)) return false;
+        return true;
     }
 
     public int getRegisteredExaminationTimeTableItemNum(){

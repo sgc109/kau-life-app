@@ -209,12 +209,20 @@ public class LoginActivity extends AppCompatActivity {
                 return resources.getInteger(R.integer.unexpected_error);
             int result;
             int count = 0;
+            while(!activity.mLMSPortalManager.isSessionValid(applicationWeakReference.get())){
+                count++;
+                if (count == resources.getInteger(R.integer.maximum_retry_num)) break;
+            }
+            if (count != resources.getInteger(R.integer.maximum_retry_num)) return resources.getInteger(R.integer.no_error);
+            count = 0;
             while ((result = activity.mLMSPortalManager.pullSession(applicationWeakReference.get(), mId, mPassword)) != resources.getInteger(R.integer.no_error)) {
+                if (result != resources.getInteger(R.integer.network_error)) return result;
                 sleep(1000);
                 count++;
                 if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }
             while ((result = activity.mLMSPortalManager.pullStudentId(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
+                if (result != resources.getInteger(R.integer.network_error)) return result;
                 sleep(1000);
                 count++;
                 if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
@@ -257,10 +265,10 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putBoolean(SAVE_SWITCH_LMS_STATE, true);
                 }
                 editor.apply();
-                JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(JOB_SCHEDULER_SERVICE);
+                JobScheduler jobScheduler = (JobScheduler) activity.getSystemService(JOB_SCHEDULER_SERVICE);
                 if (jobScheduler != null) {
                     List<JobInfo> jobInfos = jobScheduler.getAllPendingJobs();
-                    if(jobInfos.size() == 0) {
+                    if (jobInfos.size() == 0) {
                         jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(activity, AlarmJobService.class))
                                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                                 .setPeriodic(ALARM_PERIOD_TIME[sharedPref.getInt(SAVE_CHECKED_ALARM_PERIOD, 0)] * 60 * 1000)

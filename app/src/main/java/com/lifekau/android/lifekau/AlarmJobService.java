@@ -18,6 +18,7 @@ import com.lifekau.android.lifekau.activity.ExaminationTimeTableActivity;
 import com.lifekau.android.lifekau.activity.HomeActivity;
 import com.lifekau.android.lifekau.activity.ScholarshipActivity;
 import com.lifekau.android.lifekau.manager.LMSPortalManager;
+import com.lifekau.android.lifekau.manager.LoginManager;
 import com.lifekau.android.lifekau.manager.NoticeManager;
 
 public class AlarmJobService extends JobService {
@@ -110,13 +111,17 @@ public class AlarmJobService extends JobService {
                     sharedPref.getBoolean(SAVE_SWITCH_LMS_STATE, false);
             if (neededLogin) {
                 for (int count = 0; count < 3; count++) {
-                    if ((mResult = pm.pullStudentId(getApplicationContext())) == resources.getInteger(R.integer.no_error))
+                    LoginManager lm = LoginManager.get(getApplicationContext());
+                    if(pm.pullStudentId(getApplicationContext()) == resources.getInteger(R.integer.no_error) &&
+                            pm.pullPortalSession(getApplicationContext(), lm.getUserId(), lm.getPassword()) == resources.getInteger(R.integer.no_error)){
+                        mResult = resources.getInteger(R.integer.no_error);
                         break;
+                    }
                 }
             } else mResult = resources.getInteger(R.integer.missing_data_error);
             if (mResult != resources.getInteger(R.integer.no_error)) {
                 String uniqueID = sharedPref.getString(SAVE_GUID, null);
-                if(uniqueID == null) return null;
+                if (uniqueID == null) return null;
                 String id = AdvancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_ID, ""), uniqueID);
                 String password = AdvancedEncryptionStandard.decrypt(sharedPref.getString(SAVE_PASSWORD, ""), uniqueID);
                 int mNextResult = resources.getInteger(R.integer.no_error);
