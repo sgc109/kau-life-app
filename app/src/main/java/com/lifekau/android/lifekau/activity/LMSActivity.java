@@ -130,7 +130,6 @@ public class LMSActivity extends AppCompatActivity {
             int result = lmsActivity.mLMSPortalManager.pullStudentId(applicationWeakReference.get());
             while (!lmsActivity.isFinishing() && result != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -165,14 +164,6 @@ public class LMSActivity extends AppCompatActivity {
                 Intent intent = LoginActivity.newIntent(lmsActivity);
                 lmsActivity.startActivity(intent);
                 lmsActivity.finish();
-            }
-        }
-
-        public void sleep(int time) {
-            try {
-                Thread.sleep(time);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }

@@ -21,20 +21,17 @@ import android.widget.Toast;
 
 import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.LibraryManager;
-import com.lifekau.android.lifekau.manager.NoticeManager;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.lang.ref.WeakReference;
-import java.util.Calendar;
 
-import static android.os.SystemClock.sleep;
 
 public class LibraryListActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
-    private static final String EXTRA_ROOM_TYPE = "extra_room_type";
     public static final int TYPE_READING_ROOM = 0;
     public static final int TYPE_STUDY_ROOM = 1;
 
+    private static final String EXTRA_ROOM_TYPE = "extra_room_type";
     private static final int TOTAL_READING_ROOM_NUM = 5;
     private static final int TOTAL_STUDY_ROOM_NUM = 6;
 
@@ -188,7 +185,6 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
             for (int i = 0; i < TOTAL_STUDY_ROOM_NUM; i++) {
                 while (!isCancelled() && (result = lm.pullStudyRoomDetailStatus(applicationWeakReference.get(), i)) != resources.getInteger(R.integer.no_error)) {
                     if (result == resources.getInteger(R.integer.network_error)) {
-                        sleep(2000);
                         count++;
                     } else return result;
                     if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -197,7 +193,6 @@ public class LibraryListActivity extends AppCompatActivity implements TimePicker
             }
             while (!isCancelled() && (result = lm.pullReadingRoomStatus(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(2000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))

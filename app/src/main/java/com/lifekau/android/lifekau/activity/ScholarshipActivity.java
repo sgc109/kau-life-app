@@ -160,7 +160,6 @@ public class ScholarshipActivity extends AppCompatActivity {
             while (!scholarshipActivity.isFinishing() && !isCancelled()
                     && (result = lm.pullScholarship(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error) ) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -191,13 +190,6 @@ public class ScholarshipActivity extends AppCompatActivity {
             }
         }
 
-        public void sleep(int time) {
-            try {
-                Thread.sleep(time);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void showToast(String message) {

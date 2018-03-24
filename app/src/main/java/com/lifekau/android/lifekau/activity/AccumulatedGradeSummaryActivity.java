@@ -157,7 +157,6 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
             while (!accumulatedGradeSummaryActivity.isFinishing() && !isCancelled() &&
                     (result = lm.pullAccumulatedGradeSummary(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(3000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -189,13 +188,6 @@ public class AccumulatedGradeSummaryActivity extends AppCompatActivity {
             }
         }
 
-        public void sleep(int time) {
-            try {
-                Thread.sleep(time);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void showToast(String message) {
