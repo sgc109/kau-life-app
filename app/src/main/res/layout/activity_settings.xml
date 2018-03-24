@@ -136,44 +136,41 @@
             android:textSize="22sp" />
 
         <RadioGroup
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
             android:id="@+id/alarm_radio_group_alarm_period"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="8dp">
+            android:orientation="horizontal">
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="1dp"
+                android:layout_weight="1"
                 android:text="30분" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="1dp"
-                android:paddingRight="1dp"
+                android:layout_weight="1"
                 android:text="1시간" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="1dp"
-                android:paddingRight="1dp"
+                android:layout_weight="1"
                 android:text="3시간" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="1dp"
-                android:paddingRight="1dp"
+                android:layout_weight="1"
                 android:text="6시간" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="1dp"
-                android:paddingRight="1dp"
+                android:layout_weight="1"
                 android:text="1일" />
         </RadioGroup>
 
