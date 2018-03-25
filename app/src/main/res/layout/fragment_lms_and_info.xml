@@ -192,7 +192,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="16dp"
-                android:src="@drawable/event1"/>
+                android:src="@drawable/lms2"/>
 
                 <TextView
                     android:layout_width="match_parent"
