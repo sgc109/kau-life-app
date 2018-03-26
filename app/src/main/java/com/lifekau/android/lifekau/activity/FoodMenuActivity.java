@@ -70,7 +70,6 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         mIsLoading = false;
         executeGetStudentRestFoodMenu();
         executeGetDormitoryRestFoodMenu();
-        showToast("최신 식단표를 처음 불러오는 경우 시간이 오래 소요될 수 있습니다.");
     }
 
     void initWebView(final int index){
