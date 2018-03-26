@@ -62,7 +62,7 @@ public class FoodReviewCornerListActivity extends AppCompatActivity {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_food_review_corner, parent, false);
                 if (viewType == UPPER_MOST_POST) {
                     ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-                    params.setMargins(0, PxDpConverter.convertDpToPx(8), 0, 0);
+                    params.setMargins(PxDpConverter.convertDpToPx(12), PxDpConverter.convertDpToPx(12), PxDpConverter.convertDpToPx(12), PxDpConverter.convertDpToPx(6));
                 }
                 return new FoodCornerViewHolder(view);
             }

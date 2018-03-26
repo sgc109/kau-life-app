@@ -93,8 +93,8 @@ public class AlarmJobService extends JobService {
                 if (mResult != resources.getInteger(R.integer.no_error)) continue;
                 int currLatestNum = nm.getLatestDetailPageNum(i);
                 int prevLatestNum = sharedPref.getInt(SAVE_NOTICE_LIST_NUM[i], -1);
-                if (prevLatestNum != -1 && currLatestNum > prevLatestNum) {
-                    text = text + NOTICE_NAME[i] + " ";
+                if (currLatestNum > prevLatestNum) {
+                    if(prevLatestNum != -1) text = text + NOTICE_NAME[i] + " ";
                     editor.putInt(SAVE_NOTICE_LIST_NUM[i], currLatestNum);
                     editor.apply();
                 }
@@ -140,9 +140,9 @@ public class AlarmJobService extends JobService {
             if (mResult == resources.getInteger(R.integer.no_error)) {
                 int currItemNum = pm.getScholarshipSize();
                 int prevItemNum = sharedPref.getInt(SAVE_SCHOLARSHIP_ITEM_NUM, -1);
-                if (prevItemNum != -1 && currItemNum > prevItemNum) {
+                if (currItemNum > prevItemNum) {
                     Intent intent = ScholarshipActivity.newIntent(getApplicationContext());
-                    notificationManager.notify(1, buildNotification(getApplicationContext(), "장학금 알람", "새로운 장학금이 등록되었습니다!", intent));
+                    if(prevItemNum != -1) notificationManager.notify(1, buildNotification(getApplicationContext(), "장학금 알람", "새로운 장학금이 등록되었습니다!", intent));
                     editor.putInt(SAVE_SCHOLARSHIP_ITEM_NUM, currItemNum);
                     editor.apply();
                 }
@@ -156,9 +156,9 @@ public class AlarmJobService extends JobService {
             if (mResult != resources.getInteger(R.integer.no_error)) {
                 int currItemNum = pm.getRegisteredCurrentGradeItemNum();
                 int prevItemNum = sharedPref.getInt(SAVE_CURRENT_GRADE_ITEM_NUM, -1);
-                if (prevItemNum != -1 && currItemNum > prevItemNum) {
+                if (currItemNum > prevItemNum) {
                     Intent intent = CurrentGradeActivity.newIntent(getApplicationContext());
-                    notificationManager.notify(2, buildNotification(getApplicationContext(), "성적 알람", "새로운 성적이 등록되었습니다!", intent));
+                    if(prevItemNum != -1) notificationManager.notify(2, buildNotification(getApplicationContext(), "성적 알람", "새로운 성적이 등록되었습니다!", intent));
                     editor.putInt(SAVE_CURRENT_GRADE_ITEM_NUM, currItemNum);
                     editor.apply();
                 }
@@ -172,9 +172,9 @@ public class AlarmJobService extends JobService {
             if (mResult == resources.getInteger(R.integer.no_error)) {
                 int currItemNum = pm.getRegisteredExaminationTimeTableItemNum();
                 int prevItemNum = sharedPref.getInt(SAVE_EXAMINATION_TIMETABLE_ITEM_NUM, -1);
-                if (prevItemNum != -1 && currItemNum > prevItemNum) {
+                if (currItemNum > prevItemNum) {
                     Intent intent = ExaminationTimeTableActivity.newIntent(getApplicationContext());
-                    notificationManager.notify(3, buildNotification(getApplicationContext(), "시험시간표 알람", "시험시간표가 등록되었습니다!", intent));
+                    if(prevItemNum != -1) notificationManager.notify(3, buildNotification(getApplicationContext(), "시험시간표 알람", "시험시간표가 등록되었습니다!", intent));
                     editor.putInt(SAVE_EXAMINATION_TIMETABLE_ITEM_NUM, currItemNum);
                     editor.apply();
                 }
