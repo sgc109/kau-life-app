@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="4dp"
+    android:background="@drawable/grade_list_border"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/list_item_empty_lecture_room_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="0.7"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="전자관418"
+        android:textColor="@color/grade_list_text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/list_item_empty_lecture_room_next_time"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="0.3"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="18:00"
+        android:textColor="@color/grade_list_text"
+        android:textSize="12sp" />
+</LinearLayout>

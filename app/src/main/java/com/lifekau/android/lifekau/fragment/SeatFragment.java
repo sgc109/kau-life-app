@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.lifekau.android.lifekau.R;
+import com.lifekau.android.lifekau.activity.EmptyLectureRoomListActivity;
 import com.lifekau.android.lifekau.activity.LibraryListActivity;
 
 public class SeatFragment extends PagerFragment implements View.OnClickListener{
@@ -66,7 +67,8 @@ public class SeatFragment extends PagerFragment implements View.OnClickListener{
                 startActivity(intent);
                 break;
             case R.id.fragment_seat_show_empty_room_button:
-                Toast.makeText(getActivity(), "빠른 시일 내에 추가될 예정입니다.", Toast.LENGTH_SHORT).show();
+                intent = EmptyLectureRoomListActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
         }
     }
