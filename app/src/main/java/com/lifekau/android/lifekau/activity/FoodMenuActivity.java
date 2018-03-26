@@ -37,11 +37,11 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
     private static final int FOOD_MENU_TYPE_STUDENT_REST = 0;
     private static final int FOOD_MENU_TYPE_DORMITORY_REST = 1;
     private NoticeManager mNoticeManager = NoticeManager.getInstance();
+    private Boolean[] mIsLoadings;
     private WebView[] mFoodMenuWebView;
     private ProgressBar mProgressBar;
     private Button mShowStudentRestFoodMenuButton;
     private Button mShowDormitoryRestFoodMenuButton;
-    private boolean mIsLoading;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, FoodMenuActivity.class);
@@ -57,6 +57,9 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
 //            getSupportActionBar().hide();
             getSupportActionBar().setTitle("식단표");
         }
+        mIsLoadings = new Boolean[FOOD_MENU_NUM];
+        mIsLoadings[0] = false;
+        mIsLoadings[1] = false;
         mFoodMenuWebView = new WebView[FOOD_MENU_NUM];
         mFoodMenuWebView[FOOD_MENU_TYPE_STUDENT_REST] = findViewById(R.id.activity_food_student_menu_web_view);
         mFoodMenuWebView[FOOD_MENU_TYPE_DORMITORY_REST] = findViewById(R.id.activity_food_dormitory_menu_web_view);
@@ -67,12 +70,11 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
         mShowStudentRestFoodMenuButton.setOnClickListener(this);
         mShowDormitoryRestFoodMenuButton = findViewById(R.id.activity_food_menu_dormitory_restaurant_button);
         mShowDormitoryRestFoodMenuButton.setOnClickListener(this);
-        mIsLoading = false;
         executeGetStudentRestFoodMenu();
         executeGetDormitoryRestFoodMenu();
     }
 
-    void initWebView(final int index){
+    void initWebView(final int index) {
         mFoodMenuWebView[index].setVisibility(View.GONE);
         mFoodMenuWebView[index].getSettings().setLoadWithOverviewMode(true);
         mFoodMenuWebView[index].getSettings().setUseWideViewPort(true);
@@ -83,10 +85,7 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if (!mIsLoading) {
-                    mIsLoading = true;
-                    mProgressBar.setVisibility(View.GONE);
-                }
+                mIsLoadings[index] = true;
                 mFoodMenuWebView[1 - index].setVisibility(View.GONE);
                 mFoodMenuWebView[index].setVisibility(View.VISIBLE);
                 mFoodMenuWebView[index].zoomBy(0.1f);
@@ -182,7 +181,11 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 foodMenuActivity.showToast("네트워크 오류로 인해 최신 학생식당 식단표 파일을 가져오는데 실패하였습니다.");
             }
-            foodMenuActivity.setFoodMenuImage(FOOD_MENU_TYPE_STUDENT_REST, nm.getStudentRestFoodMenuFileName());
+            foodMenuActivity.mIsLoadings[FOOD_MENU_TYPE_STUDENT_REST] = true;
+            if (foodMenuActivity.mIsLoadings[FOOD_MENU_TYPE_DORMITORY_REST]) {
+                foodMenuActivity.setFoodMenuImage(FOOD_MENU_TYPE_STUDENT_REST, nm.getStudentRestFoodMenuFileName());
+                foodMenuActivity.mProgressBar.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -228,6 +231,11 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
                 return;
             } else if (result == resources.getInteger(R.integer.network_error)) {
                 foodMenuActivity.showToast("네트워크 오류로 인해 최신 기숙사 식단표 파일을 가져오는데 실패하였습니다.");
+            }
+            foodMenuActivity.mIsLoadings[FOOD_MENU_TYPE_DORMITORY_REST] = true;
+            if (foodMenuActivity.mIsLoadings[FOOD_MENU_TYPE_STUDENT_REST]) {
+                foodMenuActivity.setFoodMenuImage(FOOD_MENU_TYPE_STUDENT_REST, nm.getStudentRestFoodMenuFileName());
+                foodMenuActivity.mProgressBar.setVisibility(View.GONE);
             }
         }
     }
