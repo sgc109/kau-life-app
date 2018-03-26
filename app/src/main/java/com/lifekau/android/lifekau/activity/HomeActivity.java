@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -62,16 +63,16 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outPersistentState.putInt(EXTRA_ITEM_POSITION, bottomNavigation.getCurrentItem());
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(EXTRA_ITEM_POSITION, bottomNavigation.getCurrentItem());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onRestoreInstanceState(savedInstanceState, persistentState);
-        if(persistentState.getInt(EXTRA_ITEM_POSITION, 0) == 0) mFab.setVisibility(View.VISIBLE);
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if(savedInstanceState.getInt(EXTRA_ITEM_POSITION, 0) == 0) mFab.setVisibility(View.VISIBLE);
         else mFab.setVisibility(View.INVISIBLE);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -88,7 +89,6 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         }
         mPressedTime = 0;
         initUI();
-
     }
 
     private void initUI() {
