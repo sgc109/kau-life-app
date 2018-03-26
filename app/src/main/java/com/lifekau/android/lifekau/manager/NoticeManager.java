@@ -207,7 +207,7 @@ public class NoticeManager {
                 .url(resources.getString(R.string.food_menu_student_rest_page))
                 .build();
         Call call = client.newCall(request);
-        int currIndex = -1;
+        int currIndexes = -1;
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) {
                 return resources.getInteger(R.integer.server_error);
@@ -217,7 +217,7 @@ public class NoticeManager {
             for (Element e : postElements) {
                 if (e.text().contains("학생식당")) {
                     String string = e.select("a").get(0).attr("href");
-                    currIndex = Integer.valueOf(string.split("'")[1]);
+                    currIndexes = Integer.valueOf(string.split("'")[1]);
                     break;
                 }
             }
@@ -229,7 +229,7 @@ public class NoticeManager {
             return resources.getInteger(R.integer.network_error);
         }
         request = new Request.Builder()
-                .url(String.format(resources.getString(R.string.food_menu_student_rest_view_page), currIndex))
+                .url(String.format(resources.getString(R.string.food_menu_student_rest_view_page), currIndexes))
                 .build();
         call = client.newCall(request);
         ArrayList<String> foodMenuUrls = new ArrayList<>();
@@ -253,7 +253,7 @@ public class NoticeManager {
         }
         int prevIndex = sharedPref.getInt(SAVE_STUDENT_REST_DETAIL_NUM, -1);
         mStudentRestFileName = sharedPref.getStringSet(SAVE_STUDENT_REST_FILE_NAME, new HashSet<String>());
-        if (currIndex == prevIndex && foodMenuUrls.size() == mStudentRestFileName.size()) return resources.getInteger(R.integer.no_error);
+        if (currIndexes == prevIndex && foodMenuUrls.size() == mStudentRestFileName.size()) return resources.getInteger(R.integer.no_error);
         mStudentRestFileName.clear();
         int count = 0;
         FileOutputStream fos = null;
@@ -283,7 +283,7 @@ public class NoticeManager {
             }
         }
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(SAVE_STUDENT_REST_DETAIL_NUM, currIndex);
+        editor.putInt(SAVE_STUDENT_REST_DETAIL_NUM, currIndexes);
         editor.putStringSet(SAVE_STUDENT_REST_FILE_NAME, mStudentRestFileName);
         editor.apply();
         return resources.getInteger(R.integer.no_error);
@@ -297,7 +297,7 @@ public class NoticeManager {
                 .url(resources.getString(R.string.food_menu_dormitory_rest_page))
                 .build();
         Call call = client.newCall(request);
-        int currIndex = -1;
+        ArrayList<Integer> currIndexes = new ArrayList<>();
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) {
                 return resources.getInteger(R.integer.server_error);
@@ -307,8 +307,8 @@ public class NoticeManager {
             for (Element e : postElements) {
                 if (e.text().contains("월")) {
                     String string = e.select("a").get(0).attr("href");
-                    currIndex = Integer.valueOf(string.split("\\(")[1].split(",")[0]);
-                    break;
+                    currIndexes.add(Integer.valueOf(string.split("\\(")[1].split(",")[0]));
+                    if(currIndexes.size() >= 2) break;
                 }
             }
         } catch (IndexOutOfBoundsException | NullPointerException e) {
@@ -318,51 +318,53 @@ public class NoticeManager {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
-        RequestBody body = new FormBody.Builder()
-                .add("communityKey", "B0126")
-                .add("pageNum", "1")
-                .add("pageSize", "10")
-                .add("act", "VIEW")
-                .add("boardId", String.valueOf(currIndex))
-                .add("branch_session", "")
-                .add("only_reply", "")
-                .add("mbo_mother_page", "/page/web/life/community/meal_li.jsp")
-                .add("board_table_name", "WCM_BOARD_" + "B0126")
-                .add("sort_type", "DESC")
-                .add("sort_column", "")
-                .add("memoTable", "WCM_BOARD_MEMO" + "B0126")
-                .add("login_id", "")
-                .add("searchType", "TITLE")
-                .add("searchWord", "")
-                .add("chg_page_size", "10")
-                .build();
-        request = new Request.Builder()
-                .url(resources.getString(R.string.food_menu_dormitory_rest_page))
-                .post(body)
-                .build();
-        call = client.newCall(request);
         ArrayList<String> foodMenuUrls = new ArrayList<>();
-        try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) {
-                return resources.getInteger(R.integer.server_error);
-            }
-            Document doc = Jsoup.parse(res.body().string());
-            Elements fileElements = doc.getElementsByAttributeValueStarting("href", "/page/cms/board/Download.jsp");
-            if (fileElements.size() > 0) {
-                for (Element e : fileElements) {
-                    foodMenuUrls.add(resources.getString(R.string.portal_page) + e.attr("href"));
+        for(Integer currIndex : currIndexes) {
+            RequestBody body = new FormBody.Builder()
+                    .add("communityKey", "B0126")
+                    .add("pageNum", "1")
+                    .add("pageSize", "10")
+                    .add("act", "VIEW")
+                    .add("boardId", String.valueOf(currIndex))
+                    .add("branch_session", "")
+                    .add("only_reply", "")
+                    .add("mbo_mother_page", "/page/web/life/community/meal_li.jsp")
+                    .add("board_table_name", "WCM_BOARD_" + "B0126")
+                    .add("sort_type", "DESC")
+                    .add("sort_column", "")
+                    .add("memoTable", "WCM_BOARD_MEMO" + "B0126")
+                    .add("login_id", "")
+                    .add("searchType", "TITLE")
+                    .add("searchWord", "")
+                    .add("chg_page_size", "10")
+                    .build();
+            request = new Request.Builder()
+                    .url(resources.getString(R.string.food_menu_dormitory_rest_page))
+                    .post(body)
+                    .build();
+            call = client.newCall(request);
+            try (Response res = call.execute()) {
+                if (res.code() <= 199 || res.code() >= 301) {
+                    return resources.getInteger(R.integer.server_error);
                 }
+                Document doc = Jsoup.parse(res.body().string());
+                Elements fileElements = doc.getElementsByAttributeValueStarting("href", "/page/cms/board/Download.jsp");
+                if (fileElements.size() > 0) {
+                    for (Element e : fileElements) {
+                        foodMenuUrls.add(resources.getString(R.string.portal_page) + e.attr("href"));
+                    }
+                }
+            } catch (IndexOutOfBoundsException | NullPointerException e) {
+                e.printStackTrace();
+                return resources.getInteger(R.integer.missing_data_error);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return resources.getInteger(R.integer.network_error);
             }
-        } catch (IndexOutOfBoundsException | NullPointerException e) {
-            e.printStackTrace();
-            return resources.getInteger(R.integer.missing_data_error);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return resources.getInteger(R.integer.network_error);
         }
         int prevIndex = sharedPref.getInt(SAVE_DORMITORY_REST_DETAIL_NUM, -1);
         mDormitoryRestFileName = sharedPref.getStringSet(SAVE_DORMITORY_REST_FILE_NAME, new HashSet<String>());
-        if (currIndex == prevIndex && foodMenuUrls.size() == mDormitoryRestFileName.size()) return resources.getInteger(R.integer.no_error);
+        if (currIndexes.get(0) == prevIndex && foodMenuUrls.size() == mDormitoryRestFileName.size()) return resources.getInteger(R.integer.no_error);
         mDormitoryRestFileName.clear();
         int count = 0;
         for (String url : foodMenuUrls) {
@@ -405,7 +407,7 @@ public class NoticeManager {
         }
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putStringSet(SAVE_DORMITORY_REST_FILE_NAME, mDormitoryRestFileName);
-        editor.putInt(SAVE_DORMITORY_REST_DETAIL_NUM, currIndex);
+        editor.putInt(SAVE_DORMITORY_REST_DETAIL_NUM, currIndexes.get(0));
         editor.apply();
         return resources.getInteger(R.integer.no_error);
     }
