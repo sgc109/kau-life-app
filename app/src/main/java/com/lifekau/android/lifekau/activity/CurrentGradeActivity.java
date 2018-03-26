@@ -159,7 +159,6 @@ public class CurrentGradeActivity extends AppCompatActivity {
             while (!currentGradeActivity.isFinishing() && !isCancelled() &&
                     (result = lm.pullCurrentGrade(activityReference.get())) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == MAXIMUM_RETRY_NUM)
@@ -203,13 +202,6 @@ public class CurrentGradeActivity extends AppCompatActivity {
             }
         }
 
-        public void sleep(int time) {
-            try {
-                Thread.sleep(time);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void showToast(String message) {

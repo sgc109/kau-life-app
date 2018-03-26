@@ -173,7 +173,6 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
             while (!accumulatedGradeActivity.isFinishing() && !isCancelled() &&
                     (result = lm.pullAccumulatedGrade(applicationWeakReference.get(), year, semesterCode)) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(3000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -201,14 +200,6 @@ public class AccumulatedGradeActivity extends AppCompatActivity {
                 Intent intent = LoginActivity.newIntent(accumulatedGradeActivity);
                 accumulatedGradeActivity.startActivity(intent);
                 accumulatedGradeActivity.finish();
-            }
-        }
-
-        public void sleep(int time) {
-            try {
-                Thread.sleep(time);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }

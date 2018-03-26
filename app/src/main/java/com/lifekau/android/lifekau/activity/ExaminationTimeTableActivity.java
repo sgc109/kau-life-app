@@ -149,7 +149,6 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
             while (!examinationTimeTableActivity.isFinishing() && !isCancelled() &&
                     (result = lm.pullExaminationTimeTable(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -183,14 +182,6 @@ public class ExaminationTimeTableActivity extends AppCompatActivity {
                 Intent intent = LoginActivity.newIntent(examinationTimeTableActivity);
                 examinationTimeTableActivity.startActivity(intent);
                 examinationTimeTableActivity.finish();
-            }
-        }
-
-        public void sleep(int time) {
-            try {
-                Thread.sleep(time);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }

@@ -233,7 +233,6 @@ public class NoticeListActivity extends AppCompatActivity {
             NoticeManager nm = noticeListActivity.mNoticeManager;
             while ((result = nm.pullNoticeList(applicationWeakReference.get(), noticeType)) != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(3000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -270,13 +269,6 @@ public class NoticeListActivity extends AppCompatActivity {
             }
         }
 
-        public void sleep(int time) {
-            try {
-                Thread.sleep(time);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void showErrorMessage() {

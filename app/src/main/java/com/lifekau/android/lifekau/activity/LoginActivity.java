@@ -37,9 +37,6 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.UUID;
 
-import static android.os.SystemClock.sleep;
-
-
 public class LoginActivity extends AppCompatActivity {
 
     private static final String SAVE_CHECKED_ALARM_PERIOD = "save_checked_alarm_period";
@@ -217,13 +214,11 @@ public class LoginActivity extends AppCompatActivity {
             count = 0;
             while ((result = activity.mLMSPortalManager.pullSession(applicationWeakReference.get(), mId, mPassword)) != resources.getInteger(R.integer.no_error)) {
                 if (result != resources.getInteger(R.integer.network_error)) return result;
-                sleep(1000);
                 count++;
                 if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }
             while ((result = activity.mLMSPortalManager.pullStudentId(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error)) {
                 if (result != resources.getInteger(R.integer.network_error)) return result;
-                sleep(1000);
                 count++;
                 if (count == resources.getInteger(R.integer.maximum_retry_num)) return result;
             }

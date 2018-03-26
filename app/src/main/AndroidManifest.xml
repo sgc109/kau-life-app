@@ -56,6 +56,9 @@
         <activity android:name=".activity.LMSActivity"/>
         <activity android:name=".activity.ExaminationTimeTableActivity"/>
         <activity android:name=".activity.FoodMenuActivity"/>
+        <activity android:name=".activity.EmptyLectureRoomListActivity"/>
+        <activity android:name=".activity.EmptyLectureRoomActivity"/>
+
         <service
             android:name=".AlarmJobService"
             android:exported="true"
