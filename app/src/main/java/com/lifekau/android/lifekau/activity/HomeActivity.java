@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -61,9 +62,16 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(EXTRA_ITEM_POSITION, bottomNavigation.getCurrentItem());
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outPersistentState.putInt(EXTRA_ITEM_POSITION, bottomNavigation.getCurrentItem());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+        if(persistentState.getInt(EXTRA_ITEM_POSITION, 0) == 0) mFab.setVisibility(View.VISIBLE);
+        else mFab.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -80,10 +88,7 @@ public class HomeActivity extends AppCompatActivity implements AHBottomNavigatio
         }
         mPressedTime = 0;
         initUI();
-        if(savedInstanceState != null) {
-            if(savedInstanceState.getInt(EXTRA_ITEM_POSITION, 0) == 0) mFab.setVisibility(View.VISIBLE);
-            else mFab.setVisibility(View.INVISIBLE);
-        }
+
     }
 
     private void initUI() {
