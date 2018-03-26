@@ -32,6 +32,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, noMainImage ? 0 : 1000);
+        }, noMainImage ? 0 : 800);
     }
 }
