@@ -4,16 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-import android.webkit.RenderProcessGoneDetail;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -24,12 +18,9 @@ import com.lifekau.android.lifekau.R;
 import com.lifekau.android.lifekau.manager.NoticeManager;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import static android.os.SystemClock.sleep;
 
 public class FoodMenuActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -107,10 +98,14 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_food_menu_show_student_restaurant_button:
-                setFoodMenuImage(FOOD_MENU_TYPE_STUDENT_REST, mNoticeManager.getStudentRestFoodMenuFileName());
+                if (mIsLoadings[FOOD_MENU_TYPE_STUDENT_REST] && mIsLoadings[FOOD_MENU_TYPE_DORMITORY_REST]) {
+                    setFoodMenuImage(FOOD_MENU_TYPE_STUDENT_REST, mNoticeManager.getStudentRestFoodMenuFileName());
+                }
                 break;
             case R.id.activity_food_menu_dormitory_restaurant_button:
-                setFoodMenuImage(FOOD_MENU_TYPE_DORMITORY_REST, mNoticeManager.getDormitoryRestFileName());
+                if (mIsLoadings[FOOD_MENU_TYPE_STUDENT_REST] && mIsLoadings[FOOD_MENU_TYPE_DORMITORY_REST]) {
+                    setFoodMenuImage(FOOD_MENU_TYPE_DORMITORY_REST, mNoticeManager.getDormitoryRestFileName());
+                }
                 break;
         }
     }
@@ -159,7 +154,6 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             NoticeManager nm = foodMenuActivity.mNoticeManager;
             while ((result = nm.pullStudentRestFoodMenu(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
@@ -210,7 +204,6 @@ public class FoodMenuActivity extends AppCompatActivity implements View.OnClickL
             NoticeManager nm = foodMenuActivity.mNoticeManager;
             while ((result = nm.pullDormitoryRestFoodMenu(applicationWeakReference.get())) != resources.getInteger(R.integer.no_error) && !isCancelled()) {
                 if (result == resources.getInteger(R.integer.network_error)) {
-                    sleep(1000);
                     count++;
                 } else return result;
                 if (count == resources.getInteger(R.integer.maximum_retry_num))
