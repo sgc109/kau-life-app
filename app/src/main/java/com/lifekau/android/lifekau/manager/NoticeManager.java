@@ -207,7 +207,7 @@ public class NoticeManager {
                 .url(resources.getString(R.string.food_menu_student_rest_page))
                 .build();
         Call call = client.newCall(request);
-        int currIndexes = -1;
+        ArrayList<Integer> currIndexes = new ArrayList<>();
         try (Response res = call.execute()) {
             if (res.code() <= 199 || res.code() >= 301) {
                 return resources.getInteger(R.integer.server_error);
@@ -217,8 +217,8 @@ public class NoticeManager {
             for (Element e : postElements) {
                 if (e.text().contains("학생식당")) {
                     String string = e.select("a").get(0).attr("href");
-                    currIndexes = Integer.valueOf(string.split("'")[1]);
-                    break;
+                    currIndexes.add(Integer.valueOf(string.split("'")[1]));
+                    if(currIndexes.size() >= 2) break;
                 }
             }
         } catch (IndexOutOfBoundsException | NullPointerException e) {
@@ -228,32 +228,34 @@ public class NoticeManager {
             e.printStackTrace();
             return resources.getInteger(R.integer.network_error);
         }
-        request = new Request.Builder()
-                .url(String.format(resources.getString(R.string.food_menu_student_rest_view_page), currIndexes))
-                .build();
-        call = client.newCall(request);
         ArrayList<String> foodMenuUrls = new ArrayList<>();
-        try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301) {
-                return resources.getInteger(R.integer.server_error);
-            }
-            Document doc = Jsoup.parse(res.body().string());
-            Elements fileElements = doc.getElementsByAttributeValue("class", "tb01_3").get(1).select("a");
-            if (fileElements.size() > 0) {
-                for (Element e : fileElements) {
-                    foodMenuUrls.add(resources.getString(R.string.portal_page) + e.attr("href"));
+        for(Integer currIndex : currIndexes) {
+            request = new Request.Builder()
+                    .url(String.format(resources.getString(R.string.food_menu_student_rest_view_page), currIndex))
+                    .build();
+            call = client.newCall(request);
+            try (Response res = call.execute()) {
+                if (res.code() <= 199 || res.code() >= 301) {
+                    return resources.getInteger(R.integer.server_error);
                 }
+                Document doc = Jsoup.parse(res.body().string());
+                Elements fileElements = doc.getElementsByAttributeValue("class", "tb01_3").get(1).select("a");
+                if (fileElements.size() > 0) {
+                    for (Element e : fileElements) {
+                        foodMenuUrls.add(resources.getString(R.string.portal_page) + e.attr("href"));
+                    }
+                }
+            } catch (IndexOutOfBoundsException | NullPointerException e) {
+                e.printStackTrace();
+                return resources.getInteger(R.integer.missing_data_error);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return resources.getInteger(R.integer.network_error);
             }
-        } catch (IndexOutOfBoundsException | NullPointerException e) {
-            e.printStackTrace();
-            return resources.getInteger(R.integer.missing_data_error);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return resources.getInteger(R.integer.network_error);
         }
         int prevIndex = sharedPref.getInt(SAVE_STUDENT_REST_DETAIL_NUM, -1);
         mStudentRestFileName = sharedPref.getStringSet(SAVE_STUDENT_REST_FILE_NAME, new HashSet<String>());
-        if (currIndexes == prevIndex && foodMenuUrls.size() == mStudentRestFileName.size()) return resources.getInteger(R.integer.no_error);
+        if (currIndexes.get(0) == prevIndex && foodMenuUrls.size() == mStudentRestFileName.size()) return resources.getInteger(R.integer.no_error);
         mStudentRestFileName.clear();
         int count = 0;
         FileOutputStream fos = null;
@@ -283,7 +285,7 @@ public class NoticeManager {
             }
         }
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(SAVE_STUDENT_REST_DETAIL_NUM, currIndexes);
+        editor.putInt(SAVE_STUDENT_REST_DETAIL_NUM, currIndexes.get(0));
         editor.putStringSet(SAVE_STUDENT_REST_FILE_NAME, mStudentRestFileName);
         editor.apply();
         return resources.getInteger(R.integer.no_error);
