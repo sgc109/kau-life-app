@@ -53,6 +53,9 @@ public class LMSPortalManager {
     private OkHttpClient mClient;
     private String mSSOToken;
     private String mStudentId;
+    private String mYear;
+    private String mSemester;
+    private String mTermType;
     private int mRegisteredExaminationTimeTableItemNum;
     private int mRegisteredCurrentGradeItemNum;
 
@@ -526,9 +529,9 @@ public class LMSPortalManager {
                 return resources.getInteger(R.integer.server_error);
             Document doc = Jsoup.parse(res.body().string());
             Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
-            String year = doc.getElementsByAttributeValue("class", "input").get(0).attr("value");
-            String semester = doc.getElementsByAttributeValue("name", "hakgi").get(0).getElementsByAttribute("selected").attr("value");
-            String termType = doc.getElementsByAttributeValue("name", "junggi_gb").get(0).getElementsByAttribute("selected").attr("value");
+            mYear = doc.getElementsByAttributeValue("class", "input").get(0).attr("value");
+            mSemester = doc.getElementsByAttributeValue("name", "hakgi").get(0).getElementsByAttribute("selected").attr("value");
+            mTermType = doc.getElementsByAttributeValue("name", "junggi_gb").get(0).getElementsByAttribute("selected").attr("value");
             if (timeTableElements.select("td").get(1).text().equals(resources.getString(R.string.portal_time_table_no_data))) {
                 for(int i = 0; i < DUMMY_DATA_NUM; i++){
                     ExaminationTimeTable examinationTimeTable = new ExaminationTimeTable();
@@ -536,7 +539,7 @@ public class LMSPortalManager {
                 }
                 return resources.getInteger(R.integer.missing_data_error);
             }
-            pullExaminationTimeTable(context, year, semester, termType);
+            pullExaminationTimeTable(context, mYear, mSemester, mTermType);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             e.printStackTrace();
             return resources.getInteger(R.integer.session_error);
@@ -703,5 +706,17 @@ public class LMSPortalManager {
     public List<Cookie> getCookie(Context context) {
         if (mCookieJar == null) return null;
         else return mCookieJar.LoadCookies();
+    }
+
+    public int getYear(){
+        return Integer.getInteger(mYear);
+    }
+
+    public int getSemester(){
+        return Integer.getInteger(mSemester);
+    }
+
+    public int getTermType(){
+        return Integer.getInteger(mTermType);
     }
 }

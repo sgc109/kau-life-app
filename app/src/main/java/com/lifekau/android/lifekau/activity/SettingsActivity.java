@@ -332,11 +332,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         int periodIndex = mRadioGroupAlarmPeriod.indexOfChild(radioButton);
         JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         if (jobScheduler != null) {
-            if (currAlarmState && prevIndex != periodIndex) {
-                jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(this, AlarmJobService.class))
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setPeriodic(ALARM_PERIOD_TIME[periodIndex] * 60 * 1000)
-                        .build());
+            if (currAlarmState) {
+                if(prevIndex != periodIndex) {
+                    jobScheduler.schedule(new JobInfo.Builder(0, new ComponentName(this, AlarmJobService.class))
+                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                            .setPeriodic(ALARM_PERIOD_TIME[periodIndex] * 60 * 1000)
+                            .build());
+                }
             } else jobScheduler.cancel(0);
         } else {
             //초기화 실패
