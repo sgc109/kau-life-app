@@ -155,13 +155,11 @@ public class AlarmJobService extends JobService {
                     if ((mResult = pm.pullCurrentGrade(getApplicationContext())) == resources.getInteger(R.integer.no_error))
                         break;
                 }
-            } else mResult = resources.getInteger(R.integer.missing_data_error);
-            if (sharedPref.getBoolean(SAVE_EXAMINATION_TIMETABLE_ITEM_NUM, false)) {
-                for (int count = 0; count < 3; count++) {
-                    if ((mResult = pm.pullExaminationTimeTable(getApplicationContext())) == resources.getInteger(R.integer.no_error))
-                        break;
-                }
-            } else mResult = resources.getInteger(R.integer.missing_data_error);
+            }
+            for (int count = 0; count < 3; count++) {
+                if ((mResult = pm.pullExaminationTimeTable(getApplicationContext())) == resources.getInteger(R.integer.no_error))
+                    break;
+            }
             if(mResult == resources.getInteger(R.integer.no_error)){
                 int currYear = pm.getYear();
                 int prevYear = sharedPref.getInt(SAVE_YEAR, -1);
@@ -189,23 +187,29 @@ public class AlarmJobService extends JobService {
                 editor.apply();
             }
             if (mResult == resources.getInteger(R.integer.no_error)) {
-                int currItemNum = pm.getRegisteredExaminationTimeTableItemNum();
-                int prevItemNum = sharedPref.getInt(SAVE_EXAMINATION_TIMETABLE_ITEM_NUM, -1);
-                if (currItemNum > prevItemNum) {
-                    Intent intent = ExaminationTimeTableActivity.newIntent(getApplicationContext());
-                    if(prevItemNum != -1) notificationManager.notify(3, buildNotification(getApplicationContext(), "시험시간표 알람", "시험시간표가 등록되었습니다!", intent));
-                    editor.putInt(SAVE_EXAMINATION_TIMETABLE_ITEM_NUM, currItemNum);
-                    editor.apply();
+                if(sharedPref.getBoolean(SAVE_SWITCH_EXAMINATION_TIMETABLE_STATE, false)) {
+                    int currItemNum = pm.getRegisteredExaminationTimeTableItemNum();
+                    int prevItemNum = sharedPref.getInt(SAVE_EXAMINATION_TIMETABLE_ITEM_NUM, -1);
+                    if (currItemNum > prevItemNum) {
+                        Intent intent = ExaminationTimeTableActivity.newIntent(getApplicationContext());
+                        if (prevItemNum != -1)
+                            notificationManager.notify(3, buildNotification(getApplicationContext(), "시험시간표 알람", "시험시간표가 등록되었습니다!", intent));
+                        editor.putInt(SAVE_EXAMINATION_TIMETABLE_ITEM_NUM, currItemNum);
+                        editor.apply();
+                    }
                 }
             }
-            if (mResult != resources.getInteger(R.integer.no_error)) {
-                int currItemNum = pm.getRegisteredCurrentGradeItemNum();
-                int prevItemNum = sharedPref.getInt(SAVE_CURRENT_GRADE_ITEM_NUM, -1);
-                if (currItemNum > prevItemNum) {
-                    Intent intent = CurrentGradeActivity.newIntent(getApplicationContext());
-                    if(prevItemNum != -1) notificationManager.notify(2, buildNotification(getApplicationContext(), "성적 알람", "새로운 성적이 등록되었습니다!", intent));
-                    editor.putInt(SAVE_CURRENT_GRADE_ITEM_NUM, currItemNum);
-                    editor.apply();
+            if (mResult == resources.getInteger(R.integer.no_error)) {
+                if(sharedPref.getBoolean(SAVE_SWITCH_CURRENT_GRADE_STATE, false)) {
+                    int currItemNum = pm.getRegisteredCurrentGradeItemNum();
+                    int prevItemNum = sharedPref.getInt(SAVE_CURRENT_GRADE_ITEM_NUM, -1);
+                    if (currItemNum > prevItemNum) {
+                        Intent intent = CurrentGradeActivity.newIntent(getApplicationContext());
+                        if (prevItemNum != -1)
+                            notificationManager.notify(2, buildNotification(getApplicationContext(), "성적 알람", "새로운 성적이 등록되었습니다!", intent));
+                        editor.putInt(SAVE_CURRENT_GRADE_ITEM_NUM, currItemNum);
+                        editor.apply();
+                    }
                 }
             }
             return null;
