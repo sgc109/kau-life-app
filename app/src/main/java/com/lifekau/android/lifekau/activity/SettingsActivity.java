@@ -325,7 +325,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     protected void onDestroy() {
         SharedPreferences sharedPref = getSharedPreferences(getResources().getString(R.string.shared_preference_app), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        boolean currAlarmState = isAllOff();
+        boolean currAlarmState = !isAllOff();
         int radioButtonId = mRadioGroupAlarmPeriod.getCheckedRadioButtonId();
         View radioButton = mRadioGroupAlarmPeriod.findViewById(radioButtonId);
         int prevIndex = sharedPref.getInt(SAVE_CHECKED_ALARM_PERIOD, -1);

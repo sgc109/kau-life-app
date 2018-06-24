@@ -118,7 +118,6 @@ public class LMSPortalManager {
                 return resources.getInteger(resources.getInteger(R.integer.server_error));
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("eee", e.toString());
             return resources.getInteger(R.integer.network_error);
         }
         RequestBody body = new FormBody.Builder()
@@ -364,7 +363,7 @@ public class LMSPortalManager {
                 return resources.getInteger(R.integer.missing_data_error);
             }
             int elementsSize = elements.size();
-            for (int i = 0; i < elementsSize; i++) {
+            for (int i = 0; i < elementsSize - 2; i++) {
                 Elements grades = elements.get(i).select("tr");
                 int gradesSize = grades.size();
                 for (int j = 1; j < gradesSize; j++) {
@@ -372,13 +371,13 @@ public class LMSPortalManager {
                     CurrentGrade grade = new CurrentGrade();
                     grade.courseNumber = infomation.get(0).text();
                     grade.courseTitle = infomation.get(1).text();
-                    grade.credits = infomation.get(2).text();
-                    grade.evaluation = infomation.get(3).text();
+                    grade.major = infomation.get(2).text();
+                    grade.credits = infomation.get(3).text();
                     grade.grade = infomation.get(4).text();
-                    grade.major = infomation.get(5).text();
-                    grade.portfolio = infomation.get(6).text();
-                    grade.remarks = infomation.get(7).text();
-                    grade.retake = infomation.get(8).text();
+                    grade.retake = infomation.get(5).text();
+                    grade.remarks = infomation.get(6).text();
+                    grade.evaluation = infomation.get(7).text();
+                    grade.portfolio = infomation.get(8).text();
                     mCurrentGrade.add(grade);
                     if (!grade.grade.isEmpty() && !grade.grade.equals("-") && !grade.grade.equals(" "))
                         mRegisteredCurrentGradeItemNum++;
@@ -525,8 +524,9 @@ public class LMSPortalManager {
                 .build();
         Call call = client.newCall(request);
         try (Response res = call.execute()) {
-            if (res.code() <= 199 || res.code() >= 301)
+            if (res.code() <= 199 || res.code() >= 301) {
                 return resources.getInteger(R.integer.server_error);
+            }
             Document doc = Jsoup.parse(res.body().string());
             Elements timeTableElements = doc.getElementsByAttributeValue("class", "table1").get(1).select("tr");
             mYear = doc.getElementsByAttributeValue("class", "input").get(0).attr("value");
@@ -709,14 +709,14 @@ public class LMSPortalManager {
     }
 
     public int getYear(){
-        return Integer.getInteger(mYear);
+        return Integer.parseInt(mYear);
     }
 
     public int getSemester(){
-        return Integer.getInteger(mSemester);
+        return Integer.parseInt(mSemester);
     }
 
     public int getTermType(){
-        return Integer.getInteger(mTermType);
+        return Integer.parseInt(mTermType);
     }
 }
