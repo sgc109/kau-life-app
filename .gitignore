@@ -12,3 +12,6 @@ ahbottomnavigation/build
 /release
 lifekau_key.jks
 .gitignore
+
+app-release.apk
+output.json
