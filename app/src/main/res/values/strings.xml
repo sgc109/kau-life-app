@@ -89,7 +89,7 @@
     <string name="portal_my_portal_page">https://portal.kau.ac.kr/portal/MyPortal_No.jsp</string>
     <string name="portal_my_menu_b_page">https://portal.kau.ac.kr/admt/MyMenuB.jsp</string>
     <string name="portal_scholar_page">https://portal.kau.ac.kr/sugang/PersScholarTakeList.jsp</string>
-    <string name="portal_curr_grade_page">https://portal.kau.ac.kr/sugang/GradHakList.jsp</string>
+    <string name="portal_curr_grade_page">https://portal.kau.ac.kr/sugang/GradHakList_2018.jsp</string>
     <string name="portal_accumulated_grade_page">https://portal.kau.ac.kr/sugang/GradTotList.jsp</string>
     <string name="portal_accumulated_grade_summary_page">https://portal.kau.ac.kr/sugang/GradTermList.jsp</string>
     <string name="portal_examination_time_table_page">https://portal.kau.ac.kr/sugang/SugangExamList.jsp</string>
